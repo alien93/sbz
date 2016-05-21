@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     5/21/2016 10:48:26 AM                        */
+/* Created on:     5/21/2016 5:31:48 PM                         */
 /*==============================================================*/
 
 
@@ -47,6 +47,7 @@ create table ACTION_EVENT
 create table BILL
 (
    BILL_ID              int not null,
+   USR_ID               int not null,
    BILL_DATE            datetime not null,
    BILL_ORTOTAL         decimal(10,2),
    BILL_DISCPERC        numeric(4,2) default 0,
@@ -188,6 +189,9 @@ create table USER
    key AK_USERNAME_UNIQUE (USR_USERNAME)
 );
 
+alter table BILL add constraint FK_BUYER foreign key (USR_ID)
+      references USER (USR_ID) on delete cascade on update cascade;
+
 alter table BILL_DISCOUNT add constraint FK_HAS_DISCOUNT foreign key (BILL_ID)
       references BILL (BILL_ID) on delete cascade on update cascade;
 
@@ -196,9 +200,6 @@ alter table BILL_ITEM add constraint FK_HAS_ITEMS foreign key (BILL_ID)
 
 alter table BILL_ITEM add constraint FK_IS_ON_BILL foreign key (IT_ID)
       references ITEM (IT_ID) on delete cascade on update cascade;
-
-alter table BILL_ITEM_DISCOUNT add constraint FK_BILL_DISCOUNTS foreign key (BILL_ID)
-      references BILL (BILL_ID) on delete cascade on update cascade;
 
 alter table BILL_ITEM_DISCOUNT add constraint FK_ITEM_HAS_DISCOUNTS foreign key (BILL_ID, BILLIT_NO)
       references BILL_ITEM (BILL_ID, BILLIT_NO) on delete cascade on update cascade;
