@@ -3,30 +3,30 @@
 /* Created on:     5/21/2016 5:31:48 PM                         */
 /*==============================================================*/
 
-
-drop table if exists ACTION_EVENT;
-
-drop table if exists BILL;
-
 drop table if exists BILL_DISCOUNT;
-
-drop table if exists BILL_ITEM;
 
 drop table if exists BILL_ITEM_DISCOUNT;
 
-drop table if exists CUSTOMER_CATEGORY;
-
 drop table if exists HAS_THRESHOLDS;
-
-drop table if exists ITEM;
-
-drop table if exists ITEM_CATEGORY;
 
 drop table if exists ON_DISCOUNT;
 
 drop table if exists THRESHOLD;
 
+drop table if exists BILL_ITEM;
+
+drop table if exists ITEM;
+
+drop table if exists ITEM_CATEGORY;
+
+drop table if exists ACTION_EVENT;
+
+drop table if exists BILL;
+
 drop table if exists USER;
+
+drop table if exists CUSTOMER_CATEGORY;
+
 
 /*==============================================================*/
 /* Table: ACTION_EVENT                                          */
@@ -224,4 +224,3 @@ alter table ON_DISCOUNT add constraint FK_ON_DISCOUNT2 foreign key (ITCAT_CODE)
 
 alter table USER add constraint FK_CATEGORY_OF_CUSTOMER foreign key (CAT_ID)
       references CUSTOMER_CATEGORY (CAT_ID) on delete cascade on update cascade;
-
