@@ -1,7 +1,8 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     5/21/2016 5:31:48 PM                         */
+/* Created on:     5/29/2016 9:53:48 PM                         */
 /*==============================================================*/
+
 
 drop table if exists BILL_DISCOUNT;
 
@@ -27,13 +28,12 @@ drop table if exists USER;
 
 drop table if exists CUSTOMER_CATEGORY;
 
-
 /*==============================================================*/
 /* Table: ACTION_EVENT                                          */
 /*==============================================================*/
 create table ACTION_EVENT
 (
-   AE_ID                smallint not null,
+   AE_ID                smallint not null auto_increment,
    AE_NAME              varchar(60) not null,
    AE_FROM              date not null,
    AE_UNTIL             date not null,
@@ -46,12 +46,12 @@ create table ACTION_EVENT
 /*==============================================================*/
 create table BILL
 (
-   BILL_ID              int not null,
+   BILL_ID              int not null auto_increment,
    USR_ID               int not null,
-   BILL_DATE            datetime not null,
-   BILL_ORTOTAL         decimal(10,2),
+   BILL_DATE            datetime not null default CURRENT_TIMESTAMP,
+   BILL_ORTOTAL         decimal(10,2) default 0,
    BILL_DISCPERC        numeric(4,2) default 0,
-   BILL_TOTAL           decimal(10,2),
+   BILL_TOTAL           decimal(10,2) default 0,
    BILL_SPOINTS         smallint default 0,
    BILL_APOINTS         smallint default 0,
    BILL_STATE           char(1) not null default 'O',
@@ -63,7 +63,7 @@ create table BILL
 /*==============================================================*/
 create table BILL_DISCOUNT
 (
-   BID_ID               int not null,
+   BID_ID               int not null auto_increment,
    BILL_ID              int not null,
    BID_DISCOUNT         numeric(4,2),
    BID_TYPE             char(1) not null default 'R',
@@ -76,14 +76,14 @@ create table BILL_DISCOUNT
 create table BILL_ITEM
 (
    BILL_ID              int not null,
-   BILLIT_NO            numeric(3,0) not null,
+   BILLIT_NO            smallint not null auto_increment,
    IT_ID                int not null,
-   BILLIT_PRICE         decimal(10,2),
-   BILLIT_QUANTITY      numeric(4,0),
-   BILLIT_ORTOTAL       decimal(10,2),
-   BILLIT_DISCPERC      numeric(4,2),
-   BILLIT_TOTAL         decimal(10,2),
-   primary key (BILL_ID, BILLIT_NO)
+   BILLIT_PRICE         decimal(10,2) default 0,
+   BILLIT_QUANTITY      numeric(4,0) default 0,
+   BILLIT_ORTOTAL       decimal(10,2) default 0,
+   BILLIT_DISCPERC      numeric(4,2) default 0,
+   BILLIT_TOTAL         decimal(10,2) default 0,
+   primary key (BILLIT_NO, BILL_ID)
 );
 
 /*==============================================================*/
@@ -91,10 +91,10 @@ create table BILL_ITEM
 /*==============================================================*/
 create table BILL_ITEM_DISCOUNT
 (
-   BITD_ID              int not null,
+   BITD_ID              int not null auto_increment,
    BILL_ID              int not null,
-   BILLIT_NO            numeric(3,0) not null,
-   BITD_DISCOUNT        numeric(4,2),
+   BILLIT_NO            smallint not null,
+   BITD_DISCOUNT        numeric(4,2) default 0,
    BITD_TYPE            char(1) not null default 'R',
    primary key (BITD_ID)
 );
@@ -114,7 +114,7 @@ create table CUSTOMER_CATEGORY
 /*==============================================================*/
 create table HAS_THRESHOLDS
 (
-   THRES_ID             numeric(3,0) not null,
+   THRES_ID             smallint not null,
    CAT_ID               char(1) not null,
    primary key (THRES_ID, CAT_ID)
 );
@@ -124,14 +124,14 @@ create table HAS_THRESHOLDS
 /*==============================================================*/
 create table ITEM
 (
-   IT_ID                int not null,
+   IT_ID                int not null auto_increment,
    ITCAT_CODE           char(3) not null,
    IT_NAME              varchar(60) not null,
-   IT_PRICE             decimal(8,2),
-   IT_INSTOCK           int,
-   IT_CREATEDON         datetime not null,
+   IT_PRICE             decimal(8,2) default 0,
+   IT_INSTOCK           int default 0,
+   IT_CREATEDON         datetime not null default CURRENT_TIMESTAMP,
    IT_ISLOW             bool default false,
-   IT_RECSTATE          bool,
+   IT_RECSTATE          bool default false,
    IT_MINQUANT          int not null default 0,
    primary key (IT_ID)
 );
@@ -163,10 +163,10 @@ create table ON_DISCOUNT
 /*==============================================================*/
 create table THRESHOLD
 (
-   THRES_ID             numeric(3,0) not null,
-   THRES_FROM           decimal(10,2) not null,
-   THRES_TO             decimal(10,2) not null,
-   THRES_PERCENT        numeric(4,2) not null,
+   THRES_ID             smallint not null auto_increment,
+   THRES_FROM           decimal(10,2) not null default 0,
+   THRES_TO             decimal(10,2) not null default 0,
+   THRES_PERCENT        numeric(4,2) not null default 0,
    primary key (THRES_ID)
 );
 
@@ -175,16 +175,16 @@ create table THRESHOLD
 /*==============================================================*/
 create table USER
 (
-   USR_ID               int not null,
+   USR_ID               int not null auto_increment,
    CAT_ID               char(1),
    USR_USERNAME         varchar(30) not null,
    USR_FNAME            varchar(35) not null,
    USR_LNAME            varchar(40) not null,
-   USR_REGDAT           datetime not null,
+   USR_REGDAT           datetime not null default CURRENT_TIMESTAMP,
    USR_ROLE             char(1) not null,
    USR_CUS_ADDRESS      varchar(128),
    USR_CUS_POINT        smallint default 0,
-   USR_CUS_RESERVED     smallint,
+   USR_CUS_RESERVED     smallint default 0,
    primary key (USR_ID),
    key AK_USERNAME_UNIQUE (USR_USERNAME)
 );
@@ -201,8 +201,8 @@ alter table BILL_ITEM add constraint FK_HAS_ITEMS foreign key (BILL_ID)
 alter table BILL_ITEM add constraint FK_IS_ON_BILL foreign key (IT_ID)
       references ITEM (IT_ID) on delete cascade on update cascade;
 
-alter table BILL_ITEM_DISCOUNT add constraint FK_ITEM_HAS_DISCOUNTS foreign key (BILL_ID, BILLIT_NO)
-      references BILL_ITEM (BILL_ID, BILLIT_NO) on delete cascade on update cascade;
+alter table BILL_ITEM_DISCOUNT add constraint FK_ITEM_HAS_DISCOUNTS foreign key (BILLIT_NO, BILL_ID)
+      references BILL_ITEM (BILLIT_NO, BILL_ID) on delete cascade on update cascade;
 
 alter table HAS_THRESHOLDS add constraint FK_HAS_THRESHOLDS foreign key (THRES_ID)
       references THRESHOLD (THRES_ID) on delete cascade on update cascade;
@@ -224,3 +224,4 @@ alter table ON_DISCOUNT add constraint FK_ON_DISCOUNT2 foreign key (ITCAT_CODE)
 
 alter table USER add constraint FK_CATEGORY_OF_CUSTOMER foreign key (CAT_ID)
       references CUSTOMER_CATEGORY (CAT_ID) on delete cascade on update cascade;
+
