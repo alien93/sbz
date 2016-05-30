@@ -8,4 +8,8 @@ public interface TestRest {
 	@Path("/ok")
 	@GET
 	public String ok();
+	
+	@Path("/init")
+	@GET
+	public void init();
 }

@@ -8,18 +8,36 @@ package projara.model.shop;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 
 
 /** @pdOid c05e91d1-9a51-46b5-9ffd-f9cf2aa5e690 */
+@Entity
+@Table(name = "BILL_DISCOUNT")
 public class BillDiscount implements Serializable{
    /** @pdOid ebebe7a4-3272-4d93-9d28-0959476fdf4e */
+	@Id
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@Column(name = "BID_ID",nullable = false, unique = true)
    private int id;
    /** @pdOid f173535d-effc-429f-9787-46929bf49bc5 */
+	@Column(name = "BID_DISCOUNT", nullable = true, unique = false, columnDefinition="numeric(4,2)")
    private double discount;
    /** @pdOid 33b78669-409e-48d7-9b56-a57e1cc68340 */
+	@Column(name = "BID_TYPE", nullable = false, unique = false, columnDefinition="char(1) default 'R'")
    private String type;
    
    /** @pdRoleInfo migr=no name=Bill assc=hasDiscount mult=1..1 side=A */
+	@ManyToOne
+	@JoinColumn(name="BILL_ID", referencedColumnName="BILL_ID", nullable = false)
    private Bill bill;
    
    
@@ -80,4 +98,5 @@ public class BillDiscount implements Serializable{
       type = newType;
    }
 
+   
 }

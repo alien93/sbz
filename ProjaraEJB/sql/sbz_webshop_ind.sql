@@ -185,6 +185,7 @@ create table USER
    USR_CUS_ADDRESS      varchar(128),
    USR_CUS_POINT        smallint default 0,
    USR_CUS_RESERVED     smallint default 0,
+   USR_PASSWORD         varchar(16) not null,
    primary key (USR_ID),
    key AK_USERNAME_UNIQUE (USR_USERNAME)
 );

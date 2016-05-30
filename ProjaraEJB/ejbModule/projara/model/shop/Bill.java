@@ -12,36 +12,68 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import projara.model.users.Customer;
+
 /** @pdOid 7a28ee07-5380-4cc5-a0b6-958385abdcac */
+@Entity
+@Table(name = "BILL")
 public class Bill implements Serializable{
 
 	/** @pdOid 83da2860-1180-4c41-8949-0f099fcc28a3 */
-	public int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "BILL_ID", nullable = false, unique = true)
+	private int id;
 	/** @pdOid b11df14e-536b-41d0-97ec-61ddcefe88ce */
+	@Column(name = "BILL_DATE", nullable = false, unique = false)
 	private Date date;
 	/** @pdOid 6dc57c81-21ba-42f2-be2d-cb21c7dba636 */
+	@Column(name = "BILL_ORTOTAL", nullable= true, unique = false, columnDefinition="decimal(10,2) default 0.0")
 	private double originalTotal;
 	/** @pdOid 886784e7-cb0d-4791-972e-b33c287f2ca2 */
+	@Column(name = "BILL_DISCPERC", nullable = true, unique = false, columnDefinition="numeric(4,2) default 0.0")
 	private double discountPercentage = 0;
 	/** @pdOid fe7f2e24-9b8a-4324-a7fe-cc82860a9de9 */
+	@Column(name = "BILL_TOTAL", nullable = true, unique = false, columnDefinition="decimal(10,2) default 0.0")
 	private double total;
 	/** @pdOid 70d53dbb-e893-4d5a-8865-6184553f15be */
+	@Column(name = "BILL_SPOINTS", nullable = true, unique = false, columnDefinition="smallint default 0")
 	private short spentPoints = 0;
 	/** @pdOid 5136f11f-e826-4363-87ef-241d421539f7 */
+	@Column(name = "BILL_APOINTS", nullable = true, unique = false, columnDefinition="smallint default 0")
 	private short awardPoints = 0;
 	/** @pdOid 97a889d6-f609-40d5-94f2-dac9769f1ce6 */
+	@Column(name = "BILL_STATE", nullable = false, unique = false, columnDefinition="char(1) default 'O'")
 	private String state;
+	
+	@ManyToOne
+	@JoinColumn(name="USR_ID",nullable=false)
+	private Customer customer;
 
 	/**
 	 * @pdRoleInfo migr=no name=BillItem assc=hasItems coll=Set impl=HashSet
 	 *             mult=0..* type=Composition
 	 */
-	private Set<BillItem> items;
+	@OneToMany(mappedBy="bill",cascade=CascadeType.ALL,fetch= FetchType.LAZY)
+	private Set<BillItem> items = new HashSet<>();
 	/**
 	 * @pdRoleInfo migr=no name=BillDiscount assc=hasDiscount coll=Set
 	 *             impl=HashSet mult=0..*
 	 */
-	private Set<BillDiscount> billDiscounts;
+	@OneToMany(mappedBy="bill", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private Set<BillDiscount> billDiscounts = new HashSet<>();
 
 	/** @pdGenerated default getter */
 	public Set<BillItem> getItems() {
@@ -277,5 +309,79 @@ public class Bill implements Serializable{
 	public void setState(String newState) {
 		state = newState;
 	}
+	
+	public void setCustomer(Customer newCustomer) {
+		if (this.customer == null || !this.customer.equals(newCustomer)) {
+			if (this.customer != null) {
+				Customer oldCustomer = this.customer;
+				this.customer = null;
+				oldCustomer.removeBills(this);
+			}
+			if (newCustomer != null) {
+				this.customer = newCustomer;
+				this.customer.addBills(this);
+			}
+		}
+	}
+	
+	public Set<BillItem> getBillItems() {
+		if (items == null)
+			items = new HashSet<BillItem>();
+		return items;
+	}
+
+
+	public Iterator getIteratorBillItems() {
+		if (items == null)
+			items = new HashSet<BillItem>();
+		return items.iterator();
+	}
+
+
+	public void setBillItems(Set<BillItem> newBillItems) {
+		removeAllBillItems();
+		for (Iterator iter = newBillItems.iterator(); iter.hasNext();)
+			addBillItems((BillItem) iter.next());
+	}
+
+
+	public void addBillItems(BillItem newBillItem) {
+		if (newBillItem == null)
+			return;
+		if (this.items == null)
+			this.items = new HashSet<BillItem>();
+		if (!this.items.contains(newBillItem)) {
+			this.items.add(newBillItem);
+			newBillItem.setBill(this);
+		}
+	}
+
+
+	public void removeBillItems(BillItem oldBillItem) {
+		if (oldBillItem == null)
+			return;
+		if (this.items != null)
+			if (this.items.contains(oldBillItem)) {
+				this.items.remove(oldBillItem);
+				oldBillItem.setBill((Bill) null);
+			}
+	}
+
+	public void removeAllBillItems() {
+		if (items != null) {
+			BillItem oldBilltem;
+			for (Iterator iter = getIteratorBillItems(); iter.hasNext();) {
+				oldBilltem = (BillItem) iter.next();
+				iter.remove();
+				oldBilltem.setBill((Bill) null);
+			}
+		}
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+	
+	
 
 }
