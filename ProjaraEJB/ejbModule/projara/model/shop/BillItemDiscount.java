@@ -102,6 +102,50 @@ public class BillItemDiscount implements Serializable {
 	public void setType(String newType) {
 		type = newType;
 	}
+
+	public BillItemDiscount() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public BillItemDiscount(double discount, String type) {
+		super();
+		this.discount = discount;
+		this.type = type;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof BillItemDiscount)) {
+			return false;
+		}
+		BillItemDiscount other = (BillItemDiscount) obj;
+		if (id != other.id) {
+			return false;
+		}
+		return true;
+	}
+
+	public BillItemDiscount(double discount, String type, BillItem billItem) {
+		super();
+		this.discount = discount;
+		this.type = type;
+		setBillItem(billItem);
+	}
 	
 	
 

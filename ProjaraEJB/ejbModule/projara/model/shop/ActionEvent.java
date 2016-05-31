@@ -187,4 +187,45 @@ public class ActionEvent implements Serializable {
 		discount = newDiscount;
 	}
 
+	public ActionEvent() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public ActionEvent(String name, Date from, Date until, double discount) {
+		super();
+		this.name = name;
+		this.from = from;
+		this.until = until;
+		this.discount = discount;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ActionEvent)) {
+			return false;
+		}
+		ActionEvent other = (ActionEvent) obj;
+		if (id != other.id) {
+			return false;
+		}
+		return true;
+	}
+	
+	
+
 }

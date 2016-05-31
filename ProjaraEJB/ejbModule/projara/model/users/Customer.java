@@ -139,4 +139,13 @@ public class Customer extends User implements Serializable {
 		this.address = address;
 	}
 
+	public Customer(String username, String firstName, String lastName,
+			String password, String address, CustomerCategory category) {
+		super(username, firstName, lastName, password);
+		this.address = address;
+		setCategory(category);
+	}
+	
+	
+
 }

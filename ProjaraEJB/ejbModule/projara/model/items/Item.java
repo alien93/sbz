@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import projara.model.shop.Bill;
@@ -41,7 +42,7 @@ public class Item implements Serializable {
 	private String name;
 	/** @pdOid 586e348c-6b8f-42a7-bb1b-d822ec5870ad */
 	@Column(name = "IT_PRICE",nullable = false, unique = false, columnDefinition="decimal(8,2) default 0.0")
-	private double price;
+	private double price = 0.0;
 	/** @pdOid fbf7c284-e217-4538-bdad-aeb919efdb9a */
 	@Column(name = "IT_INSTOCK", nullable=true, unique = false, columnDefinition="default 0")
 	private int inStock;
@@ -249,6 +250,60 @@ public class Item implements Serializable {
 			}
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Item)) {
+			return false;
+		}
+		Item other = (Item) obj;
+		if (id != other.id) {
+			return false;
+		}
+		return true;
+	}
+	
+	@PrePersist
+	public void setDateBeforePersist(){
+		if(createdOn == null)
+			createdOn = new Date();
+	}
+
+	public Item(String name, double price, int inStock) {
+		super();
+		this.name = name;
+		this.price = price;
+		this.inStock = inStock;
+	}
+
+	public Item() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Item(String name, double price, int inStock, ItemCategory category) {
+		super();
+		this.name = name;
+		this.price = price;
+		this.inStock = inStock;
+		setCategory(category);
+	}
+	
+	
 	
 
 }

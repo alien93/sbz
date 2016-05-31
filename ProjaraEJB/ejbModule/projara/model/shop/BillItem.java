@@ -36,19 +36,19 @@ public class BillItem implements Serializable {
 	
 	/** @pdOid 071bff18-0e35-47cb-9930-9ec017b1d89b */
 	@Column(name = "BILLIT_PRICE", nullable = false, unique = false, columnDefinition="decimal(10,2) default 0.0")
-	private double price;
+	private double price = 0.0;
 	/** @pdOid cc71a2ca-bc74-479c-8380-cebde16c943a */
 	@Column(name = "BILLIT_QUANTITY", nullable = false, unique = false, columnDefinition="numeric(4,0) default 0")
-	private double quantity;
+	private double quantity = 0;
 	/** @pdOid 95528321-63b3-449e-a520-f8382da72a7e */
 	@Column(name = "BILLIT_ORTOTAL", nullable = false, unique = false, columnDefinition="decimal(10,2) default 0")
-	private double originalTotal;
+	private double originalTotal = 0.0;
 	/** @pdOid 95bc9e4f-033e-436b-a7cd-01a64037b102 */
 	@Column(name = "BILLIT_DISCPERC", nullable = false, unique = false, columnDefinition="numeric(4,2) default 0")
-	private double discountPercentage;
+	private double discountPercentage = 0.0;
 	/** @pdOid 401fcef4-b8f6-432e-a5d0-01f6692fdad0 */
 	@Column(name = "BILLIT_TOTAL", nullable = false, unique = false, columnDefinition="decimal(10,2) default 0")
-	private double total;
+	private double total = 0.0;
 
 	/**
 	 * @pdRoleInfo migr=no name=BillItemDiscount assc=itemHasDiscounts coll=Set
@@ -255,6 +255,62 @@ public class BillItem implements Serializable {
 
 	public Item getItem() {
 		return item;
+	}
+
+	public BillItem() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof BillItem)) {
+			return false;
+		}
+		BillItem other = (BillItem) obj;
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		return true;
+	}
+
+	public BillItem(double price, double quantity, double originalTotal,
+			double total, Item item, Bill bill) {
+		super();
+		this.price = price;
+		this.quantity = quantity;
+		this.originalTotal = originalTotal;
+		this.total = total;
+		setItem(item);
+		setBill(bill);
+		this.id = new BillItemPK(bill.getId());
+	}
+
+	public BillItem(double price, double quantity, Item item, Bill bill) {
+		super();
+		this.price = price;
+		this.quantity = quantity;
+		setItem(item);
+		setBill(bill);
+		this.id = new BillItemPK(bill.getId());
 	}
 	
 	

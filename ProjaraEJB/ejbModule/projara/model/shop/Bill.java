@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import projara.model.users.Customer;
@@ -56,7 +57,7 @@ public class Bill implements Serializable{
 	private short awardPoints = 0;
 	/** @pdOid 97a889d6-f609-40d5-94f2-dac9769f1ce6 */
 	@Column(name = "BILL_STATE", nullable = false, unique = false, columnDefinition="char(1) default 'O'")
-	private String state;
+	private String state = "O";
 	
 	@ManyToOne
 	@JoinColumn(name="USR_ID",nullable=false)
@@ -381,6 +382,66 @@ public class Bill implements Serializable{
 	public Customer getCustomer() {
 		return customer;
 	}
+	
+	@PrePersist
+	public void setDateOfBill(){
+		if(date == null)
+			date = new Date();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Bill)) {
+			return false;
+		}
+		Bill other = (Bill) obj;
+		if (id != other.id) {
+			return false;
+		}
+		return true;
+	}
+
+	public Bill() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Bill(double originalTotal, double total, String state) {
+		super();
+		this.originalTotal = originalTotal;
+		this.total = total;
+		this.state = state;
+	}
+
+	public Bill(double originalTotal, double total, String state,
+			Customer customer) {
+		super();
+		this.originalTotal = originalTotal;
+		this.total = total;
+		this.state = state;
+		setCustomer(customer);
+	}
+
+	public Bill(String state, Customer customer) {
+		super();
+		this.state = state;
+		setCustomer(customer);
+	}
+	
 	
 	
 
