@@ -12,19 +12,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import projara.model.items.Item;
 import projara.model.items.ItemCategory;
 
 /** @pdOid 9416283d-47c2-4bb5-a1df-ab89e894afdd */
@@ -226,6 +224,15 @@ public class ActionEvent implements Serializable {
 		return true;
 	}
 	
-	
+	public boolean isOnAction(Item item){
+		
+		
+		for(ItemCategory cat:categories){
+			if(item.isCategoryOf(cat))
+				return true;
+		}
+		
+		return false;
+	}
 
 }

@@ -49,4 +49,29 @@
     (assert (used_regular_discount (ID (call ?billItem.OBJECT getItemNo))))
     )
 
+(defrule kupljen_do_15_dana
+    (declare (salience 7)(no-loop TRUE))
+    ?billItem <- (BillItem (item ?item)(customer ?customer &:(call ?customer categoryBoughtInLast 30 ?item)))
+    =>
+    (printout t "BILL: " ?billItem crlf)
+    (bind ?newOb (new BillItemDiscount 1.0 "A" ?billItem.OBJECT))
+    (definstance BillItemDiscount ?newOb)
+    )
 
+(defrule kupljena_kategorija_30_dana
+    (declare (salience 7)(no-loop TRUE))
+    ?billItem <- (BillItem (item ?item)(customer ?customer &:(call ?customer itemBoughtInLast 15 ?item)))
+    =>
+    (printout t "BILL: " ?billItem crlf)
+    (bind ?newOb (new BillItemDiscount 2.0 "A" ?billItem.OBJECT))
+    (definstance BillItemDiscount ?newOb)
+    )
+
+(defrule proizvod_na_akciji
+    (declare (salience 6)(no-loop TRUE))
+    ?action <- (ActionEvent (OBJECT ?actionObj))
+    ?billItem <- (BillItem (item ?item &:(call ?actionObj isOnAction ?item)))
+    =>
+    (bind ?newOb (new BillItemDiscount ?action.discount "A" ?billItem.OBJECT))
+    (definstance BillItemDiscount ?newOb)
+    )

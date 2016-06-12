@@ -322,5 +322,6 @@ public class BillItem implements Serializable {
 		return getBill().getCustomer();
 	}
 	
+	
 
 }
