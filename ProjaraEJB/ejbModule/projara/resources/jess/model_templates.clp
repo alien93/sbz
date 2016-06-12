@@ -66,3 +66,10 @@
 (deftemplate used_regular_discount
     (declare (slot-specific TRUE))
     (slot ID (type INTEGER)))
+
+(deftemplate Customer
+    extends User
+    (declare (slot-specific TRUE)
+        (from-class User)
+        (include-variables TRUE))
+ )

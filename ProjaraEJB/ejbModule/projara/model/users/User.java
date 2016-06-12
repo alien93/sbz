@@ -20,6 +20,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import projara.model.items.Item;
+import projara.model.items.ItemCategory;
+
 /** @pdOid 8329c82e-1993-49b7-8e06-5aba74b4499d */
 @Entity
 @Table(name = "USER")
@@ -193,7 +196,6 @@ public class User implements Serializable {
 	}
 	
 
-	
 	
 
 }

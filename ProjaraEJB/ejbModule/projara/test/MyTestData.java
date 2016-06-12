@@ -1,5 +1,6 @@
 package projara.test;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,21 +12,29 @@ import projara.model.items.ItemCategory;
 import projara.model.shop.Bill;
 import projara.model.shop.BillItem;
 import projara.model.shop.BillItemDiscount;
+import projara.model.users.Customer;
 
 public class MyTestData {
 	private HashMap<String, ItemCategory> categories;
 	private HashMap<Integer, Item> items;
 	private HashMap<Integer, Bill> bills;
+	private HashMap<Integer, Customer> customers;
 
 	public MyTestData() {
 		categories = new HashMap<>();
 		items = new HashMap<>();
 		bills = new HashMap<>();
+		customers = new HashMap<>();
 
 		populateData();
 	}
 
 	private void populateData() {
+		
+		Customer cust = new Customer("pera", "Pera", "Peric", "Adresa", "123456");
+		cust.setId(1);
+		
+		customers.put(cust.getId(), cust);
 
 		/* CATEGORIES */
 		ItemCategory ic1 = new ItemCategory();
@@ -50,22 +59,22 @@ public class MyTestData {
 		categories.put(ic3.getCode(), ic3);
 
 		/* ITEMS */
-		Item i1 = new Item("Proizvod siroke potrosnje", 100, 50, ic1);
+		Item i1 = new Item(" Item 1 - siroka potrosnja", 100, 50, ic1);
 		i1.setCreatedOn(new Date());
 		i1.setId(1);
 
-		Item i2 = new Item("Drugi proizvod siroke", 100, 50, ic2);
+		Item i2 = new Item(" Item 2 - siroka potrosnja", 100, 50, ic2);
 		i2.setCreatedOn(new Date());
 		i2.setId(2);
 
-		Item i3 = new Item("Neki drugi proizvod", 200, 19, ic3);
+		Item i3 = new Item(" Item 3 - televizori", 200, 19, ic3);
 		i3.setId(3);
 		i3.setCreatedOn(new Date());
 		
-		Item i4 = new Item("TRALALAL", 100, 20, ic3);
+		Item i4 = new Item("Item 4 - televizori", 100, 20, ic3);
 		i4.setId(4);
 		
-		Item i5 = new Item("222222", 200, 34, ic3);
+		Item i5 = new Item("Item 5 - televizori", 200, 34, ic3);
 		i5.setId(5);
 
 		items.put(i1.getId(), i1);
@@ -75,10 +84,28 @@ public class MyTestData {
 		items.put(i5.getId(), i5);
 		
 		/* BILLS */
-
+		
+		Bill bp = new Bill();
+		bp.setId(2);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -10);
+		bp.setDate(cal.getTime());
+		bp.setState("S");
+		
+		BillItem bitP1 = new BillItem(400, 2, i1, bp);
+		bitP1.getId().setItemNo(1);
+		
+		cust.addBills(bp);
+		bills.put(bp.getId(), bp);
+		
+		
 		Bill b = new Bill();
 		b.setId(1);
+		b.setDate(new Date());
+		b.setState("O");
 
+		cust.addBills(b);
+		
 		BillItem bi1 = new BillItem(10000, 30, i1, b);
 		bi1.getId().setItemNo(1);
 		BillItem bi2 = new BillItem(300, 34, i2, b);
@@ -114,6 +141,10 @@ public class MyTestData {
 			}
 		}
 		
+		for(Customer c:customers.values()){
+			engine.definstance(c.getClass().getSimpleName(), c, false);
+		}
+		
 		engine.batch("projara/resources/jess/bill_item_rules.clp");
 		engine.run();
 		
@@ -123,6 +154,7 @@ public class MyTestData {
 			System.out.println(bid.getDiscount()+" "+bid.getBillItem().getItem().getName());
 		}
 		
+		/*
 		for(Bill b:bills.values()){
 			for(BillItem bi:b.getBillItems()){
 				for(BillItemDiscount bid:bi.getDiscounts()){
@@ -130,6 +162,7 @@ public class MyTestData {
 				}
 			}
 		}
+		*/
 	}
 	
 	public static void main(String[] args){
@@ -140,5 +173,15 @@ public class MyTestData {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		System.out.println("VREME TEST");
+		Date d = new Date();
+		Calendar curr = Calendar.getInstance();
+		curr.setTime(d);
+		
+		Calendar before15 = Calendar.getInstance();
+		before15.add(Calendar.DATE, -15);
+		
+		System.out.println(before15.getTime().toString());
 	}
 }

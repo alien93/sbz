@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import projara.model.items.Item;
+import projara.model.users.Customer;
 
 /** @pdOid e60b0e1d-4b7c-4a41-a770-13911a160730 */
 
@@ -315,6 +316,10 @@ public class BillItem implements Serializable {
 	
 	public int getItemNo(){
 		return id.getItemNo();
+	}
+	
+	public Customer getCustomer(){
+		return getBill().getCustomer();
 	}
 	
 

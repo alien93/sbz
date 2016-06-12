@@ -1,8 +1,10 @@
 package projara.model.users;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale.Category;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -14,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import projara.model.items.Item;
+import projara.model.items.ItemCategory;
 import projara.model.shop.Bill;
 import projara.model.shop.BillItem;
 
@@ -144,6 +148,57 @@ public class Customer extends User implements Serializable {
 		super(username, firstName, lastName, password);
 		this.address = address;
 		setCategory(category);
+	}
+
+	public boolean itemBoughtInLast(int days, Item item) {
+		
+		Calendar before = Calendar.getInstance();
+		before.add(Calendar.DATE, -days);
+		
+		for(Bill b:bills){
+			if(!b.getState().equals("S"))
+				continue;
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(b.getDate());
+			
+			if(calendar.before(before))
+				continue;
+			
+			for(BillItem bit:b.getBillItems()){
+				if(bit.getItem().equals(item))
+					return true;
+			}
+			
+		}
+		
+		return false;
+	}
+
+	public boolean categoryBoughtInLast(int days, Item item) {
+		Calendar before = Calendar.getInstance();
+		before.add(Calendar.DATE, -days);
+		
+		ItemCategory cat = item.getCategory();
+		
+		for(Bill b:bills){
+			if(!b.getState().equals("S"))
+				continue;
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(b.getDate());
+			
+			if(calendar.before(before))
+				continue;
+			
+			for(BillItem bit:b.getBillItems()){
+				if(bit.getItem().isCategoryOf(cat))
+					return true;
+			}
+			
+		}
+		
+		return false;
 	}
 	
 	
