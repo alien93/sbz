@@ -304,6 +304,22 @@ public class Item implements Serializable {
 	}
 	
 	
+	public boolean isCategoryOf(ItemCategory oneCategory){
+		if(oneCategory == null)
+			return false;
+		
+		ItemCategory current = category;
+		while(current!=null){
+			if(current.equals(oneCategory))
+				return true;
+			current = current.getParentCategory();
+		}
+		
+		return false;
+		
+	}
+	
+	
 	
 
 }

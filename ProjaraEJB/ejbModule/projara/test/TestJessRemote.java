@@ -2,5 +2,5 @@ package projara.test;
 
 public interface TestJessRemote {
 	
-	public void testJess();
+	public void testJess() throws Exception;
 }

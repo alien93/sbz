@@ -313,7 +313,9 @@ public class BillItem implements Serializable {
 		this.id = new BillItemPK(bill.getId());
 	}
 	
-	
+	public int getItemNo(){
+		return id.getItemNo();
+	}
 	
 
 }

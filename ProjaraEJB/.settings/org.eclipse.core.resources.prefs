@@ -1,2 +1,5 @@
 eclipse.preferences.version=1
+encoding//ejbModule/projara/resources/jess/bill_item_rules.clp=UTF-8
+encoding//ejbModule/projara/test/MyTestData.java=UTF-8
 encoding//ejbModule/projara/test/rest/TestRestBean.java=UTF-8
+encoding/<project>=UTF-8
