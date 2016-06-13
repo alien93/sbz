@@ -14,6 +14,7 @@ import projara.model.shop.Bill;
 import projara.model.shop.BillItem;
 import projara.model.shop.BillItemDiscount;
 import projara.model.users.Customer;
+import projara.model.users.CustomerCategory;
 
 public class MyTestData {
 	private HashMap<String, ItemCategory> categories;
@@ -33,10 +34,16 @@ public class MyTestData {
 	}
 
 	private void populateData() {
+		
+		CustomerCategory cc = new CustomerCategory("A", "Zlatni");
 
 		Customer cust = new Customer("pera", "Pera", "Peric", "Adresa",
 				"123456");
 		cust.setId(1);
+		cust.setCategory(cc);
+		Calendar calen = Calendar.getInstance();
+		calen.set(2011, 4, 20);
+		cust.setRegisteredOn(calen.getTime());
 
 		customers.put(cust.getId(), cust);
 
@@ -179,21 +186,55 @@ public class MyTestData {
 		
 		
 		for (Bill b : bills.values()) {
+			double billTotal = 0;
 			for (BillItem bi : b.getBillItems()) {
 				System.out.println(bi.getDiscountPercentage()+" "+bi.getOriginalTotal()+" "+bi.getTotal());
 				for (BillItemDiscount bid : bi.getDiscounts()) {
 					System.out.println(bi.getItem().getName() + " "
 							+ bid.getDiscount());
+					
 				}
+				billTotal+=bi.getTotal();
 			}
+			b.setOriginalTotal(billTotal);
 		}
+		
+		
 
+	}
+	
+	public void testBillDiscount() throws Exception{
+		Rete engine = new Rete();
+		engine.reset();
+		engine.eval("(watch all)");
+		engine.batch("projara/resources/jess/model_templates.clp");
+		
+		int billId = 1;
+		
+		Bill bill = bills.get(billId);
+		Customer c = bill.getCustomer();
+		CustomerCategory cc = c.getCategory();
+		
+		engine.definstance(bill.getClass().getSimpleName(), bill, false);
+		engine.definstance(c.getClass().getSimpleName(), c, false);
+		engine.definstance(cc.getClass().getSimpleName(), cc, false);
+		for(BillItem bi:bill.getItems()){
+			engine.definstance(bi.getClass().getSimpleName(), bi, false);
+		}
+		
+		engine.batch("projara/resources/jess/bill_rules.clp");
+		engine.run();
+		
+		System.out.println(bill.getDiscountPercentage()+" "+bill.getTotal()+" "+bill.getOriginalTotal());
+		
+		System.out.println("ZAVRSENO");
 	}
 
 	public static void main(String[] args) {
 		MyTestData mtd = new MyTestData();
 		try {
 			mtd.testBillItemDiscount();
+			mtd.testBillDiscount();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

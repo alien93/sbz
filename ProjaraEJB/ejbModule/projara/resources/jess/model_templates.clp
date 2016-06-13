@@ -70,6 +70,6 @@
 (deftemplate Customer
     extends User
     (declare (slot-specific TRUE)
-        (from-class User)
+        (from-class Customer)
         (include-variables TRUE))
  )

@@ -2,9 +2,9 @@ package projara.model.users;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Locale.Category;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -151,56 +151,70 @@ public class Customer extends User implements Serializable {
 	}
 
 	public boolean itemBoughtInLast(int days, Item item) {
-		
+
 		Calendar before = Calendar.getInstance();
 		before.add(Calendar.DATE, -days);
-		
-		for(Bill b:bills){
-			if(!b.getState().equals("S"))
+
+		for (Bill b : bills) {
+			if (!b.getState().equals("S"))
 				continue;
-			
+
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(b.getDate());
-			
-			if(calendar.before(before))
+
+			if (calendar.before(before))
 				continue;
-			
-			for(BillItem bit:b.getBillItems()){
-				if(bit.getItem().equals(item))
+
+			for (BillItem bit : b.getBillItems()) {
+				if (bit.getItem().equals(item))
 					return true;
 			}
-			
+
 		}
-		
+
 		return false;
 	}
 
 	public boolean categoryBoughtInLast(int days, Item item) {
 		Calendar before = Calendar.getInstance();
 		before.add(Calendar.DATE, -days);
-		
+
 		ItemCategory cat = item.getCategory();
-		
-		for(Bill b:bills){
-			if(!b.getState().equals("S"))
+
+		for (Bill b : bills) {
+			if (!b.getState().equals("S"))
 				continue;
-			
+
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(b.getDate());
-			
-			if(calendar.before(before))
+
+			if (calendar.before(before))
 				continue;
-			
-			for(BillItem bit:b.getBillItems()){
-				if(bit.getItem().isCategoryOf(cat))
+
+			for (BillItem bit : b.getBillItems()) {
+				if (bit.getItem().isCategoryOf(cat))
 					return true;
 			}
-			
+
 		}
-		
+
 		return false;
 	}
-	
-	
+
+	public int getYears() {
+
+		Calendar a = Calendar.getInstance();
+		Calendar b = Calendar.getInstance();
+		a.setTime(registeredOn);
+		b.setTime(new Date());
+		int diff = b.get(Calendar.YEAR) - a.get(Calendar.YEAR);
+		if (a.get(Calendar.MONTH) > b.get(Calendar.MONTH)
+				|| (a.get(Calendar.MONTH) == b.get(Calendar.MONTH) && a
+						.get(Calendar.DATE) > b.get(Calendar.DATE))) {
+			diff--;
+		}
+		return diff;
+
+	}
 
 }
