@@ -37,7 +37,7 @@ create table ACTION_EVENT
    AE_NAME              varchar(60) not null,
    AE_FROM              date not null,
    AE_UNTIL             date not null,
-   AE_DISCOUNT          numeric(4,2) not null,
+   AE_DISCOUNT          numeric(5,2) not null,
    primary key (AE_ID)
 );
 
@@ -50,7 +50,7 @@ create table BILL
    USR_ID               int not null,
    BILL_DATE            datetime not null default CURRENT_TIMESTAMP,
    BILL_ORTOTAL         decimal(10,2) default 0,
-   BILL_DISCPERC        numeric(4,2) default 0,
+   BILL_DISCPERC        numeric(5,2) default 0,
    BILL_TOTAL           decimal(10,2) default 0,
    BILL_SPOINTS         smallint default 0,
    BILL_APOINTS         smallint default 0,
@@ -65,7 +65,7 @@ create table BILL_DISCOUNT
 (
    BID_ID               int not null auto_increment,
    BILL_ID              int not null,
-   BID_DISCOUNT         numeric(4,2),
+   BID_DISCOUNT         numeric(5,2),
    BID_TYPE             char(1) not null default 'R',
    primary key (BID_ID)
 );
@@ -81,7 +81,7 @@ create table BILL_ITEM
    BILLIT_PRICE         decimal(10,2) default 0,
    BILLIT_QUANTITY      numeric(4,0) default 0,
    BILLIT_ORTOTAL       decimal(10,2) default 0,
-   BILLIT_DISCPERC      numeric(4,2) default 0,
+   BILLIT_DISCPERC      numeric(5,2) default 0,
    BILLIT_TOTAL         decimal(10,2) default 0,
    primary key (BILLIT_NO, BILL_ID)
 );
@@ -94,7 +94,7 @@ create table BILL_ITEM_DISCOUNT
    BITD_ID              int not null auto_increment,
    BILL_ID              int not null,
    BILLIT_NO            smallint not null,
-   BITD_DISCOUNT        numeric(4,2) default 0,
+   BITD_DISCOUNT        numeric(5,2) default 0,
    BITD_TYPE            char(1) not null default 'R',
    primary key (BITD_ID)
 );
@@ -144,7 +144,7 @@ create table ITEM_CATEGORY
    ITCAT_CODE           char(3) not null,
    ITE_ITCAT_CODE       char(3),
    ITCAT_NAME           varchar(60) not null,
-   ITCAT_MDISCOUNT      numeric(4,2) not null,
+   ITCAT_MDISCOUNT      numeric(5,2) not null,
    primary key (ITCAT_CODE)
 );
 
@@ -166,7 +166,7 @@ create table THRESHOLD
    THRES_ID             smallint not null auto_increment,
    THRES_FROM           decimal(10,2) not null default 0,
    THRES_TO             decimal(10,2) not null default 0,
-   THRES_PERCENT        numeric(4,2) not null default 0,
+   THRES_PERCENT        numeric(5,2) not null default 0,
    primary key (THRES_ID)
 );
 
