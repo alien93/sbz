@@ -38,7 +38,7 @@ public class Threshold implements Serializable {
 	@Column(name = "THRES_TO", nullable = false, unique = false, columnDefinition = "decimal(10,2) default 0.0")
 	private double to;
 	/** @pdOid 1c7e3372-310f-410f-83bb-3686d757bd8a */
-	@Column(name = "THRES_PERCENT", nullable = false, unique = false, columnDefinition = "numeric(4,2) default 0.0")
+	@Column(name = "THRES_PERCENT", nullable = false, unique = false, columnDefinition = "numeric(5,2) default 0.0")
 	private double percentage;
 
 	/**

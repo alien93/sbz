@@ -44,7 +44,7 @@ public class Bill implements Serializable{
 	@Column(name = "BILL_ORTOTAL", nullable= true, unique = false, columnDefinition="decimal(10,2) default 0.0")
 	private double originalTotal;
 	/** @pdOid 886784e7-cb0d-4791-972e-b33c287f2ca2 */
-	@Column(name = "BILL_DISCPERC", nullable = true, unique = false, columnDefinition="numeric(4,2) default 0.0")
+	@Column(name = "BILL_DISCPERC", nullable = true, unique = false, columnDefinition="numeric(5,2) default 0.0")
 	private double discountPercentage = 0;
 	/** @pdOid fe7f2e24-9b8a-4324-a7fe-cc82860a9de9 */
 	@Column(name = "BILL_TOTAL", nullable = true, unique = false, columnDefinition="decimal(10,2) default 0.0")

@@ -30,7 +30,7 @@ public class BillItemDiscount implements Serializable {
 	@Column(name = "BITD_ID", nullable = false, unique = true)
 	private int id;
 	/** @pdOid 51f7ab44-fa01-48d6-9751-bd1a354a77ec */
-	@Column(name = "BITD_DISCOUNT", nullable = false, unique = false, columnDefinition = "numeric(4,2) default 0")
+	@Column(name = "BITD_DISCOUNT", nullable = false, unique = false, columnDefinition = "numeric(5,2) default 0")
 	private double discount;
 	/** @pdOid 1613481f-9e5e-4931-b2cd-eb1fbf07c2ea */
 	@Column(name = "BITD_TYPE", nullable = false, unique = false, columnDefinition = "char(1) default 'R'")

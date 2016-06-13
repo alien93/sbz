@@ -36,7 +36,7 @@ public class ItemCategory implements Serializable {
 	@Column(name = "ITCAT_NAME", nullable = false, columnDefinition = "varchar(60)")
 	private String name;
 	/** @pdOid b3304d40-018e-4409-8f81-09346733640b */
-	@Column(name = "ITCAT_MDISCOUNT", nullable = false, columnDefinition = "numeric(4,2)")
+	@Column(name = "ITCAT_MDISCOUNT", nullable = false, columnDefinition = "numeric(5,2)")
 	private double maxDiscount;
 
 	/**

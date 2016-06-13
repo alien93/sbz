@@ -45,7 +45,7 @@ public class BillItem implements Serializable {
 	@Column(name = "BILLIT_ORTOTAL", nullable = false, unique = false, columnDefinition="decimal(10,2) default 0")
 	private double originalTotal = 0.0;
 	/** @pdOid 95bc9e4f-033e-436b-a7cd-01a64037b102 */
-	@Column(name = "BILLIT_DISCPERC", nullable = false, unique = false, columnDefinition="numeric(4,2) default 0")
+	@Column(name = "BILLIT_DISCPERC", nullable = false, unique = false, columnDefinition="numeric(5,2) default 0")
 	private double discountPercentage = 0.0;
 	/** @pdOid 401fcef4-b8f6-432e-a5d0-01f6692fdad0 */
 	@Column(name = "BILLIT_TOTAL", nullable = false, unique = false, columnDefinition="decimal(10,2) default 0")

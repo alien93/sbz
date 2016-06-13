@@ -27,7 +27,7 @@ public class BillDiscount implements Serializable {
 	@Column(name = "BID_ID", nullable = false, unique = true)
 	private int id;
 	/** @pdOid f173535d-effc-429f-9787-46929bf49bc5 */
-	@Column(name = "BID_DISCOUNT", nullable = true, unique = false, columnDefinition = "numeric(4,2)")
+	@Column(name = "BID_DISCOUNT", nullable = true, unique = false, columnDefinition = "numeric(5,2)")
 	private double discount;
 	/** @pdOid 33b78669-409e-48d7-9b56-a57e1cc68340 */
 	@Column(name = "BID_TYPE", nullable = false, unique = false, columnDefinition = "char(1) default 'R'")

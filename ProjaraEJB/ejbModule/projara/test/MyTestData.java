@@ -20,7 +20,7 @@ public class MyTestData {
 	private HashMap<Integer, Item> items;
 	private HashMap<Integer, Bill> bills;
 	private HashMap<Integer, Customer> customers;
-	private HashMap<Short,ActionEvent> actions;
+	private HashMap<Short, ActionEvent> actions;
 
 	public MyTestData() {
 		categories = new HashMap<>();
@@ -49,26 +49,26 @@ public class MyTestData {
 		ItemCategory ic2 = new ItemCategory();
 		ic2.setCode("SPA");
 		ic2.setName("Child siroke");
-		ic2.setMaxDiscount(5);
+		ic2.setMaxDiscount(7);
 
 		ic1.addSubCategories(ic2);
 
 		ItemCategory ic3 = new ItemCategory();
 		ic3.setCode("AAA");
 		ic3.setName("Televizori, računari, laptopovi");
-		ic3.setMaxDiscount(20);
+		ic3.setMaxDiscount(2);
 
 		categories.put(ic1.getCode(), ic1);
 		categories.put(ic2.getCode(), ic2);
 		categories.put(ic3.getCode(), ic3);
-		
-		/*ACTIONS*/
-		
+
+		/* ACTIONS */
+
 		ActionEvent ev = new ActionEvent();
 		ev.addCategories(ic1);
 		ev.setDiscount(3);
-		ev.setId((short)1);
-		
+		ev.setId((short) 1);
+
 		actions.put(ev.getId(), ev);
 
 		/* ITEMS */
@@ -120,14 +120,19 @@ public class MyTestData {
 
 		BillItem bi1 = new BillItem(10000, 30, i1, b);
 		bi1.getId().setItemNo(1);
-		BillItem bi2 = new BillItem(300, 34, i2, b);
+		bi1.setOriginalTotal(30*10000);
+		BillItem bi2 = new BillItem(3, 34, i2, b);
 		bi2.getId().setItemNo(2);
-		BillItem bi3 = new BillItem(400, 23, i3, b);
+		bi2.setOriginalTotal(3*34);
+		BillItem bi3 = new BillItem(4, 23, i3, b);
 		bi3.getId().setItemNo(3);
+		bi3.setOriginalTotal(4*23);
 		BillItem bi4 = new BillItem(500, 18, i4, b);
 		bi4.getId().setItemNo(4);
-		BillItem bi5 = new BillItem(6500, 6, i5, b);
+		bi4.setOriginalTotal(500*18);
+		BillItem bi5 = new BillItem(650, 6, i5, b);
 		bi5.getId().setItemNo(5);
+		bi5.setOriginalTotal(650*6);
 
 		bills.put(b.getId(), b);
 
@@ -156,8 +161,8 @@ public class MyTestData {
 		for (Customer c : customers.values()) {
 			engine.definstance(c.getClass().getSimpleName(), c, false);
 		}
-		
-		for(ActionEvent ae:actions.values()){
+
+		for (ActionEvent ae : actions.values()) {
 			engine.definstance(ae.getClass().getSimpleName(), ae, false);
 		}
 
@@ -171,13 +176,18 @@ public class MyTestData {
 			System.out.println(bid.getDiscount() + " "
 					+ bid.getBillItem().getItem().getName());
 		}
+		
+		
+		for (Bill b : bills.values()) {
+			for (BillItem bi : b.getBillItems()) {
+				System.out.println(bi.getDiscountPercentage()+" "+bi.getOriginalTotal()+" "+bi.getTotal());
+				for (BillItemDiscount bid : bi.getDiscounts()) {
+					System.out.println(bi.getItem().getName() + " "
+							+ bid.getDiscount());
+				}
+			}
+		}
 
-		/*
-		 * for(Bill b:bills.values()){ for(BillItem bi:b.getBillItems()){
-		 * for(BillItemDiscount bid:bi.getDiscounts()){
-		 * System.out.println(bi.getItem().getName()+" "+bid.getDiscount()); } }
-		 * }
-		 */
 	}
 
 	public static void main(String[] args) {
