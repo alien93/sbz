@@ -1,5 +1,6 @@
 package projara.test;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -248,6 +249,9 @@ public class MyTestData {
 		Calendar before15 = Calendar.getInstance();
 		before15.add(Calendar.DATE, -15);
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String currDate = sdf.format(new Date());
+		System.out.println("CURR DATE: "+currDate);
 		System.out.println(before15.getTime().toString());
 	}
 }

@@ -20,6 +20,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import projara.model.items.Item;
@@ -28,6 +30,10 @@ import projara.model.items.ItemCategory;
 /** @pdOid 9416283d-47c2-4bb5-a1df-ab89e894afdd */
 @Entity
 @Table(name = "ACTION_EVENT")
+@NamedQueries({
+	@NamedQuery(name = "findActiveEvents", query="SELECT ae FROM ActionEvent ae WHERE "
+			+ "ae.from <= :currentDate AND ae.until >= :currentDate")
+})
 public class ActionEvent implements Serializable {
 	/** @pdOid d845848f-251a-41ce-b5da-c4115e751212 */
 	@Id

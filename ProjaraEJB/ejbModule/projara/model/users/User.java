@@ -17,6 +17,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -28,6 +30,12 @@ import projara.model.items.ItemCategory;
 @Table(name = "USER")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "USR_ROLE")
+@NamedQueries({
+		@NamedQuery(name = "findByUsername", query = "SELECT u FROM User u WHERE"
+				+ " u.username LIKE :username"),
+		@NamedQuery(name = "findByUsernameAndPassword", query = "SELECT u FROM User u WHERE"
+				+ " u.username LIKE :username AND u.password LIKE :password")
+})
 public class User implements Serializable {
 	/** @pdOid b832cb24-04de-4ac9-851f-0a219d727bcd */
 	@Id
@@ -44,12 +52,12 @@ public class User implements Serializable {
 	@Column(name = "USR_LNAME", nullable = false, unique = false, columnDefinition = "varchar(45)")
 	protected String lastName;
 	/** @pdOid 5a98c718-4012-4ccb-956a-29a2ef2cd030 */
-	@Column(name = "USR_REGDAT", nullable = false, unique = false, columnDefinition="datetime default CURRENT_TIMESTAMP")
+	@Column(name = "USR_REGDAT", nullable = false, unique = false, columnDefinition = "datetime default CURRENT_TIMESTAMP")
 	protected Date registeredOn;
 	/** @pdOid cc04357d-6232-46ac-bddc-0f7180a73a97 */
 	@Column(name = "USR_ROLE", nullable = false, unique = false, columnDefinition = "char(1)", updatable = false, insertable = false)
 	protected String role;
-	@Column(name = "USR_PASSWORD", nullable= false, unique = false, columnDefinition ="varchar(16)")
+	@Column(name = "USR_PASSWORD", nullable = false, unique = false, columnDefinition = "varchar(16)")
 	protected String password;
 
 	/** @pdOid 37fc1502-b114-4341-b0b9-13a6fc0a5362 */
@@ -140,7 +148,8 @@ public class User implements Serializable {
 		// TODO: implement
 	}
 
-	public User(String username, String firstName, String lastName,String password) {
+	public User(String username, String firstName, String lastName,
+			String password) {
 		super();
 		this.username = username;
 		this.firstName = firstName;
@@ -155,10 +164,10 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	@PrePersist
-	public void onCreate(){
-		if(this.registeredOn == null)
+	public void onCreate() {
+		if (this.registeredOn == null)
 			this.registeredOn = new Date();
 	}
 
@@ -194,8 +203,5 @@ public class User implements Serializable {
 		}
 		return true;
 	}
-	
-
-	
 
 }

@@ -1,11 +1,16 @@
 package projara.test.rest;
 
-import java.util.Locale.Category;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import projara.model.dao.interfaces.ActionEventDaoLocal;
 import projara.model.dao.interfaces.BillDaoLocal;
@@ -19,6 +24,7 @@ import projara.model.dao.interfaces.ThresholdDaoLocal;
 import projara.model.dao.interfaces.UserDaoLocal;
 import projara.model.items.Item;
 import projara.model.items.ItemCategory;
+import projara.model.shop.ActionEvent;
 import projara.model.shop.Bill;
 import projara.model.shop.BillItem;
 import projara.model.users.Customer;
@@ -27,6 +33,9 @@ import projara.model.users.Manager;
 import projara.model.users.Threshold;
 import projara.model.users.User;
 import projara.model.users.Vendor;
+import projara.session.interfaces.UserManagerLocal;
+import projara.util.exception.BadArgumentsException;
+import projara.util.exception.UserException;
 
 @Stateless
 @Path("/test")
@@ -52,6 +61,9 @@ public class TestRestBean implements TestRest {
 	private ThresholdDaoLocal threshold;
 	@EJB
 	private UserDaoLocal user;
+	
+	@EJB
+	private UserManagerLocal userManager;
 
 	@Override
 	@GET
@@ -142,6 +154,50 @@ public class TestRestBean implements TestRest {
 		bill1.setTotal(2500.00);
 		
 		bill1 = bill.merge(bill1);
+	}
+	
+	@Path("/test/register")
+	@POST
+	public Response testRegisterCustomer(@FormParam("username") String username,
+			@FormParam("password") String password,
+			@FormParam("firstName") String firstName,
+			@FormParam("lastName") String lastName){
+		
+		try {
+			Customer cust = (Customer) userManager.registerUser(username, password, "C", firstName, lastName);
+		} catch (UserException e) {
+			 return Response.status(400).entity(e.getMessage()).build();
+		} catch (BadArgumentsException e) {
+			return Response.status(400).entity(e.getMessage()).build();
+		}
+		
+		return Response.ok().build();
+	}
+	
+	@Path("/test/login")
+	@POST
+	public Response testLogin(@FormParam("username") String username,@FormParam("password")String password){
+		System.out.println("Username :"+username+" Password :"+password);
+		User u = null;
+		try {
+			u = userManager.login(username, password);
+		} catch (Exception e){
+			return Response.status(400).entity(e.getMessage()).build();
+		}
+		
+		if(u == null)
+			return Response.status(400).entity("Not successful").build();
+		
+		return Response.ok().build();
+	}
+	
+	@Path("/test/events")
+	@GET
+	public void getEvents(){
+		List<ActionEvent> events = actionEvent.findActiveEvents();
+		for(ActionEvent e:events){
+			System.out.println(e.getName());
+		}
 	}
 
 }
