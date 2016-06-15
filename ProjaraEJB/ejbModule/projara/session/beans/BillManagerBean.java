@@ -5,6 +5,8 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
+import jess.JessException;
+import jess.Rete;
 import projara.model.dao.interfaces.ActionEventDaoLocal;
 import projara.model.dao.interfaces.BillDaoLocal;
 import projara.model.dao.interfaces.BillDiscountDaoLocal;
@@ -65,8 +67,27 @@ public class BillManagerBean implements BillManagerLocal {
 	}
 
 	@Override
-	public Bill calculateCost(Bill bill) throws BillException {
-		// TODO Auto-generated method stub
+	@Interceptors({CheckParametersInterceptor.class})
+	public Bill calculateCost(Bill bill) throws BillException, JessException {
+		
+		try{
+			bill = billDao.merge(bill);
+		}catch(Exception e){
+			throw new BillException("Bill not exists");
+		}
+		
+		/////////////////////////////////////
+		// POZOVI JESS /////////////////////
+		///////////////////////////////////
+		Rete engine = new Rete();
+		engine.reset();
+		engine.eval("(watch all)");
+		engine.batch("projara/resources/jess/model_templates.clp");
+		//////////////////////////////////
+		///// NAPRAVI FAKTE///////////////
+		//////////////////////////////////
+		
+		
 		return null;
 	}
 

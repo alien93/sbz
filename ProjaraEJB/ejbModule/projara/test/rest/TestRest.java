@@ -11,6 +11,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import projara.model.shop.ActionEvent;
+import projara.util.exception.BadArgumentsException;
+import projara.util.exception.CustomerCategoryException;
+import projara.util.exception.ItemCategoryException;
+import projara.util.exception.ItemException;
+import projara.util.exception.UserException;
 
 public interface TestRest {
 
@@ -38,4 +43,8 @@ public interface TestRest {
 	@Path("/test/events")
 	@GET
 	public void getEvents();
+	
+	@Path("/test/dummyBill")
+	@GET
+	public void makeDummyBill() throws CustomerCategoryException, BadArgumentsException, UserException, ItemCategoryException, ItemException;
 }

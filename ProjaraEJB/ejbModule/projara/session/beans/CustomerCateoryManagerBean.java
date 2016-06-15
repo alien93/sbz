@@ -59,6 +59,9 @@ public class CustomerCateoryManagerBean implements CustomerCategoryManagerLocal 
 			throw new CustomerCategoryException(
 					"Check if category or threshold exist");
 		}
+		if(customerCategory ==null || threshold == null)
+			throw new CustomerCategoryException(
+					"Check if category or threshold exist");
 
 		if (customerCategory.getThresholds().contains(threshold)) {
 			throw new CustomerCategoryException("Customer category: "

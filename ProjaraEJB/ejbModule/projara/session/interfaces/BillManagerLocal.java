@@ -1,5 +1,6 @@
 package projara.session.interfaces;
 
+import jess.JessException;
 import projara.model.items.Item;
 import projara.model.shop.Bill;
 import projara.model.users.Customer;
@@ -12,7 +13,7 @@ public interface BillManagerLocal {
 	
 	public Bill createBill(Customer customer) throws UserNotExistsException,BadArgumentsException;
 	public Bill createBill(int customerId) throws UserNotExistsException, BadArgumentsException;
-	public Bill calculateCost(Bill bill) throws BillException;
+	public Bill calculateCost(Bill bill) throws BillException, JessException;
 	public Bill calculateCost(int billid) throws BillException;
 	public Bill finishOrder(Bill bill) throws BillException;
 	public Bill finishOrder(int billId) throws BillException;

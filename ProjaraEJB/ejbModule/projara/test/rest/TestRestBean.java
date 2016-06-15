@@ -33,8 +33,14 @@ import projara.model.users.Manager;
 import projara.model.users.Threshold;
 import projara.model.users.User;
 import projara.model.users.Vendor;
+import projara.session.interfaces.BillManagerLocal;
+import projara.session.interfaces.CustomerCategoryManagerLocal;
+import projara.session.interfaces.ItemManagerLocal;
 import projara.session.interfaces.UserManagerLocal;
 import projara.util.exception.BadArgumentsException;
+import projara.util.exception.CustomerCategoryException;
+import projara.util.exception.ItemCategoryException;
+import projara.util.exception.ItemException;
 import projara.util.exception.UserException;
 
 @Stateless
@@ -63,7 +69,16 @@ public class TestRestBean implements TestRest {
 	private UserDaoLocal user;
 	
 	@EJB
+	private BillManagerLocal billManager;
+	
+	@EJB
 	private UserManagerLocal userManager;
+	
+	@EJB
+	private CustomerCategoryManagerLocal custCatManager;
+	
+	@EJB
+	private ItemManagerLocal itemManager;
 
 	@Override
 	@GET
@@ -198,6 +213,30 @@ public class TestRestBean implements TestRest {
 		for(ActionEvent e:events){
 			System.out.println(e.getName());
 		}
+	}
+	
+	@Path("/test/dummyBill")
+	@GET
+	public void makeDummyBill() throws CustomerCategoryException, BadArgumentsException, UserException, ItemCategoryException, ItemException{
+		CustomerCategory cZlatni = custCatManager.makeCustomerCategory("A", "Zlatni");
+		
+		Customer cust1 = (Customer) userManager.registerUser("pera", "123", "C", "Pera", "Peric");
+		
+		Threshold t = custCatManager.makeThreshold(2000, 4000, 10.0);
+		cZlatni = custCatManager.addThreshold(cZlatni, t);
+		cust1 = userManager.setCustomerCategory(cust1, cZlatni);
+		
+		ItemCategory ic = itemManager.makeItemCategory((ItemCategory)null, "A", "Široka potrošnja", 10.0);
+		ItemCategory ic2 = itemManager.makeItemCategory(ic, "B", "Podkategorija široke", 5.0);
+		ItemCategory ic3 = itemManager.makeItemCategory((ItemCategory)null, "C", "Televizori, laptopovi", 15.0);
+		
+		Item i1 = itemManager.addItem("Item 1", 5000.0, 200, 20, ic2);
+		Item i2 = itemManager.addItem("Item 2", 40000.00, 10, 5, ic3);
+		Item i3 = itemManager.addItem("Item 3", 20000.0, 30, 45, ic);
+		
+		
+		
+		
 	}
 
 }

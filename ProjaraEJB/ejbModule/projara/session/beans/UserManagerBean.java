@@ -88,14 +88,16 @@ public class UserManagerBean implements UserManagerLocal {
 			throw new UserNotExistsException("User not exists");
 		}
 
+
 		try {
 			customerCategory = customerCategoryDao.merge(customerCategory);
 
 		} catch (Exception e) {
 			throw new CustomerCategoryException("Customer category not exists");
 		}
+		
 
-		if (customer.getCategory().equals(customerCategory)) {
+		if (customer.getCategory() !=null && customer.getCategory().equals(customerCategory)) {
 			throw new UserException("Already has category: "
 					+ customerCategory.getName());
 		}
@@ -125,6 +127,9 @@ public class UserManagerBean implements UserManagerLocal {
 			throw new UserNotExistsException("Customer with id: " + userId
 					+ " not exists");
 		}
+		if(cust == null )
+			throw new UserNotExistsException("Customer with id: " + userId
+					+ " not exists");
 
 		try {
 			custCat = customerCategoryDao.findById(customerCategoryCode);
@@ -133,6 +138,10 @@ public class UserManagerBean implements UserManagerLocal {
 					"Customer category not exists with code: "
 							+ customerCategoryCode);
 		}
+		if(custCat == null )
+			throw new CustomerCategoryException(
+					"Customer category not exists with code: "
+							+ customerCategoryCode);
 
 		return setCustomerCategory(cust, custCat);
 	}
