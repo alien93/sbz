@@ -6,7 +6,7 @@
 
 (defrule vrednost_preko_200000
     "Ukupna vrednost preko 200000"
-    (declare (salience 5)(no-loop TRUE))
+    (declare (salience 10)(no-loop TRUE))
     ?bill <- (Bill (originalTotal ?origTotal &:(> ?origTotal 200000)))
     =>
     (printout t "IMA VISE" ?bill.originalTotal crlf)
@@ -17,7 +17,7 @@
 
 (defrule stari_kupci
     "Nagradjuje stare kupce"
-    (declare (salience 4)(no-loop TRUE))
+    (declare (salience 9)(no-loop TRUE))
     ?bill <- (Bill (customer ?cust &:(<= 2 (call ?cust getYears))))
     =>
     (bind ?newOb (new BillDiscount 1.0 "R" ?bill.OBJECT))
@@ -28,7 +28,7 @@
 
 (defrule srebrni_ili_zlatni_kupac
     "Nagradjuje kategoriju kupca"
-    (declare (salience 3)(no-loop TRUE))
+    (declare (salience 8)(no-loop TRUE))
     ?custCat <- (CustomerCategory (name ?name &:(or "Zlatni" "Srebrni"))(OBJECT ?custCatObj))
     ?customer <- (Customer (OBJECT ?custObj)(id ?idCust)(category ?categ &:(call ?categ equals ?custCatObj)))
     ?bill <- (Bill (customer ?cust &:(call ?cust equals ?custObj)))
@@ -41,7 +41,9 @@
 
 (defrule konacna_cena_racuna
     "Umanjuje popust na racun"
+    (declare (salience 7)(no-loop TRUE))
     ?bill <- (Bill (discountPercentage ?discPerc)(originalTotal ?origTot))
   	=>
+    (printout t ?origTot" "?discPerc crlf)
     (modify ?bill (total (- ?origTot (/ (* ?origTot ?discPerc) 100))))  
  )

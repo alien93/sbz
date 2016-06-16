@@ -13,7 +13,7 @@ public class BillItemPK implements Serializable {
 	@Column(name = "BILL_ID", nullable = false)
 	int billId;
 	@Column(name = "BILLIT_NO", nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int itemNo;
 
 	public BillItemPK() {
@@ -36,9 +36,10 @@ public class BillItemPK implements Serializable {
 		this.itemNo = itemNo;
 	}
 
-	public BillItemPK(int billId) {
+	public BillItemPK(int billId,int no) {
 		super();
 		this.billId = billId;
+		this.itemNo = no;
 	}
 
 	@Override

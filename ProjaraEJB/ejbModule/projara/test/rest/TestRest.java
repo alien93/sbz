@@ -10,8 +10,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import jess.JessException;
 import projara.model.shop.ActionEvent;
 import projara.util.exception.BadArgumentsException;
+import projara.util.exception.BillException;
 import projara.util.exception.CustomerCategoryException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
@@ -46,5 +48,7 @@ public interface TestRest {
 	
 	@Path("/test/dummyBill")
 	@GET
-	public void makeDummyBill() throws CustomerCategoryException, BadArgumentsException, UserException, ItemCategoryException, ItemException;
+	public void makeDummyBill() throws CustomerCategoryException,
+			BadArgumentsException, UserException, ItemCategoryException,
+			ItemException, BillException, JessException;
 }

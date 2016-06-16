@@ -1,5 +1,6 @@
 package projara.test.rest;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -12,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import jess.JessException;
 import projara.model.dao.interfaces.ActionEventDaoLocal;
 import projara.model.dao.interfaces.BillDaoLocal;
 import projara.model.dao.interfaces.BillDiscountDaoLocal;
@@ -38,6 +40,7 @@ import projara.session.interfaces.CustomerCategoryManagerLocal;
 import projara.session.interfaces.ItemManagerLocal;
 import projara.session.interfaces.UserManagerLocal;
 import projara.util.exception.BadArgumentsException;
+import projara.util.exception.BillException;
 import projara.util.exception.CustomerCategoryException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
@@ -67,16 +70,16 @@ public class TestRestBean implements TestRest {
 	private ThresholdDaoLocal threshold;
 	@EJB
 	private UserDaoLocal user;
-	
+
 	@EJB
 	private BillManagerLocal billManager;
-	
+
 	@EJB
 	private UserManagerLocal userManager;
-	
+
 	@EJB
 	private CustomerCategoryManagerLocal custCatManager;
-	
+
 	@EJB
 	private ItemManagerLocal itemManager;
 
@@ -156,86 +159,111 @@ public class TestRestBean implements TestRest {
 		/***/
 		Bill bill1 = new Bill("O", (Customer) u1);
 		bill1 = bill.persist(bill1);
-		
+
 		BillItem billIt1 = new BillItem(item1.getPrice(), 10,
 				item1.getPrice() * 10, item1.getPrice() * 10, item1, bill1);
-		BillItem billIt2 = new BillItem(250.0,2,500,500,item2,bill1);
-		
+		BillItem billIt2 = new BillItem(250.0, 2, 500, 500, item2, bill1);
+
 		billItem.persist(billIt1);
 		billItem.persist(billIt2);
-		
-		bill1.setAwardPoints((short)3);
+
+		bill1.setAwardPoints((short) 3);
 		bill1.setOriginalTotal(2500.00);
 		bill1.setTotal(2500.00);
-		
+
 		bill1 = bill.merge(bill1);
 	}
-	
+
 	@Path("/test/register")
 	@POST
-	public Response testRegisterCustomer(@FormParam("username") String username,
+	public Response testRegisterCustomer(
+			@FormParam("username") String username,
 			@FormParam("password") String password,
 			@FormParam("firstName") String firstName,
-			@FormParam("lastName") String lastName){
-		
+			@FormParam("lastName") String lastName) {
+
 		try {
-			Customer cust = (Customer) userManager.registerUser(username, password, "C", firstName, lastName);
+			Customer cust = (Customer) userManager.registerUser(username,
+					password, "C", firstName, lastName);
 		} catch (UserException e) {
-			 return Response.status(400).entity(e.getMessage()).build();
+			return Response.status(400).entity(e.getMessage()).build();
 		} catch (BadArgumentsException e) {
 			return Response.status(400).entity(e.getMessage()).build();
 		}
-		
+
 		return Response.ok().build();
 	}
-	
+
 	@Path("/test/login")
 	@POST
-	public Response testLogin(@FormParam("username") String username,@FormParam("password")String password){
-		System.out.println("Username :"+username+" Password :"+password);
+	public Response testLogin(@FormParam("username") String username,
+			@FormParam("password") String password) {
+		System.out.println("Username :" + username + " Password :" + password);
 		User u = null;
 		try {
 			u = userManager.login(username, password);
-		} catch (Exception e){
+		} catch (Exception e) {
 			return Response.status(400).entity(e.getMessage()).build();
 		}
-		
-		if(u == null)
+
+		if (u == null)
 			return Response.status(400).entity("Not successful").build();
-		
+
 		return Response.ok().build();
 	}
-	
+
 	@Path("/test/events")
 	@GET
-	public void getEvents(){
+	public void getEvents() {
 		List<ActionEvent> events = actionEvent.findActiveEvents();
-		for(ActionEvent e:events){
+		for (ActionEvent e : events) {
 			System.out.println(e.getName());
 		}
 	}
-	
+
 	@Path("/test/dummyBill")
 	@GET
-	public void makeDummyBill() throws CustomerCategoryException, BadArgumentsException, UserException, ItemCategoryException, ItemException{
-		CustomerCategory cZlatni = custCatManager.makeCustomerCategory("A", "Zlatni");
-		
-		Customer cust1 = (Customer) userManager.registerUser("pera", "123", "C", "Pera", "Peric");
-		
+	public void makeDummyBill() throws CustomerCategoryException,
+			BadArgumentsException, UserException, ItemCategoryException,
+			ItemException, BillException, JessException {
+		CustomerCategory cZlatni = custCatManager.makeCustomerCategory("A",
+				"Zlatni");
+
+		Customer cust1 = (Customer) userManager.registerUser("pera", "123",
+				"C", "Pera", "Peric");
+
 		Threshold t = custCatManager.makeThreshold(2000, 4000, 10.0);
 		cZlatni = custCatManager.addThreshold(cZlatni, t);
 		cust1 = userManager.setCustomerCategory(cust1, cZlatni);
-		
-		ItemCategory ic = itemManager.makeItemCategory((ItemCategory)null, "A", "Široka potrošnja", 10.0);
-		ItemCategory ic2 = itemManager.makeItemCategory(ic, "B", "Podkategorija široke", 5.0);
-		ItemCategory ic3 = itemManager.makeItemCategory((ItemCategory)null, "C", "Televizori, laptopovi", 15.0);
-		
+
+		ItemCategory ic = itemManager.makeItemCategory((ItemCategory) null,
+				"A", "Široka potrošnja", 10.0);
+		ItemCategory ic2 = itemManager.makeItemCategory(ic, "B",
+				"Podkategorija široke", 5.0);
+		ItemCategory ic3 = itemManager.makeItemCategory((ItemCategory) null,
+				"C", "Televizori, računari, laptopovi", 15.0);
+
 		Item i1 = itemManager.addItem("Item 1", 5000.0, 200, 20, ic2);
 		Item i2 = itemManager.addItem("Item 2", 40000.00, 10, 5, ic3);
 		Item i3 = itemManager.addItem("Item 3", 20000.0, 30, 45, ic);
-		
-		
-		
+
+		Calendar calB = Calendar.getInstance();
+		calB.set(2016, 5, 1);
+		Calendar calA = Calendar.getInstance();
+		calA.set(2016, 6, 1);
+
+		ActionEvent ae = itemManager.createActionEvent("Letnji popust",
+				calB.getTime(), calA.getTime(), 15.0);
+
+		ae = itemManager.addCategoryToAction(ae, ic3);
+
+		Bill bill1 = billManager.createBill(cust1);
+
+		BillItem bi1 = billManager.addBillItem(bill1, i1, 2);
+
+		BillItem bi2 = billManager.addBillItem(bill1, i2, 3);
+
+		billManager.calculateCost(bill1);
 		
 	}
 

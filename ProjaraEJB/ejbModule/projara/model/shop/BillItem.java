@@ -300,18 +300,18 @@ public class BillItem implements Serializable {
 		this.quantity = quantity;
 		this.originalTotal = originalTotal;
 		this.total = total;
+		this.id = new BillItemPK(bill.getId(),bill.getBillItems().size()+1);
 		setItem(item);
 		setBill(bill);
-		this.id = new BillItemPK(bill.getId());
 	}
 
 	public BillItem(double price, double quantity, Item item, Bill bill) {
 		super();
 		this.price = price;
 		this.quantity = quantity;
+		this.id = new BillItemPK(bill.getId(),bill.getBillItems().size()+1);
 		setItem(item);
 		setBill(bill);
-		this.id = new BillItemPK(bill.getId());
 	}
 	
 	public int getItemNo(){

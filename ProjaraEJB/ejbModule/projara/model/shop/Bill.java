@@ -78,7 +78,7 @@ public class Bill implements Serializable {
 	 * @pdRoleInfo migr=no name=BillItem assc=hasItems coll=Set impl=HashSet
 	 *             mult=0..* type=Composition
 	 */
-	@OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<BillItem> items = new HashSet<>();
 	/**
 	 * @pdRoleInfo migr=no name=BillDiscount assc=hasDiscount coll=Set

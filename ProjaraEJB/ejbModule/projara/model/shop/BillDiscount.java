@@ -7,6 +7,8 @@
 package projara.model.shop;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -113,6 +115,12 @@ public class BillDiscount implements Serializable {
 
 	@Override
 	public int hashCode() {
+		
+		if(id == 0){
+			Random rand = new Random();
+			return 31*rand.nextInt(10000000)+(new Date()).hashCode();
+		}
+		
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + id;

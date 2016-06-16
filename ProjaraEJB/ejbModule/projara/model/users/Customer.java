@@ -37,7 +37,7 @@ public class Customer extends User implements Serializable {
 	private int reservedPoints;
 
 	/* PODESI */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "customer")
 	private Set<Bill> bills = new HashSet<>();
 
 	public Customer() {

@@ -6,7 +6,7 @@
 
 (defrule vise_od_20_artikala
     "10% osnovnog popusta na vise od 20 artikala koji ne pripadaju kategoriji siroke potrosnje"
-    (declare (salience 10) (no-loop TRUE))
+    (declare (salience 20) (no-loop TRUE))
     ?itemCategory <- (ItemCategory (name ?catName &:(eq ?catName "Široka potrošnja"))(OBJECT ?catObj))
     ?item <- (Item (OBJECT ?objectItem &:(eq FALSE (call ?objectItem isCategoryOf ?catObj))))
     ?billItem <- (BillItem (quantity ?q &:(< 20 ?q))(item ?it &:(call ?it equals ?objectItem)))
@@ -22,7 +22,7 @@
 
 (defrule ukupna_vrednost_preko_5000
 	"7% osnovnog popusta na 7% za stavku preko 5000 i kategorija siroke potrosnje"
-    (declare (salience 9) (no-loop TRUE))
+    (declare (salience 19) (no-loop TRUE))
     ?itemCategory <- (ItemCategory (name ?catName &:(eq ?catName "Široka potrošnja"))(OBJECT ?catObj))
     ?item <- (Item (OBJECT ?itObj &:(call ?itObj isCategoryOf ?catObj)))
     ?billItem <- (BillItem (OBJECT ?biItOBJ)(originalTotal ?priceBillItem &:(> ?priceBillItem 5000))(item ?bIt &:(call ?bIt equals ?itObj)))
@@ -54,7 +54,7 @@
 
 (defrule kupljena_kategorija_30_dana
     "Ukoliko je proizvod te kategorije kupljen u prethodnih 30 dana - 1.0% dodatni popust "
-    (declare (salience 7)(no-loop TRUE))
+    (declare (salience 18)(no-loop TRUE))
     ?billItem <- (BillItem (item ?item)(customer ?customer &:(call ?customer categoryBoughtInLast 30 ?item)))
     =>
     (printout t "BILL: " ?billItem crlf)
@@ -65,7 +65,7 @@
 
 (defrule kupljen_do_15_dana
     "Ukoliko je proizvod kupljen u prethodnih 15 dana - 2.0% dodatni popust "
-    (declare (salience 7)(no-loop TRUE))
+    (declare (salience 17)(no-loop TRUE))
     ?billItem <- (BillItem (item ?item)(customer ?customer &:(call ?customer itemBoughtInLast 15 ?item)))
     =>
     (printout t "BILL: " ?billItem crlf)
@@ -76,7 +76,7 @@
 
 (defrule proizvod_na_akciji
     "Podrazumeva se da su samo one akcije koje su trenutno aktuelne pretocene u fakte"
-    (declare (salience 6)(no-loop TRUE))
+    (declare (salience 16)(no-loop TRUE))
     ?action <- (ActionEvent (OBJECT ?actionObj))
     ?billItem <- (BillItem (item ?item &:(call ?actionObj isOnAction ?item)))
     =>
@@ -87,7 +87,7 @@
 
 (defrule ispravka_popusta
     "Samo oni ciji je popust veci od predvidjenog"
-    (declare (salience 2)(no-loop TRUE))
+    (declare (salience 15)(no-loop TRUE))
     ?itemCategory <- (ItemCategory (OBJECT ?itemCatObj)(maxDiscount ?maxDisc))
     ?billItem <- (BillItem (item ?item &:(call ?itemCatObj equals (call ?item getCategory)))(discountPercentage ?discPerc &:(> ?discPerc ?maxDisc)))
     =>
@@ -96,8 +96,8 @@
 
 (defrule krajnja_cena_stavke
     "Racunanje ukupne cene stavke"
-    (declare (salience 1) (no-loop TRUE))
-    ?billItem <- (BillItem (discountPercentage ?discPerc) (originalTotal ?total))
+    (declare (salience 14) (no-loop TRUE))
+    ?billItem <- (BillItem (discountPercentage ?discPerc) (originalTotal ?total)(bill ?bill))
     =>
     (modify ?billItem (total (- ?total (/ (* ?total ?discPerc) 100))))
     )

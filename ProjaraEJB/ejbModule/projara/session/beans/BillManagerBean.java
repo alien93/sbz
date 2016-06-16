@@ -1,5 +1,7 @@
 package projara.session.beans;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -7,18 +9,24 @@ import javax.interceptor.Interceptors;
 
 import jess.JessException;
 import jess.Rete;
+import jess.WorkingMemoryMarker;
 import projara.model.dao.interfaces.ActionEventDaoLocal;
 import projara.model.dao.interfaces.BillDaoLocal;
 import projara.model.dao.interfaces.BillDiscountDaoLocal;
 import projara.model.dao.interfaces.BillItemDaoLocal;
 import projara.model.dao.interfaces.BillItemDiscountDaoLocal;
+import projara.model.dao.interfaces.CustomerCategoryDaoLocal;
+import projara.model.dao.interfaces.ItemCategoryDaoLocal;
 import projara.model.dao.interfaces.ItemDaoLocal;
 import projara.model.dao.interfaces.UserDaoLocal;
 import projara.model.items.Item;
+import projara.model.items.ItemCategory;
 import projara.model.shop.ActionEvent;
 import projara.model.shop.Bill;
 import projara.model.shop.BillItem;
+import projara.model.shop.BillItemDiscount;
 import projara.model.users.Customer;
+import projara.model.users.CustomerCategory;
 import projara.session.interfaces.BillManagerLocal;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
@@ -48,7 +56,16 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@EJB
 	private ItemDaoLocal itemDao;
+	
+	@EJB
+	private ItemCategoryDaoLocal itemCategoryDao;
+	
+	@EJB
+	private ActionEventDaoLocal actionDao;
 
+	@EJB
+	private CustomerCategoryDaoLocal customerCategoryDao;
+	
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
 	public Bill createBill(Customer customer) throws UserNotExistsException,BadArgumentsException {
@@ -86,6 +103,56 @@ public class BillManagerBean implements BillManagerLocal {
 		//////////////////////////////////
 		///// NAPRAVI FAKTE///////////////
 		//////////////////////////////////
+		//ADD ItemCategories ///
+		List<ItemCategory> itemCategories = itemCategoryDao.findAll();
+		for(ItemCategory ic:itemCategories){
+			ic = itemCategoryDao.merge(ic);
+			engine.definstance(ic.getClass().getSimpleName(), ic, false);
+		}
+		//////ACTIONS//////////////
+		List<ActionEvent> actions = actionDao.findActiveEvents();
+		for(ActionEvent ae:actions){
+			ae = actionDao.merge(ae);
+			engine.definstance(ae.getClass().getSimpleName(), ae, false);
+		}
+		//CUSTOMER///////
+		Customer c = (Customer) userDao.merge(bill.getCustomer());
+		engine.definstance(c.getClass().getSimpleName(), c, false);
+		////Customer category/////
+		CustomerCategory cc = customerCategoryDao.merge(c.getCategory());
+		engine.definstance(cc.getClass().getSimpleName(), cc, false);
+		/////ITEMS///////////
+		List<Item> items = itemDao.findAll();
+		for(Item i:items){
+			i = itemDao.merge(i);
+			engine.definstance(i.getClass().getSimpleName(), i, false);
+		}
+		////////BillItems///////
+		for(BillItem bi:bill.getItems()){
+			bi = billItemDao.merge(bi);
+			engine.definstance(bi.getClass().getSimpleName(), bi, false);
+		}
+		
+		WorkingMemoryMarker wmm = engine.mark();
+		///////BILL//////////
+		engine.definstance(bill.getClass().getSimpleName(), bill, false);
+		
+		engine.batch("projara/resources/jess/bill_item_rules.clp");
+				
+		engine.run();
+		
+		bill = billDao.persist(bill);
+		
+		engine.resetToMark(wmm);
+		for(BillItem bi:bill.getBillItems()){
+			bill.setOriginalTotal(bill.getOriginalTotal()+bi.getTotal());
+		}
+		engine.definstance(bill.getClass().getSimpleName(), bill, false);
+		
+		engine.batch("projara/resources/jess/bill_rules.clp");
+		
+		engine.run();
+		
 		
 		
 		return null;
@@ -105,7 +172,7 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public Bill addBillItem(Bill bill, Item item, int quantity)
+	public BillItem addBillItem(Bill bill, Item item, int quantity)
 			throws BillException, ItemException,BadArgumentsException {
 
 		if(quantity<=0)
@@ -134,14 +201,16 @@ public class BillManagerBean implements BillManagerLocal {
 		billItem.setTotal(billItem.getOriginalTotal());
 		
 		billItem = billItemDao.persist(billItem);
-		bill = billDao.persist(bill);
-		item = itemDao.persist(item);
+		//bill = billDao.persist(bill);
+		//item = itemDao.persist(item);
 		
-		return bill;
+		
+		
+		return billItem;
 	}
 
 	@Override
-	public Bill addBillItem(int billId, int itemId, int quantity)
+	public BillItem addBillItem(int billId, int itemId, int quantity)
 			throws BillException, ItemException,BadArgumentsException {
 		
 		Bill bill = null;

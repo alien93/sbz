@@ -3,6 +3,7 @@ package projara.session.interfaces;
 import jess.JessException;
 import projara.model.items.Item;
 import projara.model.shop.Bill;
+import projara.model.shop.BillItem;
 import projara.model.users.Customer;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
@@ -19,7 +20,7 @@ public interface BillManagerLocal {
 	public Bill finishOrder(int billId) throws BillException;
 	public Bill cancelOrder(Bill bill) throws BillException;
 	public Bill cancelOrder(int billId) throws BillException;
-	public Bill addBillItem(Bill bill,Item item, int quantity) throws BillException, ItemException,BadArgumentsException;
-	public Bill addBillItem(int billId,int itemId, int quantity) throws BillException, ItemException, BadArgumentsException;
+	public BillItem addBillItem(Bill bill,Item item, int quantity) throws BillException, ItemException,BadArgumentsException;
+	public BillItem addBillItem(int billId,int itemId, int quantity) throws BillException, ItemException, BadArgumentsException;
 	
 }
