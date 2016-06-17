@@ -18,15 +18,16 @@ import projara.model.dao.interfaces.BillItemDiscountDaoLocal;
 import projara.model.dao.interfaces.CustomerCategoryDaoLocal;
 import projara.model.dao.interfaces.ItemCategoryDaoLocal;
 import projara.model.dao.interfaces.ItemDaoLocal;
+import projara.model.dao.interfaces.ThresholdDaoLocal;
 import projara.model.dao.interfaces.UserDaoLocal;
 import projara.model.items.Item;
 import projara.model.items.ItemCategory;
 import projara.model.shop.ActionEvent;
 import projara.model.shop.Bill;
 import projara.model.shop.BillItem;
-import projara.model.shop.BillItemDiscount;
 import projara.model.users.Customer;
 import projara.model.users.CustomerCategory;
+import projara.model.users.Threshold;
 import projara.session.interfaces.BillManagerLocal;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
@@ -56,19 +57,23 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@EJB
 	private ItemDaoLocal itemDao;
-	
+
 	@EJB
 	private ItemCategoryDaoLocal itemCategoryDao;
-	
+
 	@EJB
 	private ActionEventDaoLocal actionDao;
 
 	@EJB
 	private CustomerCategoryDaoLocal customerCategoryDao;
 	
+	@EJB
+	private ThresholdDaoLocal thresholdDao;
+
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public Bill createBill(Customer customer) throws UserNotExistsException,BadArgumentsException {
+	public Bill createBill(Customer customer) throws UserNotExistsException,
+			BadArgumentsException {
 
 		try {
 			customer = (Customer) userDao.merge(customer);
@@ -85,77 +90,153 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public Bill calculateCost(Bill bill) throws BillException, JessException {
-		
-		try{
+	public Bill calculateCost(Bill bill, short points) throws BillException,
+			JessException {
+
+		try {
 			bill = billDao.merge(bill);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new BillException("Bill not exists");
 		}
-		
-		/////////////////////////////////////
+
+		// ///////////////////////////////////
 		// POZOVI JESS /////////////////////
-		///////////////////////////////////
+		// /////////////////////////////////
 		Rete engine = new Rete();
 		engine.reset();
 		engine.eval("(watch all)");
 		engine.batch("projara/resources/jess/model_templates.clp");
-		//////////////////////////////////
-		///// NAPRAVI FAKTE///////////////
-		//////////////////////////////////
-		//ADD ItemCategories ///
+		// ////////////////////////////////
+		// /// NAPRAVI FAKTE///////////////
+		// ////////////////////////////////
+		// ADD ItemCategories ///
 		List<ItemCategory> itemCategories = itemCategoryDao.findAll();
-		for(ItemCategory ic:itemCategories){
+		for (ItemCategory ic : itemCategories) {
 			ic = itemCategoryDao.merge(ic);
+		//	System.out.println("UBACUJE KATEGORIJU: "+ic.getCode()+" "+ic.getName());
 			engine.definstance(ic.getClass().getSimpleName(), ic, false);
 		}
-		//////ACTIONS//////////////
+		// ////ACTIONS//////////////
 		List<ActionEvent> actions = actionDao.findActiveEvents();
-		for(ActionEvent ae:actions){
+		for (ActionEvent ae : actions) {
 			ae = actionDao.merge(ae);
 			engine.definstance(ae.getClass().getSimpleName(), ae, false);
 		}
-		//CUSTOMER///////
+		// CUSTOMER///////
 		Customer c = (Customer) userDao.merge(bill.getCustomer());
 		engine.definstance(c.getClass().getSimpleName(), c, false);
-		////Customer category/////
+		// //Customer category/////
 		CustomerCategory cc = customerCategoryDao.merge(c.getCategory());
 		engine.definstance(cc.getClass().getSimpleName(), cc, false);
-		/////ITEMS///////////
+		//THRESHOLDS/////
+		for(Threshold t:cc.getThresholds()){
+			t = thresholdDao.merge(t);
+			engine.definstance(t.getClass().getSimpleName(), t, false);
+		}
+		// ///ITEMS///////////
 		List<Item> items = itemDao.findAll();
-		for(Item i:items){
+		for (Item i : items) {
 			i = itemDao.merge(i);
 			engine.definstance(i.getClass().getSimpleName(), i, false);
 		}
-		////////BillItems///////
-		for(BillItem bi:bill.getItems()){
+		// //////BillItems///////
+		System.out.println("UBACUJE BILL ITEMSE");
+		for (BillItem bi : bill.getItems()) {
 			bi = billItemDao.merge(bi);
+			//Item i = itemDao.merge(bi.getItem());
+			//ItemCategory ic = itemCategoryDao.merge(i.getCategory());
+			//i.setCategory(ic);
+			//bi.setItem(i);
+			//System.out.println("UBACEN PROIZVOD: "+bi.getOriginalTotal()+" "+bi.getItem().getCategory().getName());
 			engine.definstance(bi.getClass().getSimpleName(), bi, false);
 		}
-		
-		WorkingMemoryMarker wmm = engine.mark();
-		///////BILL//////////
 		engine.definstance(bill.getClass().getSimpleName(), bill, false);
 		
+		//WorkingMemoryMarker wmm = engine.mark();
+		// /////BILL ITEMI RACUNANJE//////////
+		
+
 		engine.batch("projara/resources/jess/bill_item_rules.clp");
-				
+
 		engine.run();
-		
+
 		bill = billDao.persist(bill);
-		
-		engine.resetToMark(wmm);
-		for(BillItem bi:bill.getBillItems()){
-			bill.setOriginalTotal(bill.getOriginalTotal()+bi.getTotal());
+
+		//engine.resetToMark(wmm);
+
+		// //////////////racuna ukupnu cenu (originalnu)
+		for (BillItem bi : bill.getBillItems()) {
+			bill.setOriginalTotal(bill.getOriginalTotal() + bi.getTotal());
 		}
-		engine.definstance(bill.getClass().getSimpleName(), bill, false);
+
+		// ///rezoner racuna ukupnu cenu sa popustima //////////
+		//engine.definstance(bill.getClass().getSimpleName(), bill, false);
 		
+		engine.updateObject(bill);
 		engine.batch("projara/resources/jess/bill_rules.clp");
-		
+
 		engine.run();
+
+		// ////////////////////
+		// WorkingMemoryMarker preDodavanjaPoena = engine.mark();
+		// ///////
+
+		bill = billDao.persist(bill);
+
+		bill.setSpentPoints((short)points);
+		bill.setAwardPoints((short)0);
+		double percentBeforeAward0 = bill.getDiscountPercentage();
+		double costBeforeAward0 = bill.getTotal();
+
+		engine.unDefrule("");
+		
+		System.out.println("*********************************************");
+		System.out.println("*********************************************");
+		System.out.println("*********************************************");
+		System.out.println("*********************************************");
+		
+		System.out.println("Before award: " + percentBeforeAward0 + " "
+				+ costBeforeAward0);
+
+
+		engine.updateObject(bill);
+		engine.batch("projara/resources/jess/award_points.clp");
+		engine.run();
+
+		short awardAfterP = bill.getAwardPoints();
+		short spentAfterP = bill.getSpentPoints();
+		double percentageAfterP = bill.getDiscountPercentage();
+		double finalCostAfterP = bill.getTotal();
+
+		//NAPRAVI OBJEKAT ZA BILLINFO//
+		
+		System.out.println("After award+spent_points " + awardAfterP + " "
+				+ spentAfterP + " " + percentageAfterP + " " + finalCostAfterP);
+
+
+		bill.setAwardPoints((short) 0);
+		bill.setSpentPoints((short) 0);
+		bill.setTotal(costBeforeAward0);
+		bill.setDiscountPercentage(percentBeforeAward0);
+
+
+		engine.updateObject(bill);
+		engine.batch("projara/resources/jess/award_points.clp");
+		engine.run();
+
+		bill = billDao.persist(bill);
+
+		
+		//JOS JEDAN BILLINFO OBJEKAT
+		
+		System.out.println("After award with 0 spent: " + bill.getAwardPoints()
+				+ " " + bill.getSpentPoints() + " "
+				+ bill.getDiscountPercentage() + " " + bill.getTotal());
+
+		
+		return bill;
 		
 		
-		
-		return null;
 	}
 
 	@Override
@@ -166,18 +247,19 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@Override
 	public Bill cancelOrder(Bill bill) throws BillException {
-		
+
 		return null;
 	}
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
 	public BillItem addBillItem(Bill bill, Item item, int quantity)
-			throws BillException, ItemException,BadArgumentsException {
+			throws BillException, ItemException, BadArgumentsException {
 
-		if(quantity<=0)
-			throw new BillException("Quantity of item can not be less or equal then 0");
-		
+		if (quantity <= 0)
+			throw new BillException(
+					"Quantity of item can not be less or equal then 0");
+
 		try {
 			bill = billDao.merge(bill);
 		} catch (Exception e) {
@@ -195,59 +277,58 @@ public class BillManagerBean implements BillManagerLocal {
 		if (item.getInStock() < quantity)
 			throw new ItemQuantityIsOverLimitException("Order is: " + quantity
 					+ " but in stock is: " + item.getInStock());
-		
+
 		BillItem billItem = new BillItem(item.getPrice(), quantity, item, bill);
-		billItem.setOriginalTotal(item.getPrice()*quantity);
+		billItem.setOriginalTotal(item.getPrice() * quantity);
 		billItem.setTotal(billItem.getOriginalTotal());
-		
+
 		billItem = billItemDao.persist(billItem);
-		//bill = billDao.persist(bill);
-		//item = itemDao.persist(item);
-		
-		
-		
+		// bill = billDao.persist(bill);
+		// item = itemDao.persist(item);
+
 		return billItem;
 	}
 
 	@Override
 	public BillItem addBillItem(int billId, int itemId, int quantity)
-			throws BillException, ItemException,BadArgumentsException {
-		
+			throws BillException, ItemException, BadArgumentsException {
+
 		Bill bill = null;
 		Item item = null;
-		
-		try{
+
+		try {
 			bill = billDao.findById(billId);
-		}catch(Exception e){
-			throw new BillException("Bill with id: "+billId+"not exists");
+		} catch (Exception e) {
+			throw new BillException("Bill with id: " + billId + "not exists");
 		}
-		
-		try{
+
+		try {
 			item = itemDao.findById(itemId);
-		}catch(Exception e){
-			throw new ItemNotExistsException("Item with id: "+itemId+" not exists");
+		} catch (Exception e) {
+			throw new ItemNotExistsException("Item with id: " + itemId
+					+ " not exists");
 		}
-		
-		
-		
+
 		return addBillItem(bill, item, quantity);
 	}
 
 	@Override
-	public Bill createBill(int customerId) throws UserNotExistsException,BadArgumentsException {
-		
+	public Bill createBill(int customerId) throws UserNotExistsException,
+			BadArgumentsException {
+
 		Customer cust = null;
-		try{
-			cust = (Customer)userDao.findById(customerId);
-		}catch(Exception e){
-			throw new UserNotExistsException("User with id: "+customerId+" not exists");
+		try {
+			cust = (Customer) userDao.findById(customerId);
+		} catch (Exception e) {
+			throw new UserNotExistsException("User with id: " + customerId
+					+ " not exists");
 		}
-		
+
 		return createBill(cust);
 	}
 
 	@Override
-	public Bill calculateCost(int billid) throws BillException {
+	public Bill calculateCost(int billid,short points) throws BillException {
 		// TODO Auto-generated method stub
 		return null;
 	}

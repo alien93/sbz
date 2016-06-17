@@ -45,7 +45,7 @@ public class Threshold implements Serializable {
 	 * @pdRoleInfo migr=no name=CustomerCategory assc=hasThresholds coll=Set
 	 *             impl=HashSet mult=0..*
 	 */
-	@ManyToMany(mappedBy = "thresholds", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "thresholds", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<CustomerCategory> categories = new HashSet<>();
 
 	/** @pdOid e36b431e-0223-49a3-b4d1-f84abeefeef7 */
@@ -203,6 +203,11 @@ public class Threshold implements Serializable {
 		return true;
 	}
 	
+	public boolean containsCategory(CustomerCategory cc){
+		if(categories.contains(cc))
+			return true;
+		return false;
+	}
 	
 
 }

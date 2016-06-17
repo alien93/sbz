@@ -50,13 +50,13 @@ public class ItemCategory implements Serializable {
 	 * @pdRoleInfo migr=no name=ItemCategory assc=subcategories coll=Set
 	 *             impl=HashSet mult=0..*
 	 */
-	@OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<ItemCategory> subCategories = new HashSet<>();
 	/**
 	 * @pdRoleInfo migr=no name=Item assc=itemCategory coll=Set impl=HashSet
 	 *             mult=0..*
 	 */
-	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Item> items = new HashSet<>();
 
 	/** @pdRoleInfo migr=no name=ItemCategory assc=subcategories mult=0..1 side=A */

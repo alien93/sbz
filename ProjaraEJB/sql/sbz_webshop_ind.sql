@@ -33,7 +33,7 @@ drop table if exists CUSTOMER_CATEGORY;
 /*==============================================================*/
 create table ACTION_EVENT
 (
-   AE_ID                smallint not null auto_increment,
+   AE_ID                int not null auto_increment,
    AE_NAME              varchar(60) not null,
    AE_FROM              date not null,
    AE_UNTIL             date not null,

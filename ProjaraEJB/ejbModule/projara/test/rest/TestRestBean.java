@@ -9,8 +9,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import jess.JessException;
@@ -232,20 +230,22 @@ public class TestRestBean implements TestRest {
 		Customer cust1 = (Customer) userManager.registerUser("pera", "123",
 				"C", "Pera", "Peric");
 
-		Threshold t = custCatManager.makeThreshold(2000, 4000, 10.0);
+		Threshold t = custCatManager.makeThreshold(20000, 400000, 1.0);
 		cZlatni = custCatManager.addThreshold(cZlatni, t);
 		cust1 = userManager.setCustomerCategory(cust1, cZlatni);
 
 		ItemCategory ic = itemManager.makeItemCategory((ItemCategory) null,
-				"A", "Široka potrošnja", 10.0);
+				"A", "Siroka potrosnja", 10.0);
 		ItemCategory ic2 = itemManager.makeItemCategory(ic, "B",
-				"Podkategorija široke", 5.0);
+				"Podkategorija siroke", 5.0);
 		ItemCategory ic3 = itemManager.makeItemCategory((ItemCategory) null,
-				"C", "Televizori, računari, laptopovi", 15.0);
+				"C", "Televizori, racunari, laptopovi", 15.0);
 
 		Item i1 = itemManager.addItem("Item 1", 5000.0, 200, 20, ic2);
 		Item i2 = itemManager.addItem("Item 2", 40000.00, 10, 5, ic3);
 		Item i3 = itemManager.addItem("Item 3", 20000.0, 30, 45, ic);
+		Item i4 = itemManager.addItem("Item 4", 400.00, 30, 10, ic3);
+		Item i5 = itemManager.addItem("Item 5", 200.00, 20, 12, ic3);
 
 		Calendar calB = Calendar.getInstance();
 		calB.set(2016, 5, 1);
@@ -263,8 +263,12 @@ public class TestRestBean implements TestRest {
 
 		BillItem bi2 = billManager.addBillItem(bill1, i2, 3);
 
-		billManager.calculateCost(bill1);
+		BillItem bi3 = billManager.addBillItem(bill1, i4, 21);
 		
+		BillItem bi4 = billManager.addBillItem(bill1, i5, 6);
+
+		billManager.calculateCost(bill1, (short) 10);
+
 	}
 
 }

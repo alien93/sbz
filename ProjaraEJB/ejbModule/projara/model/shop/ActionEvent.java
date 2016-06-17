@@ -38,8 +38,8 @@ public class ActionEvent implements Serializable {
 	/** @pdOid d845848f-251a-41ce-b5da-c4115e751212 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "AE_ID", nullable = false, unique = true, columnDefinition = "smallint")
-	private short id;
+	@Column(name = "AE_ID", nullable = false, unique = true)
+	private int id;
 	/** @pdOid bbf42069-d417-48d9-bd49-c9d47e4976c2 */
 	@Column(name = "AE_NAME", nullable = false, unique = false, columnDefinition = "varchar(60)")
 	private String name;
@@ -127,7 +127,7 @@ public class ActionEvent implements Serializable {
 	}
 
 	/** @pdOid 15ad3fbd-aa02-427f-8cd5-ca2f6fbf6dc6 */
-	public short getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -135,7 +135,7 @@ public class ActionEvent implements Serializable {
 	 * @param newId
 	 * @pdOid 0b58fffa-975d-4738-a8b7-52fdee7a81ec
 	 */
-	public void setId(short newId) {
+	public void setId(int newId) {
 		id = newId;
 	}
 

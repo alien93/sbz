@@ -14,7 +14,7 @@ import projara.model.dao.interfaces.ActionEventDaoLocal;
 import projara.model.shop.ActionEvent;
 @Stateless
 @Local(ActionEventDaoLocal.class)
-public class ActionEventDaoBean extends GenericDaoBean<ActionEvent, Short>
+public class ActionEventDaoBean extends GenericDaoBean<ActionEvent, Integer>
 		implements
 			ActionEventDaoLocal {
 

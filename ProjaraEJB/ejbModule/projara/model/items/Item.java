@@ -25,7 +25,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
-import projara.model.shop.Bill;
 import projara.model.shop.BillItem;
 
 /** @pdOid e57bd824-c576-430b-bece-d500604bfcf0 */
@@ -317,6 +316,18 @@ public class Item implements Serializable {
 		
 		return false;
 		
+	}
+	
+	public boolean isCategoryOfByName(String name){
+		ItemCategory current = category;
+		while(current!=null){
+			System.out.println("CURRENT: "+current.getName());
+			if(current.getName().equals(name))
+				return true;
+			current = current.getParentCategory();
+		}
+		
+		return false;
 	}
 	
 	

@@ -48,6 +48,6 @@ public interface ItemManagerLocal {
 			ItemCategory itemCategory) throws BadArgumentsException,
 			ItemCategoryException;
 
-	public ActionEvent addCategoryToAction(short actionId, String itemCategoryCode)
+	public ActionEvent addCategoryToAction(int actionId, String itemCategoryCode)
 			throws BadArgumentsException, ItemCategoryException;
 }

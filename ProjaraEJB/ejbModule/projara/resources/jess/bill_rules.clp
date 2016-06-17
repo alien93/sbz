@@ -41,7 +41,7 @@
 
 (defrule konacna_cena_racuna
     "Umanjuje popust na racun"
-    (declare (salience 7)(no-loop TRUE))
+    (declare (salience 5)(no-loop TRUE))
     ?bill <- (Bill (discountPercentage ?discPerc)(originalTotal ?origTot))
   	=>
     (printout t ?origTot" "?discPerc crlf)

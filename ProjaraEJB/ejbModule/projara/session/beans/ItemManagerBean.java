@@ -282,7 +282,7 @@ public class ItemManagerBean implements ItemManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public ActionEvent addCategoryToAction(short actionId, String itemCategoryCode)
+	public ActionEvent addCategoryToAction(int actionId, String itemCategoryCode)
 			throws BadArgumentsException, ItemCategoryException {
 		
 		ItemCategory ic = null;

@@ -22,7 +22,7 @@ public class MyTestData {
 	private HashMap<Integer, Item> items;
 	private HashMap<Integer, Bill> bills;
 	private HashMap<Integer, Customer> customers;
-	private HashMap<Short, ActionEvent> actions;
+	private HashMap<Integer, ActionEvent> actions;
 
 	public MyTestData() {
 		categories = new HashMap<>();
