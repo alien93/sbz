@@ -153,7 +153,7 @@ create table ITEM_CATEGORY
 /*==============================================================*/
 create table ON_DISCOUNT
 (
-   AE_ID                smallint not null,
+   AE_ID                int not null,
    ITCAT_CODE           char(3) not null,
    primary key (AE_ID, ITCAT_CODE)
 );

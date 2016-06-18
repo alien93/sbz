@@ -58,7 +58,7 @@ public class ActionEvent implements Serializable {
 	 *             impl=HashSet mult=0..*
 	 */
 	@ManyToMany
-	@JoinTable(name = "ON_DISCOUNT", joinColumns = @JoinColumn(name = "AE_ID", referencedColumnName = "AE_ID", columnDefinition = "smallint"), inverseJoinColumns = @JoinColumn(name = "ITCAT_CODE", referencedColumnName = "ITCAT_CODE", columnDefinition = "char(3)"))
+	@JoinTable(name = "ON_DISCOUNT", joinColumns = @JoinColumn(name = "AE_ID", referencedColumnName = "AE_ID", columnDefinition = "int"), inverseJoinColumns = @JoinColumn(name = "ITCAT_CODE", referencedColumnName = "ITCAT_CODE", columnDefinition = "char(3)"))
 	private Set<ItemCategory> categories = new HashSet<>();
 
 	/** @pdGenerated default getter */

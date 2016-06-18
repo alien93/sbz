@@ -8,19 +8,25 @@ import projara.model.users.Customer;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
 import projara.util.exception.ItemException;
+import projara.util.exception.UserException;
 import projara.util.exception.UserNotExistsException;
+import projara.util.json.view.BillCostInfo;
+import projara.util.json.view.BillInfo;
 
 public interface BillManagerLocal {
 	
 	public Bill createBill(Customer customer) throws UserNotExistsException,BadArgumentsException;
 	public Bill createBill(int customerId) throws UserNotExistsException, BadArgumentsException;
-	public Bill calculateCost(Bill bill,short points) throws BillException, JessException;
-	public Bill calculateCost(int billid,short points) throws BillException;
-	public Bill finishOrder(Bill bill) throws BillException;
-	public Bill finishOrder(int billId) throws BillException;
-	public Bill cancelOrder(Bill bill) throws BillException;
-	public Bill cancelOrder(int billId) throws BillException;
+	public BillInfo calculateCost(Bill bill,short points) throws BillException, JessException;
+	public BillInfo calculateCost(int billid,short points) throws BillException, JessException;
+	public Bill finishOrder(Bill bill,BillCostInfo billCostInfo) throws BillException, BadArgumentsException;
+	public Bill finishOrder(int billId, BillCostInfo billCostInfo) throws BillException, BadArgumentsException;
+	public Bill cancelOrder(Bill bill) throws BillException, UserException, BadArgumentsException;
+	public Bill cancelOrder(int billId) throws BillException, UserException, BadArgumentsException;
 	public BillItem addBillItem(Bill bill,Item item, int quantity) throws BillException, ItemException,BadArgumentsException;
 	public BillItem addBillItem(int billId,int itemId, int quantity) throws BillException, ItemException, BadArgumentsException;
-	
+	public void rejectOrder(Bill bill) throws BillException,BadArgumentsException, UserException;
+	public void rejectOrder(int billId)throws BillException,BadArgumentsException, UserException;
+	public Bill approveOrder(Bill bill) throws BillException,BadArgumentsException, UserException;
+	public Bill approveOrder(int billId) throws BillException,BadArgumentsException, UserException;
 }
