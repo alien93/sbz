@@ -22,6 +22,7 @@ import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.exception.ItemNotExistsException;
 import projara.util.interceptors.CheckParametersInterceptor;
+import projara.util.json.search.AdvancedSearch;
 
 @Stateless
 @Local(ItemManagerLocal.class)
@@ -320,6 +321,11 @@ public class ItemManagerBean implements ItemManagerLocal {
 		engine.batch("projara/resources/jess/items_rules.clp");
 		engine.run();
 		
+	}
+
+	@Override
+	public List<Item> filterItems(AdvancedSearch advSearch) {
+		return itemDao.advancedSearch(advSearch);
 	}
 
 }

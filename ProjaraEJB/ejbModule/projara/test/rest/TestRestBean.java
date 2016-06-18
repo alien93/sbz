@@ -43,6 +43,9 @@ import projara.util.exception.CustomerCategoryException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.exception.UserException;
+import projara.util.json.search.AdvancedSearch;
+import projara.util.json.search.ItemCategorySearch;
+import projara.util.json.search.ItemCostSearch;
 import projara.util.json.view.BillCostInfo;
 import projara.util.json.view.BillInfo;
 
@@ -235,10 +238,10 @@ public class TestRestBean implements TestRest {
 		Threshold t = custCatManager.makeThreshold(20000, 400000, 1.0);
 		cZlatni = custCatManager.addThreshold(cZlatni, t);
 		cust1 = userManager.setCustomerCategory(cust1, cZlatni);
-		
+
 		cust1.setPoints(20);
-		
-		cust1 = (Customer)user.persist(cust1);
+
+		cust1 = (Customer) user.persist(cust1);
 
 		ItemCategory ic = itemManager.makeItemCategory((ItemCategory) null,
 				"A", "Siroka potrosnja", 10.0);
@@ -270,18 +273,63 @@ public class TestRestBean implements TestRest {
 		BillItem bi2 = billManager.addBillItem(bill1, i2, 3);
 
 		BillItem bi3 = billManager.addBillItem(bill1, i4, 21);
-		
+
 		BillItem bi4 = billManager.addBillItem(bill1, i5, 6);
 
 		BillInfo bi = billManager.calculateCost(bill1, (short) 10);
 
 		BillCostInfo withPoints = bi.getCostInfos().get(0);
-		
+
 		billManager.finishOrder(bill1, withPoints);
-		
+
 		billManager.approveOrder(bill1);
-		
+
 		itemManager.automaticOrdering();
+	}
+
+	@Path("/test/query")
+	@GET
+	public void testQuery() {
+
+		// VRACA SVE koji u nazivu imaju tem
+		AdvancedSearch advSearch1 = new AdvancedSearch("tem", 0,
+				new ItemCategorySearch(), new ItemCostSearch());
+		List<Item> q1 = itemManager.filterItems(advSearch1);
+		System.out.println("Svi koji imaju u nazivu 'tem'");
+		printListItem(q1);
+		
+		advSearch1.setName("");
+		advSearch1.setId(1);
+		System.out.println("SA ID 1");
+		printListItem(itemManager.filterItems(advSearch1));
+		
+		advSearch1.setId(-1);
+		advSearch1.getCategory().setName("sirok");
+		System.out.println("Svi kategorije siroke potrosnje");
+		printListItem(itemManager.filterItems(advSearch1));
+		
+		advSearch1.getCategory().setName("");
+		advSearch1.getCostRange().setMaxCost(15000);
+		System.out.println("DO 15000");
+		printListItem(itemManager.filterItems(advSearch1));
+		
+		
+		advSearch1.getCategory().setName("televiz");
+		advSearch1.getCostRange().setMinCost(100);
+		System.out.println("Televizori od 3000 do 15000");
+		printListItem(itemManager.filterItems(advSearch1));
+
+	}
+
+	private void printListItem(List<Item> list) {
+		if(list == null || list.isEmpty())
+			System.out.println("PRAZNO");
+		for (Item i : list) {
+			System.out.println(i.getId() + " " + i.getName() + " "
+					+ i.getPrice() + " " + i.getCategory().getCode() + " "
+					+ i.getCategory().getName());
+		}
+		System.out.println("********************************");
 	}
 
 }

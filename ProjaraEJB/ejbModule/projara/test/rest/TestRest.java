@@ -51,4 +51,8 @@ public interface TestRest {
 	public void makeDummyBill() throws CustomerCategoryException,
 			BadArgumentsException, UserException, ItemCategoryException,
 			ItemException, BillException, JessException;
+	
+	@Path("/test/query")
+	@GET
+	public void testQuery();
 }
