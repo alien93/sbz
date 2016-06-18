@@ -131,7 +131,7 @@ create table ITEM
    IT_INSTOCK           int default 0,
    IT_CREATEDON         datetime not null default CURRENT_TIMESTAMP,
    IT_ISLOW             bool default false,
-   IT_RECSTATE          bool default false,
+   IT_RECSTATE          bool default true,
    IT_MINQUANT          int not null default 0,
    primary key (IT_ID)
 );

@@ -10,5 +10,5 @@
     ?item <- (Item (needOrdering ?needOrd &FALSE)
         (minQuantity ?minQ)(inStock ?inStock &:(> ?minQ ?inStock)))
     =>
-    (modify ?minQ (needOrdering TRUE))
+    (modify ?item (needOrdering TRUE))
     )

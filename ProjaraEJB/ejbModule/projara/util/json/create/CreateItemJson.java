@@ -1,6 +1,8 @@
 package projara.util.json.create;
 
-public class CreateItemJson {
+import java.io.Serializable;
+
+public class CreateItemJson implements Serializable{
 
 	private String name;
 	private double cost;

@@ -43,6 +43,8 @@ import projara.util.exception.CustomerCategoryException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.exception.UserException;
+import projara.util.json.view.BillCostInfo;
+import projara.util.json.view.BillInfo;
 
 @Stateless
 @Path("/test")
@@ -233,6 +235,10 @@ public class TestRestBean implements TestRest {
 		Threshold t = custCatManager.makeThreshold(20000, 400000, 1.0);
 		cZlatni = custCatManager.addThreshold(cZlatni, t);
 		cust1 = userManager.setCustomerCategory(cust1, cZlatni);
+		
+		cust1.setPoints(20);
+		
+		cust1 = (Customer)user.persist(cust1);
 
 		ItemCategory ic = itemManager.makeItemCategory((ItemCategory) null,
 				"A", "Siroka potrosnja", 10.0);
@@ -267,8 +273,15 @@ public class TestRestBean implements TestRest {
 		
 		BillItem bi4 = billManager.addBillItem(bill1, i5, 6);
 
-		billManager.calculateCost(bill1, (short) 10);
+		BillInfo bi = billManager.calculateCost(bill1, (short) 10);
 
+		BillCostInfo withPoints = bi.getCostInfos().get(0);
+		
+		billManager.finishOrder(bill1, withPoints);
+		
+		billManager.approveOrder(bill1);
+		
+		itemManager.automaticOrdering();
 	}
 
 }

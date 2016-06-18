@@ -1,6 +1,8 @@
 package projara.util.json.create;
 
-public class WebShopCartJson {
+import java.io.Serializable;
+
+public class WebShopCartJson implements Serializable{
 
 	
 	

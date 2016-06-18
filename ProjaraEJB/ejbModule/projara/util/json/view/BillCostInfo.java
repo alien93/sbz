@@ -1,13 +1,15 @@
 package projara.util.json.view;
 
-public class BillCostInfo {
+import java.io.Serializable;
+
+public class BillCostInfo implements Serializable{
 
 	private short awardPoints;
 	private short spentPoints;
 	private double discount;
 	private double total;
 	
-	public BillCostInfo() {
+	public BillCostInfo(){
 		// TODO Auto-generated constructor stub
 	}
 

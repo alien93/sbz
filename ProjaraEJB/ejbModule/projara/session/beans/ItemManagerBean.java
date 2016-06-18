@@ -1,12 +1,15 @@
 package projara.session.beans;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
+import jess.JessException;
+import jess.Rete;
 import projara.model.dao.interfaces.ActionEventDaoLocal;
 import projara.model.dao.interfaces.ItemCategoryDaoLocal;
 import projara.model.dao.interfaces.ItemDaoLocal;
@@ -298,6 +301,25 @@ public class ItemManagerBean implements ItemManagerLocal {
 			throw new BadArgumentsException("action event and item category are null");
 		
 		return addCategoryToAction(ae, ic);
+	}
+
+	@Override
+	public void automaticOrdering() throws ItemException, JessException {
+		
+		Rete engine = new Rete();
+		engine.reset();
+		engine.eval("(watch all)");
+		engine.batch("projara/resources/jess/model_templates.clp");
+		
+		List<Item> items = itemDao.findAll();
+		for(Item item:items){
+			item = itemDao.merge(item);
+			engine.definstance(item.getClass().getSimpleName(), item, false);
+		}
+		
+		engine.batch("projara/resources/jess/items_rules.clp");
+		engine.run();
+		
 	}
 
 }

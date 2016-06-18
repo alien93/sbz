@@ -1,5 +1,6 @@
 package projara.session.beans;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -35,6 +36,7 @@ import projara.util.exception.ItemException;
 import projara.util.exception.ItemNotExistsException;
 import projara.util.exception.ItemQuantityIsOverLimitException;
 import projara.util.exception.NoBillItemsException;
+import projara.util.exception.NotEnoughItemsException;
 import projara.util.exception.NotEnoughPontsException;
 import projara.util.exception.UserException;
 import projara.util.exception.UserNotExistsException;
@@ -228,7 +230,10 @@ public class BillManagerBean implements BillManagerLocal {
 		double percentageAfterP = bill.getDiscountPercentage();
 		double finalCostAfterP = bill.getTotal();
 
-		// NAPRAVI OBJEKAT ZA BILLINFO//
+		// ///////////////////////////////////////////////
+		BillCostInfo withSpent = new BillCostInfo(awardAfterP, spentAfterP,
+				percentageAfterP, finalCostAfterP);
+		// ///////////////////////////////////////////////
 
 		System.out.println("After award+spent_points " + awardAfterP + " "
 				+ spentAfterP + " " + percentageAfterP + " " + finalCostAfterP);
@@ -244,14 +249,40 @@ public class BillManagerBean implements BillManagerLocal {
 
 		bill = billDao.persist(bill);
 
-		// JOS JEDAN BILLINFO OBJEKAT
+		// //////////////////////////////
+		BillCostInfo withoutSpentPoints = new BillCostInfo(
+				bill.getAwardPoints(), (short) 0, bill.getDiscountPercentage(),
+				bill.getTotal());
+		// ////////////////////////////
 
 		System.out.println("After award with 0 spent: " + bill.getAwardPoints()
 				+ " " + bill.getSpentPoints() + " "
 				+ bill.getDiscountPercentage() + " " + bill.getTotal());
 
-		return null;
+		List<BillCostInfo> listBillCostInfo = new ArrayList<>();
+		listBillCostInfo.add(withSpent);
+		listBillCostInfo.add(withoutSpentPoints);
 
+		BillInfo billInfo = makeBillInfo(bill, listBillCostInfo);
+
+		return billInfo;
+
+	}
+
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public BillInfo makeBillInfo(Bill bill, List<BillCostInfo> listBillCostInfo)
+			throws BillException {
+
+		try {
+			bill = billDao.merge(bill);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists");
+		}
+
+		BillInfo bi = new BillInfo(bill.getId(), listBillCostInfo);
+
+		return bi;
 	}
 
 	@Override
@@ -296,7 +327,8 @@ public class BillManagerBean implements BillManagerLocal {
 	// vendor cancel
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public Bill cancelOrder(Bill bill) throws BillException, UserException,BadArgumentsException {
+	public Bill cancelOrder(Bill bill) throws BillException, UserException,
+			BadArgumentsException {
 
 		try {
 			bill = billDao.merge(bill);
@@ -315,19 +347,19 @@ public class BillManagerBean implements BillManagerLocal {
 
 		int reservedPoints = customer.getReservedPoints();
 		int points = customer.getPoints();
-		
+
 		customer.setPoints(spentPoints + points);
 		customer.setReservedPoints(reservedPoints - spentPoints);
-		
-		try{
-			customer = (Customer)userDao.persist(customer);
-		}catch(Exception e){
+
+		try {
+			customer = (Customer) userDao.persist(customer);
+		} catch (Exception e) {
 			throw new UserException("Problem with persisting customer");
 		}
-		
-		try{
+
+		try {
 			bill = billDao.persist(bill);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new BillException("Problem with persiting bill");
 		}
 
@@ -450,17 +482,20 @@ public class BillManagerBean implements BillManagerLocal {
 
 	// Vendor cancel
 	@Override
-	public Bill cancelOrder(int billId) throws BillException,BadArgumentsException, UserException {
-		
+	public Bill cancelOrder(int billId) throws BillException,
+			BadArgumentsException, UserException {
+
 		Bill bill = null;
-		try{
+		try {
 			bill = billDao.findById(billId);
-		}catch(Exception e){
-			throw new BillNotExistsException("Bill with id: "+billId+" not exists");
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill with id: " + billId
+					+ " not exists");
 		}
-		if(bill == null)
-			throw new BillNotExistsException("Bill with id: "+billId+" not exists");
-		
+		if (bill == null)
+			throw new BillNotExistsException("Bill with id: " + billId
+					+ " not exists");
+
 		return cancelOrder(bill);
 	}
 
@@ -504,7 +539,7 @@ public class BillManagerBean implements BillManagerLocal {
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
 	public Bill approveOrder(Bill bill) throws BillException,
-			BadArgumentsException, UserException {
+			BadArgumentsException, UserException, ItemException {
 
 		try {
 			bill = billDao.merge(bill);
@@ -514,6 +549,29 @@ public class BillManagerBean implements BillManagerLocal {
 
 		if (!bill.getState().equals("O")) {
 			throw new BillException("Only ordered bills can be approved");
+		}
+
+		for (BillItem bi : bill.getBillItems()) {
+			try {
+				bi = billItemDao.merge(bi);
+			} catch (Exception e) {
+				throw new BillException("Bill item not exists");
+			}
+			Item item = bi.getItem();
+			try {
+				item = itemDao.merge(item);
+			} catch (Exception e) {
+				throw new ItemNotExistsException("Item not exists");
+			}
+
+			if (item.getInStock() < bi.getQuantity())
+				throw new NotEnoughItemsException("Item: " + item.getName()
+						+ " in stock: " + item.getInStock() + " requested: "
+						+ bi.getQuantity());
+			
+			item.setInStock(item.getInStock() - (int)bi.getQuantity());
+			
+			//item = itemDao.persist(item);
 		}
 
 		bill.setState("S");
@@ -551,7 +609,7 @@ public class BillManagerBean implements BillManagerLocal {
 	// vendor approves
 	@Override
 	public Bill approveOrder(int billId) throws BillException,
-			BadArgumentsException, UserException {
+			BadArgumentsException, UserException, ItemException {
 
 		Bill bill = null;
 		try {

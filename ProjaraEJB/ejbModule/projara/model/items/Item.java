@@ -52,8 +52,8 @@ public class Item implements Serializable {
 	@Column(name = "IT_ISLOW", nullable= true, unique = false, columnDefinition="default false")
 	private boolean needOrdering;
 	/** @pdOid 26718804-e665-474c-b35e-dcdf37b6b242 */
-	@Column(name = "IT_RECSTATE", nullable= true, unique = false, columnDefinition="default false")
-	private boolean recordState;
+	@Column(name = "IT_RECSTATE", nullable= true, unique = false, columnDefinition="default true")
+	private boolean recordState = true;
 	/** @pdOid 8a74dbe9-dbc9-423d-893f-90d503466737 */
 	@Column(name = "IT_MINQUANT", nullable = false, unique = false, columnDefinition="default 0")
 	private int minQuantity = 0;

@@ -2,6 +2,7 @@ package projara.session.interfaces;
 
 import java.util.Date;
 
+import jess.JessException;
 import projara.model.items.Item;
 import projara.model.items.ItemCategory;
 import projara.model.shop.ActionEvent;
@@ -50,4 +51,6 @@ public interface ItemManagerLocal {
 
 	public ActionEvent addCategoryToAction(int actionId, String itemCategoryCode)
 			throws BadArgumentsException, ItemCategoryException;
+	
+	public void automaticOrdering() throws ItemException, JessException;
 }
