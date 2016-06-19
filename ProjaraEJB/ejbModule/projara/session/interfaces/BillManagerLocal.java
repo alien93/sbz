@@ -9,6 +9,7 @@ import projara.model.shop.BillItem;
 import projara.model.users.Customer;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
+import projara.util.exception.BillNotExistsException;
 import projara.util.exception.ItemException;
 import projara.util.exception.UserException;
 import projara.util.exception.UserNotExistsException;
@@ -47,4 +48,6 @@ public interface BillManagerLocal {
 			BadArgumentsException, UserException, ItemException;
 	public BillInfo makeBillInfo(Bill bill, List<BillCostInfo> listBillCostInfo)
 			throws BillException;
+	public boolean validateBill(Bill bill) throws BillException;
+	public boolean validateBill(int billId) throws BillException;
 }

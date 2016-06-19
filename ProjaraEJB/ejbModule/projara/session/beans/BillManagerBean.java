@@ -624,5 +624,36 @@ public class BillManagerBean implements BillManagerLocal {
 
 		return approveOrder(bill);
 	}
+	
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public boolean validateBill(Bill bill) throws BillException{
+		
+		try{
+			bill = billDao.merge(bill);
+		}catch(Exception e){
+			throw new BillNotExistsException("Bill not exists");
+		}
+		
+		for(BillItem bi:bill.getBillItems()){
+			if(bi.getItem().getInStock() < bi.getQuantity())
+				return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean validateBill(int billId) throws BillException{
+		
+		Bill bill = null;
+		try{
+			bill = billDao.findById(billId);
+		}catch(Exception e){
+			throw new BillNotExistsException("Bill not exists");
+		}
+		
+		return validateBill(bill);
+	}
 
 }
