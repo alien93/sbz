@@ -1,4 +1,4 @@
-var sbzApp = angular.module('sbzApp', ['ngCookies', 'ngRoute','ngResource', 'ui.bootstrap']);
+var sbzApp = angular.module('sbzApp', ['ngCookies', 'ngRoute','ngResource', 'ui.bootstrap', 'ngMaterial', 'ngMessages', 'material.svgAssetsCache']);
 
 sbzApp.config(function($routeProvider){
 				
@@ -7,6 +7,12 @@ sbzApp.config(function($routeProvider){
 							"/kupac",
 							{
 									templateUrl : "views/kupac.html"
+							}
+						)
+						.when(
+							"/kupac/info",
+							{
+									templateUrl : "views/kupac_info.html"
 							}
 						)
 						.when(
