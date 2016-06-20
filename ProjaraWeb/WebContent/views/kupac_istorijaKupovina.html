@@ -1,0 +1,18 @@
+<div>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Oznaka računa</th>
+				<th>Datum kupovine</th>
+				<th>Ukupan iznos</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="racun in racuni" style='cursor: pointer;'  ng-click="pogledajRacun(racun.oznaka)">
+				<td>{{racun.oznaka}}</td>
+				<td>{{racun.datum}}</td>
+				<td>{{racun.ukupanIznos}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
