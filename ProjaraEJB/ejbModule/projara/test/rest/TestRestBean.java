@@ -1,17 +1,33 @@
 package projara.test.rest;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import jess.JessException;
+
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
 import projara.model.dao.interfaces.ActionEventDaoLocal;
 import projara.model.dao.interfaces.BillDaoLocal;
 import projara.model.dao.interfaces.BillDiscountDaoLocal;
@@ -37,6 +53,7 @@ import projara.session.interfaces.BillManagerLocal;
 import projara.session.interfaces.CustomerCategoryManagerLocal;
 import projara.session.interfaces.ItemManagerLocal;
 import projara.session.interfaces.UserManagerLocal;
+import projara.test.TestEntity;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
 import projara.util.exception.CustomerCategoryException;
@@ -91,6 +108,20 @@ public class TestRestBean implements TestRest {
 	@Path("/ok")
 	public String ok() {
 		System.out.println("OK REST");
+		File file = new File(".");
+		System.out.println(file.getAbsolutePath());
+		System.out.println(getClass().getProtectionDomain().getCodeSource()
+				.getLocation().getPath());
+		String papath = getClass().getProtectionDomain().getCodeSource()
+				.getLocation().getPath()+"/../ProjaraWeb.war";
+		
+		try {
+			System.out.println(new File(papath).getCanonicalPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return "JEEEEEEEEE";
 	}
 
@@ -297,23 +328,22 @@ public class TestRestBean implements TestRest {
 		List<Item> q1 = itemManager.filterItems(advSearch1);
 		System.out.println("Svi koji imaju u nazivu 'tem'");
 		printListItem(q1);
-		
+
 		advSearch1.setName("");
 		advSearch1.setId(1);
 		System.out.println("SA ID 1");
 		printListItem(itemManager.filterItems(advSearch1));
-		
+
 		advSearch1.setId(-1);
 		advSearch1.getCategory().setName("sirok");
 		System.out.println("Svi kategorije siroke potrosnje");
 		printListItem(itemManager.filterItems(advSearch1));
-		
+
 		advSearch1.getCategory().setName("");
 		advSearch1.getCostRange().setMaxCost(15000);
 		System.out.println("DO 15000");
 		printListItem(itemManager.filterItems(advSearch1));
-		
-		
+
 		advSearch1.getCategory().setName("televiz");
 		advSearch1.getCostRange().setMinCost(100);
 		System.out.println("Televizori od 3000 do 15000");
@@ -322,7 +352,7 @@ public class TestRestBean implements TestRest {
 	}
 
 	private void printListItem(List<Item> list) {
-		if(list == null || list.isEmpty())
+		if (list == null || list.isEmpty())
 			System.out.println("PRAZNO");
 		for (Item i : list) {
 			System.out.println(i.getId() + " " + i.getName() + " "
@@ -330,6 +360,60 @@ public class TestRestBean implements TestRest {
 					+ i.getCategory().getName());
 		}
 		System.out.println("********************************");
+	}
+
+	@Path("/test/imgupload")
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public void uploadImage(@MultipartForm TestEntity test) {
+		String path = getClass().getProtectionDomain().getCodeSource()
+				.getLocation().getPath()
+				+ "/projara/resources/images/";
+
+		File file = new File(path + "test.jpg");
+
+		try (FileOutputStream fos = new FileOutputStream(new File(path
+				+ "test.jpg"))) {
+			byte[] fileBytes = test.getFile();
+			fos.write(fileBytes);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	@Path("/test/imgdown/{image}")
+	@GET
+	@Produces({"image/png", "image/jpeg", "image/gif"})
+	public Response imageDownload(@PathParam("image") String path) {
+		return null;
+		//String imgPath = "./.."
+		/*
+		ResponseBuilder builder = null;
+		String pathImg = getClass().getProtectionDomain().getCodeSource()
+				.getLocation().getPath()
+				+ "/projara/resources/images/" + path;
+		System.out.println(path);
+		System.out.println(pathImg);
+		try {
+			pathImg = URLEncoder.encode(pathImg, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			builder = Response.seeOther(new URI(pathImg));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return builder.build();
+	*/
 	}
 
 }

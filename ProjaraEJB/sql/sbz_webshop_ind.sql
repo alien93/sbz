@@ -133,6 +133,7 @@ create table ITEM
    IT_ISLOW             bool default false,
    IT_RECSTATE          bool default true,
    IT_MINQUANT          int not null default 0,
+   IT_PIC				varchar(255) not null,
    primary key (IT_ID)
 );
 

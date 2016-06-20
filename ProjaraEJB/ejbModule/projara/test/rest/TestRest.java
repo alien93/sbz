@@ -1,17 +1,17 @@
 package projara.test.rest;
 
-import java.util.List;
-
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import jess.JessException;
-import projara.model.shop.ActionEvent;
+import projara.test.TestEntity;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
 import projara.util.exception.CustomerCategoryException;
@@ -55,4 +55,14 @@ public interface TestRest {
 	@Path("/test/query")
 	@GET
 	public void testQuery();
+	
+	@Path("/test/imgupload")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void uploadImage(TestEntity test);
+	
+	@Path("/test/imgdown/{image}")
+	@GET
+	@Produces({"image/png", "image/jpeg", "image/gif"})
+	public Response imageDownload(@PathParam("image") String path);
 }
