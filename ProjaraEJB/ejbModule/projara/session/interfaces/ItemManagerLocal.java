@@ -1,13 +1,16 @@
 package projara.session.interfaces;
 
 import java.util.Date;
+import java.util.List;
 
+import jess.JessException;
 import projara.model.items.Item;
 import projara.model.items.ItemCategory;
 import projara.model.shop.ActionEvent;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
+import projara.util.json.search.AdvancedSearch;
 
 public interface ItemManagerLocal {
 
@@ -50,4 +53,8 @@ public interface ItemManagerLocal {
 
 	public ActionEvent addCategoryToAction(int actionId, String itemCategoryCode)
 			throws BadArgumentsException, ItemCategoryException;
+	
+	public void automaticOrdering() throws ItemException, JessException;
+	
+	public List<Item> filterItems(AdvancedSearch advSearch);
 }

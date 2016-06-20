@@ -19,6 +19,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -27,6 +29,10 @@ import projara.model.shop.ActionEvent;
 /** @pdOid ee427e5c-a07d-46d8-973e-a8a932f975ea */
 @Entity
 @Table(name = "ITEM_CATEGORY")
+@NamedQueries({
+	@NamedQuery(name = "filterByName", query = "SELECT ic FROM ItemCategory ic WHERE "
+			+ "UPPER(ic.name) LIKE :name")
+})
 public class ItemCategory implements Serializable {
 	/** @pdOid 02aa68bb-53fa-4584-a272-e78dba6eda62 */
 	@Id

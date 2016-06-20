@@ -19,6 +19,7 @@ import projara.util.exception.UserAlreadyExistsException;
 import projara.util.exception.UserException;
 import projara.util.exception.UserNotExistsException;
 import projara.util.interceptors.CheckParametersInterceptor;
+import projara.util.json.view.UserProfileInfoJson;
 
 @Stateless
 @Local(UserManagerLocal.class)
@@ -144,6 +145,111 @@ public class UserManagerBean implements UserManagerLocal {
 							+ customerCategoryCode);
 
 		return setCustomerCategory(cust, custCat);
+	}
+
+	@Override
+	public User updateUser(User user, String firstName, String lastName,
+			String address, String password, String username)
+			throws UserException, BadArgumentsException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public User updateUser(UserProfileInfoJson userProfile)
+			throws UserException, BadArgumentsException {
+		
+		User u = null;
+		try{
+			u = userDao.findById(userProfile.getId());
+		}catch(Exception e){
+			throw new UserNotExistsException("User not exists");
+		}
+		if( u == null)
+			throw new UserNotExistsException("User not exists");
+		
+		switch (userProfile.getUserType()) {
+			case CUSTOMER :{
+				Customer c;
+				try{
+				 c = (Customer)u;
+				}catch(Exception e){
+					throw new UserNotExistsException("Its not customer");
+				}
+				
+				return updateCustomer(c,userProfile);
+			}
+			default :
+			{
+				return updatePerson(u,userProfile);
+			}
+				
+		}
+	}
+
+	@Interceptors({CheckParametersInterceptor.class})
+	private User updatePerson(User u, UserProfileInfoJson userProfile) throws UserException,BadArgumentsException{
+		
+		try{
+			u = userDao.merge(u);
+		}catch(Exception e){
+			throw new UserNotExistsException("User not exists");
+		}
+		
+		String username = userProfile.getUsername().trim();
+		String password = userProfile.getPassword().trim();
+		String firstName = userProfile.getFirstName().trim();
+		String lastName = userProfile.getLastName().trim();
+		
+		if(!username.isEmpty() && !u.getUsername().equals(username)){
+			User u1 = userDao.findByUsername(username);
+			if(u1!=null)
+				throw new UserAlreadyExistsException("Username is already taken");
+			
+			u.setUsername(username);
+		}
+		
+		if(!password.isEmpty() && !u.getPassword().equals(password)){
+			u.setPassword(password);
+		}
+		
+		if(!firstName.isEmpty() && !u.getFirstName().equals(firstName))
+			u.setFirstName(firstName);
+		
+		if(!lastName.isEmpty() && !u.getLastName().equals(lastName))
+			u.setLastName(lastName);
+		
+		
+		try{
+			u = userDao.persist(u);
+		}catch(Exception e){
+			throw new UserException("Some problem occured, try again");
+		}
+		
+		return u;
+	}
+
+	@Interceptors({CheckParametersInterceptor.class})
+	private User updateCustomer(Customer c, UserProfileInfoJson userProfile) throws UserException,BadArgumentsException{
+		
+		c = (Customer)updatePerson(c, userProfile);
+		
+		String address = userProfile.getAddress().trim();
+		
+		if(!address.isEmpty() && !address.equals(userProfile.getAddress())){
+			c.setAddress(address);
+			
+			try{
+				c = (Customer) userDao.persist(c);
+			}catch(Exception e){
+				throw new UserException("Problem occured");
+			}
+		}
+		
+		
+		
+		return c;
 	}
 
 }

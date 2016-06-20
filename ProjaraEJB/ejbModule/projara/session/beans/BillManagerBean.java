@@ -1,5 +1,6 @@
 package projara.session.beans;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -9,7 +10,6 @@ import javax.interceptor.Interceptors;
 
 import jess.JessException;
 import jess.Rete;
-import jess.WorkingMemoryMarker;
 import projara.model.dao.interfaces.ActionEventDaoLocal;
 import projara.model.dao.interfaces.BillDaoLocal;
 import projara.model.dao.interfaces.BillDiscountDaoLocal;
@@ -31,11 +31,18 @@ import projara.model.users.Threshold;
 import projara.session.interfaces.BillManagerLocal;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
+import projara.util.exception.BillNotExistsException;
 import projara.util.exception.ItemException;
 import projara.util.exception.ItemNotExistsException;
 import projara.util.exception.ItemQuantityIsOverLimitException;
+import projara.util.exception.NoBillItemsException;
+import projara.util.exception.NotEnoughItemsException;
+import projara.util.exception.NotEnoughPontsException;
+import projara.util.exception.UserException;
 import projara.util.exception.UserNotExistsException;
 import projara.util.interceptors.CheckParametersInterceptor;
+import projara.util.json.view.BillCostInfo;
+import projara.util.json.view.BillInfo;
 @Stateless
 @Local(BillManagerLocal.class)
 public class BillManagerBean implements BillManagerLocal {
@@ -66,7 +73,7 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@EJB
 	private CustomerCategoryDaoLocal customerCategoryDao;
-	
+
 	@EJB
 	private ThresholdDaoLocal thresholdDao;
 
@@ -90,14 +97,32 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public Bill calculateCost(Bill bill, short points) throws BillException,
-			JessException {
+	public BillInfo calculateCost(Bill bill, short points)
+			throws BillException, JessException {
 
 		try {
 			bill = billDao.merge(bill);
 		} catch (Exception e) {
-			throw new BillException("Bill not exists");
+			throw new BillNotExistsException("Bill not exists");
 		}
+
+		if (bill.getBillItems().isEmpty())
+			throw new NoBillItemsException("Bill is empty");
+
+		// try {
+		// for (BillItem bi : bill.getBillItems()) {
+		// bi.removeAllDiscounts();
+		// bi = billItemDao.persist(bi);
+		// }
+		// bill.removeAllBillDiscounts();
+		// bill = billDao.persist(bill);
+		// } catch (Exception e) {
+		// throw new BillException("Cant remove discounts");
+		// }
+
+		if (points > bill.getCustomer().getPoints())
+			points = (short) bill.getCustomer().getPoints();
+		
 
 		// ///////////////////////////////////
 		// POZOVI JESS /////////////////////
@@ -113,7 +138,7 @@ public class BillManagerBean implements BillManagerLocal {
 		List<ItemCategory> itemCategories = itemCategoryDao.findAll();
 		for (ItemCategory ic : itemCategories) {
 			ic = itemCategoryDao.merge(ic);
-		//	System.out.println("UBACUJE KATEGORIJU: "+ic.getCode()+" "+ic.getName());
+			// System.out.println("UBACUJE KATEGORIJU: "+ic.getCode()+" "+ic.getName());
 			engine.definstance(ic.getClass().getSimpleName(), ic, false);
 		}
 		// ////ACTIONS//////////////
@@ -128,8 +153,8 @@ public class BillManagerBean implements BillManagerLocal {
 		// //Customer category/////
 		CustomerCategory cc = customerCategoryDao.merge(c.getCategory());
 		engine.definstance(cc.getClass().getSimpleName(), cc, false);
-		//THRESHOLDS/////
-		for(Threshold t:cc.getThresholds()){
+		// THRESHOLDS/////
+		for (Threshold t : cc.getThresholds()) {
 			t = thresholdDao.merge(t);
 			engine.definstance(t.getClass().getSimpleName(), t, false);
 		}
@@ -143,18 +168,17 @@ public class BillManagerBean implements BillManagerLocal {
 		System.out.println("UBACUJE BILL ITEMSE");
 		for (BillItem bi : bill.getItems()) {
 			bi = billItemDao.merge(bi);
-			//Item i = itemDao.merge(bi.getItem());
-			//ItemCategory ic = itemCategoryDao.merge(i.getCategory());
-			//i.setCategory(ic);
-			//bi.setItem(i);
-			//System.out.println("UBACEN PROIZVOD: "+bi.getOriginalTotal()+" "+bi.getItem().getCategory().getName());
+			// Item i = itemDao.merge(bi.getItem());
+			// ItemCategory ic = itemCategoryDao.merge(i.getCategory());
+			// i.setCategory(ic);
+			// bi.setItem(i);
+			// System.out.println("UBACEN PROIZVOD: "+bi.getOriginalTotal()+" "+bi.getItem().getCategory().getName());
 			engine.definstance(bi.getClass().getSimpleName(), bi, false);
 		}
 		engine.definstance(bill.getClass().getSimpleName(), bill, false);
-		
-		//WorkingMemoryMarker wmm = engine.mark();
+
+		// WorkingMemoryMarker wmm = engine.mark();
 		// /////BILL ITEMI RACUNANJE//////////
-		
 
 		engine.batch("projara/resources/jess/bill_item_rules.clp");
 
@@ -162,7 +186,7 @@ public class BillManagerBean implements BillManagerLocal {
 
 		bill = billDao.persist(bill);
 
-		//engine.resetToMark(wmm);
+		// engine.resetToMark(wmm);
 
 		// //////////////racuna ukupnu cenu (originalnu)
 		for (BillItem bi : bill.getBillItems()) {
@@ -170,8 +194,8 @@ public class BillManagerBean implements BillManagerLocal {
 		}
 
 		// ///rezoner racuna ukupnu cenu sa popustima //////////
-		//engine.definstance(bill.getClass().getSimpleName(), bill, false);
-		
+		// engine.definstance(bill.getClass().getSimpleName(), bill, false);
+
 		engine.updateObject(bill);
 		engine.batch("projara/resources/jess/bill_rules.clp");
 
@@ -183,21 +207,20 @@ public class BillManagerBean implements BillManagerLocal {
 
 		bill = billDao.persist(bill);
 
-		bill.setSpentPoints((short)points);
-		bill.setAwardPoints((short)0);
+		bill.setSpentPoints((short) points);
+		bill.setAwardPoints((short) 0);
 		double percentBeforeAward0 = bill.getDiscountPercentage();
 		double costBeforeAward0 = bill.getTotal();
 
 		engine.unDefrule("");
-		
+
 		System.out.println("*********************************************");
 		System.out.println("*********************************************");
 		System.out.println("*********************************************");
 		System.out.println("*********************************************");
-		
+
 		System.out.println("Before award: " + percentBeforeAward0 + " "
 				+ costBeforeAward0);
-
 
 		engine.updateObject(bill);
 		engine.batch("projara/resources/jess/award_points.clp");
@@ -208,17 +231,18 @@ public class BillManagerBean implements BillManagerLocal {
 		double percentageAfterP = bill.getDiscountPercentage();
 		double finalCostAfterP = bill.getTotal();
 
-		//NAPRAVI OBJEKAT ZA BILLINFO//
-		
+		// ///////////////////////////////////////////////
+		BillCostInfo withSpent = new BillCostInfo(awardAfterP, spentAfterP,
+				percentageAfterP, finalCostAfterP);
+		// ///////////////////////////////////////////////
+
 		System.out.println("After award+spent_points " + awardAfterP + " "
 				+ spentAfterP + " " + percentageAfterP + " " + finalCostAfterP);
-
 
 		bill.setAwardPoints((short) 0);
 		bill.setSpentPoints((short) 0);
 		bill.setTotal(costBeforeAward0);
 		bill.setDiscountPercentage(percentBeforeAward0);
-
 
 		engine.updateObject(bill);
 		engine.batch("projara/resources/jess/award_points.clp");
@@ -226,29 +250,121 @@ public class BillManagerBean implements BillManagerLocal {
 
 		bill = billDao.persist(bill);
 
-		
-		//JOS JEDAN BILLINFO OBJEKAT
-		
+		// //////////////////////////////
+		BillCostInfo withoutSpentPoints = new BillCostInfo(
+				bill.getAwardPoints(), (short) 0, bill.getDiscountPercentage(),
+				bill.getTotal());
+		// ////////////////////////////
+
 		System.out.println("After award with 0 spent: " + bill.getAwardPoints()
 				+ " " + bill.getSpentPoints() + " "
 				+ bill.getDiscountPercentage() + " " + bill.getTotal());
 
-		
+		List<BillCostInfo> listBillCostInfo = new ArrayList<>();
+		listBillCostInfo.add(withSpent);
+		listBillCostInfo.add(withoutSpentPoints);
+
+		BillInfo billInfo = makeBillInfo(bill, listBillCostInfo);
+
+		return billInfo;
+
+	}
+
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public BillInfo makeBillInfo(Bill bill, List<BillCostInfo> listBillCostInfo)
+			throws BillException {
+
+		try {
+			bill = billDao.merge(bill);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists");
+		}
+
+		BillInfo bi = new BillInfo(bill.getId(), listBillCostInfo);
+
+		return bi;
+	}
+
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public Bill finishOrder(Bill bill, BillCostInfo billCostInfo)
+			throws BillException, BadArgumentsException {
+
+		try {
+			bill = billDao.merge(bill);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists");
+		}
+
+		int custPoints = bill.getCustomer().getPoints();
+		int reservedPoints = bill.getCustomer().getReservedPoints();
+
+		if (custPoints < billCostInfo.getSpentPoints())
+			throw new NotEnoughPontsException("Customer has " + custPoints
+					+ " but requested " + billCostInfo.getSpentPoints());
+
+		bill.getCustomer().setReservedPoints(
+				reservedPoints + billCostInfo.getSpentPoints());
+		bill.getCustomer()
+				.setPoints(custPoints - billCostInfo.getSpentPoints());
+
+		bill.setAwardPoints(billCostInfo.getAwardPoints());
+		bill.setSpentPoints(billCostInfo.getSpentPoints());
+		bill.setDiscountPercentage(billCostInfo.getDiscount());
+		bill.setTotal(billCostInfo.getTotal());
+
+		bill.setState("O");
+
+		try {
+			bill = billDao.persist(bill);
+		} catch (Exception e) {
+			throw new BillException("Problem with ordering");
+		}
+
 		return bill;
-		
-		
 	}
 
+	// vendor cancel
 	@Override
-	public Bill finishOrder(Bill bill) throws BillException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	@Interceptors({CheckParametersInterceptor.class})
+	public Bill cancelOrder(Bill bill) throws BillException, UserException,
+			BadArgumentsException {
 
-	@Override
-	public Bill cancelOrder(Bill bill) throws BillException {
+		try {
+			bill = billDao.merge(bill);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists");
+		}
 
-		return null;
+		int spentPoints = bill.getSpentPoints();
+
+		Customer customer = null;
+		try {
+			customer = (Customer) userDao.merge(bill.getCustomer());
+		} catch (Exception e) {
+			throw new UserNotExistsException("Customer not exists");
+		}
+
+		int reservedPoints = customer.getReservedPoints();
+		int points = customer.getPoints();
+
+		customer.setPoints(spentPoints + points);
+		customer.setReservedPoints(reservedPoints - spentPoints);
+
+		try {
+			customer = (Customer) userDao.persist(customer);
+		} catch (Exception e) {
+			throw new UserException("Problem with persisting customer");
+		}
+
+		try {
+			bill = billDao.persist(bill);
+		} catch (Exception e) {
+			throw new BillException("Problem with persiting bill");
+		}
+
+		return bill;
 	}
 
 	@Override
@@ -263,7 +379,7 @@ public class BillManagerBean implements BillManagerLocal {
 		try {
 			bill = billDao.merge(bill);
 		} catch (Exception e) {
-			throw new BillException("Bill with id: " + bill.getId()
+			throw new BillNotExistsException("Bill with id: " + bill.getId()
 					+ " not exists");
 		}
 
@@ -299,7 +415,8 @@ public class BillManagerBean implements BillManagerLocal {
 		try {
 			bill = billDao.findById(billId);
 		} catch (Exception e) {
-			throw new BillException("Bill with id: " + billId + "not exists");
+			throw new BillNotExistsException("Bill with id: " + billId
+					+ "not exists");
 		}
 
 		try {
@@ -328,21 +445,216 @@ public class BillManagerBean implements BillManagerLocal {
 	}
 
 	@Override
-	public Bill calculateCost(int billid,short points) throws BillException {
-		// TODO Auto-generated method stub
-		return null;
+	public BillInfo calculateCost(int billid, short points)
+			throws BillException, JessException {
+
+		Bill bill = null;
+		try {
+			bill = billDao.findById(billid);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists with id: "
+					+ billid);
+		}
+		if (bill == null)
+			throw new BillNotExistsException("Bill not exists with id: "
+					+ billid);
+
+		return calculateCost(bill, points);
 	}
 
 	@Override
-	public Bill finishOrder(int billId) throws BillException {
-		// TODO Auto-generated method stub
-		return null;
+	@Interceptors({CheckParametersInterceptor.class})
+	public Bill finishOrder(int billId, BillCostInfo billCostInfo)
+			throws BillException, BadArgumentsException {
+
+		Bill bill = null;
+		try {
+			bill = billDao.findById(billId);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists with id: "
+					+ billId);
+		}
+		if (bill == null)
+			throw new BillNotExistsException("Bill not exists with id: "
+					+ billId);
+
+		return finishOrder(bill, billCostInfo);
 	}
 
+	// Vendor cancel
 	@Override
-	public Bill cancelOrder(int billId) throws BillException {
-		// TODO Auto-generated method stub
-		return null;
+	public Bill cancelOrder(int billId) throws BillException,
+			BadArgumentsException, UserException {
+
+		Bill bill = null;
+		try {
+			bill = billDao.findById(billId);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill with id: " + billId
+					+ " not exists");
+		}
+		if (bill == null)
+			throw new BillNotExistsException("Bill with id: " + billId
+					+ " not exists");
+
+		return cancelOrder(bill);
+	}
+
+	// USER REJECT
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public void rejectOrder(Bill bill) throws BillException,
+			BadArgumentsException {
+
+		try {
+			bill = billDao.merge(bill);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Can not delete not existing bill");
+		}
+
+		if (!bill.getState().equals("T"))
+			throw new BillException(
+					"Cant reject order which is canceled, successful or ordered");
+
+		billDao.remove(bill);
+
+	}
+
+	// USER REJECT
+	@Override
+	public void rejectOrder(int billId) throws BillException,
+			BadArgumentsException {
+		Bill bill = null;
+		try {
+			bill = billDao.findById(billId);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Can not delete not existing bill");
+		}
+		if (bill == null)
+			throw new BillNotExistsException("Can not delete not existing bill");
+
+		rejectOrder(bill);
+	}
+
+	// vendor approves
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public Bill approveOrder(Bill bill) throws BillException,
+			BadArgumentsException, UserException, ItemException {
+
+		try {
+			bill = billDao.merge(bill);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists");
+		}
+
+		if (!bill.getState().equals("O")) {
+			throw new BillException("Only ordered bills can be approved");
+		}
+
+		for (BillItem bi : bill.getBillItems()) {
+			try {
+				bi = billItemDao.merge(bi);
+			} catch (Exception e) {
+				throw new BillException("Bill item not exists");
+			}
+			Item item = bi.getItem();
+			try {
+				item = itemDao.merge(item);
+			} catch (Exception e) {
+				throw new ItemNotExistsException("Item not exists");
+			}
+
+			if (item.getInStock() < bi.getQuantity())
+				throw new NotEnoughItemsException("Item: " + item.getName()
+						+ " in stock: " + item.getInStock() + " requested: "
+						+ bi.getQuantity());
+			
+			item.setInStock(item.getInStock() - (int)bi.getQuantity());
+			
+			//item = itemDao.persist(item);
+		}
+
+		bill.setState("S");
+		int awardPoints = bill.getAwardPoints();
+		int spentPoints = bill.getSpentPoints();
+
+		Customer c = bill.getCustomer();
+		try {
+			c = (Customer) userDao.merge(bill.getCustomer());
+		} catch (Exception e) {
+			throw new UserNotExistsException("Customer not exists");
+		}
+
+		int custReserved = bill.getCustomer().getReservedPoints();
+		int custPoints = bill.getCustomer().getPoints();
+
+		bill.getCustomer().setReservedPoints(custReserved - spentPoints);
+		bill.getCustomer().setPoints(custPoints + awardPoints);
+
+		try {
+			c = (Customer) userDao.persist(c);
+		} catch (Exception e) {
+			throw new UserException("Problem with points");
+		}
+
+		try {
+			bill = billDao.persist(bill);
+		} catch (Exception e) {
+			throw new BillException("Problem with bill and points");
+		}
+
+		return bill;
+	}
+
+	// vendor approves
+	@Override
+	public Bill approveOrder(int billId) throws BillException,
+			BadArgumentsException, UserException, ItemException {
+
+		Bill bill = null;
+		try {
+			bill = billDao.findById(billId);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists with id: "
+					+ billId);
+		}
+		if (bill == null)
+			throw new BillNotExistsException("Bill not exists with id: "
+					+ billId);
+
+		return approveOrder(bill);
+	}
+	
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public boolean validateBill(Bill bill) throws BillException{
+		
+		try{
+			bill = billDao.merge(bill);
+		}catch(Exception e){
+			throw new BillNotExistsException("Bill not exists");
+		}
+		
+		for(BillItem bi:bill.getBillItems()){
+			if(bi.getItem().getInStock() < bi.getQuantity())
+				return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean validateBill(int billId) throws BillException{
+		
+		Bill bill = null;
+		try{
+			bill = billDao.findById(billId);
+		}catch(Exception e){
+			throw new BillNotExistsException("Bill not exists");
+		}
+		
+		return validateBill(bill);
 	}
 
 }

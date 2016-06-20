@@ -45,5 +45,10 @@
     ?bill <- (Bill (discountPercentage ?discPerc)(originalTotal ?origTot))
   	=>
     (printout t ?origTot" "?discPerc crlf)
-    (modify ?bill (total (- ?origTot (/ (* ?origTot ?discPerc) 100))))  
+    (bind ?newDisc ?discPerc)
+    (if (> ?newDisc 100) then(
+            (bind ?newDisc 100)
+            ))
+    (modify ?bill (total (- ?origTot (/ (* ?origTot ?newDisc) 100))))  
  )
+

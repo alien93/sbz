@@ -6,12 +6,30 @@
 
 (defrule umanji_za_poene
     "Umanjuje ukupni racun za poene"
-    (declare (salience 2)(no-loop TRUE))
+    (declare (salience 3)(no-loop TRUE))
     ?bill <- (Bill (spentPoints ?spentP &:(> ?spentP 0))(total ?total)(discountPercentage ?disc)(originalTotal ?origTot))
     =>
-    (modify ?bill (total (- ?total (/ (* ?origTot ?spentP) 100)) ))
-    (modify ?bill (discountPercentage (+ ?disc ?spentP)))
+    (bind ?diff (- (* ?spentP 50) ?total ))
+    (bind ?newSpent ?spentP)
+    (if (> ?diff 0) then 
+            (bind ?intValue (div ?diff 50))
+            (bind ?newSpent (- ?spentP ?intValue))
+        	(modify ?bill (total 0))
+        	;(bind ?actualValue (/ ?diff 50))
+            ;(if (> ?actualValue ?intValue) then 
+            ;        (bind ?newSpent (- ?spentP (+ ?intValue 1)))
+            ;        
+            ;    else 
+            ;        (bind ?newSpent (- ?spentP ?intValue))
+            ;        )
+            else
+        		(modify ?bill (total (- ?total  (* ?newSpent 50))))
+        )
+    (modify ?bill (spentPoints ?newSpent))
+    
+    ;(modify ?bill (discountPercentage (+ ?disc ?spentP)))
     )
+
 
 (defrule dodaj_poene
     "Dodaje poene na osnovu konacne cene racuna"

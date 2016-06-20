@@ -21,6 +21,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -30,6 +32,10 @@ import projara.model.shop.BillItem;
 /** @pdOid e57bd824-c576-430b-bece-d500604bfcf0 */
 @Entity
 @Table(name = "ITEM")
+@NamedQueries({
+	@NamedQuery(name="advancedSearch", query = "SELECT i FROM Item i WHERE "
+			+ "UPPER(i.name) LIKE :name AND i.price >= :minCost AND i.price <= :maxCost")
+})
 public class Item implements Serializable {
 	/** @pdOid 8dad3df8-c3ec-4c71-8a6e-244868d2e25e */
 	@Id
@@ -52,8 +58,8 @@ public class Item implements Serializable {
 	@Column(name = "IT_ISLOW", nullable= true, unique = false, columnDefinition="default false")
 	private boolean needOrdering;
 	/** @pdOid 26718804-e665-474c-b35e-dcdf37b6b242 */
-	@Column(name = "IT_RECSTATE", nullable= true, unique = false, columnDefinition="default false")
-	private boolean recordState;
+	@Column(name = "IT_RECSTATE", nullable= true, unique = false, columnDefinition="default true")
+	private boolean recordState = true;
 	/** @pdOid 8a74dbe9-dbc9-423d-893f-90d503466737 */
 	@Column(name = "IT_MINQUANT", nullable = false, unique = false, columnDefinition="default 0")
 	private int minQuantity = 0;
