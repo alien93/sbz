@@ -34,7 +34,10 @@ import projara.model.items.ItemCategory;
 		@NamedQuery(name = "findByUsername", query = "SELECT u FROM User u WHERE"
 				+ " u.username LIKE :username"),
 		@NamedQuery(name = "findByUsernameAndPassword", query = "SELECT u FROM User u WHERE"
-				+ " u.username LIKE :username AND u.password LIKE :password")
+				+ " u.username LIKE :username AND u.password LIKE :password"),
+		@NamedQuery(name = "singleFieldQuery", query = "SELECT u FROM User u WHERE "
+				+ "(UPPER(u.username) LIKE :text OR UPPER(u.firstName) LIKE :text OR UPPER(u.lastName) LIKE :text) "
+				+ "AND UPPER(u.role) LIKE :role")
 })
 public class User implements Serializable {
 	/** @pdOid b832cb24-04de-4ac9-851f-0a219d727bcd */

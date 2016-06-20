@@ -1,5 +1,7 @@
 package projara.model.dao.beans;
 
+import java.util.List;
+
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
@@ -47,6 +49,21 @@ public class UserDaoBean extends GenericDaoBean<User, Integer>
 		try{
 			result = (User)q.getSingleResult();
 		}catch(Exception e){}
+		
+		return result;
+	}
+
+	@Override
+	public List<User> singleFieldQuery(String text, String role) {
+		
+		Query q = em.createNamedQuery("singleFieldQuery");
+		q.setParameter("text", "%"+text.toUpperCase()+"%");
+		q.setParameter("role", "%"+role.toUpperCase()+"%");
+		
+		List<User> result = null;
+		try{
+			result = q.getResultList();
+		}catch(Exception e){e.printStackTrace();}
 		
 		return result;
 	}
