@@ -239,7 +239,7 @@ public class TestRestBean implements TestRest {
 		cZlatni = custCatManager.addThreshold(cZlatni, t);
 		cust1 = userManager.setCustomerCategory(cust1, cZlatni);
 
-		cust1.setPoints(20);
+		cust1.setPoints(3000);
 
 		cust1 = (Customer) user.persist(cust1);
 
@@ -276,7 +276,7 @@ public class TestRestBean implements TestRest {
 
 		BillItem bi4 = billManager.addBillItem(bill1, i5, 6);
 
-		BillInfo bi = billManager.calculateCost(bill1, (short) 10);
+		BillInfo bi = billManager.calculateCost(bill1, (short) 2390);
 
 		BillCostInfo withPoints = bi.getCostInfos().get(0);
 

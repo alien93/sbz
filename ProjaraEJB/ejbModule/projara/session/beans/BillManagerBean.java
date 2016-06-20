@@ -122,6 +122,7 @@ public class BillManagerBean implements BillManagerLocal {
 
 		if (points > bill.getCustomer().getPoints())
 			points = (short) bill.getCustomer().getPoints();
+		
 
 		// ///////////////////////////////////
 		// POZOVI JESS /////////////////////
