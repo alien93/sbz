@@ -370,9 +370,11 @@ public class TestRestBean implements TestRest {
 				.getLocation().getPath()
 				+ "/projara/resources/images/";
 
-		File file = new File(path + "test.jpg");
+		String warPath = getClass().getProtectionDomain().getCodeSource()
+		.getLocation().getPath()+"/../ProjaraWeb.war/images";
+		File file = new File(warPath);
 
-		try (FileOutputStream fos = new FileOutputStream(new File(path
+		try (FileOutputStream fos = new FileOutputStream(new File(warPath+"/"
 				+ "test.jpg"))) {
 			byte[] fileBytes = test.getFile();
 			fos.write(fileBytes);
@@ -386,34 +388,5 @@ public class TestRestBean implements TestRest {
 
 	}
 
-	@Path("/test/imgdown/{image}")
-	@GET
-	@Produces({"image/png", "image/jpeg", "image/gif"})
-	public Response imageDownload(@PathParam("image") String path) {
-		return null;
-		//String imgPath = "./.."
-		/*
-		ResponseBuilder builder = null;
-		String pathImg = getClass().getProtectionDomain().getCodeSource()
-				.getLocation().getPath()
-				+ "/projara/resources/images/" + path;
-		System.out.println(path);
-		System.out.println(pathImg);
-		try {
-			pathImg = URLEncoder.encode(pathImg, "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			builder = Response.seeOther(new URI(pathImg));
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return builder.build();
-	*/
-	}
 
 }

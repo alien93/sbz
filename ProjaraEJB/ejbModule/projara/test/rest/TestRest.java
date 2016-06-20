@@ -61,8 +61,4 @@ public interface TestRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void uploadImage(TestEntity test);
 	
-	@Path("/test/imgdown/{image}")
-	@GET
-	@Produces({"image/png", "image/jpeg", "image/gif"})
-	public Response imageDownload(@PathParam("image") String path);
 }
