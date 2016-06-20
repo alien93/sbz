@@ -13,5 +13,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="/Projara/EarContent/lib/jess.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
