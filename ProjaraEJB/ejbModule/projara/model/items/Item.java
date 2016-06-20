@@ -63,6 +63,8 @@ public class Item implements Serializable {
 	/** @pdOid 8a74dbe9-dbc9-423d-893f-90d503466737 */
 	@Column(name = "IT_MINQUANT", nullable = false, unique = false, columnDefinition="default 0")
 	private int minQuantity = 0;
+	@Column(name = "IT_PIC", nullable = false, unique = false, columnDefinition="varchar(255)")
+	private String picture;
 
 	/** @pdRoleInfo migr=no name=ItemCategory assc=itemCategory mult=1..1 side=A */
 	@ManyToOne
@@ -286,6 +288,8 @@ public class Item implements Serializable {
 	public void setDateBeforePersist(){
 		if(createdOn == null)
 			createdOn = new Date();
+		if(picture == null)
+			picture = "";
 	}
 
 	public Item(String name, double price, int inStock) {
@@ -334,6 +338,14 @@ public class Item implements Serializable {
 		}
 		
 		return false;
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 	
 	
