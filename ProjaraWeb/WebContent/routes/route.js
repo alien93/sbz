@@ -28,9 +28,33 @@ sbzApp.config(function($routeProvider){
 							}
 						)
 						.when(
+							"/menadzer/kupci",
+							{
+									templateUrl : "views/menadzer_kategorije_kupaca.html"
+							}
+						)
+						.when(
+							"/menadzer/artikli",
+							{
+									templateUrl : "views/menadzer_kategorije_artikala.html"
+							}
+						)
+						.when(
+							"/menadzer/akcije",
+							{
+									templateUrl : "views/menadzer_akcije.html"
+							}
+						)
+						.when(
 							"/prodavac",
 							{
 									templateUrl : "views/prodavac.html"
+							}
+						)
+						.when(
+							"/prodavac/narudzbe",
+							{
+									templateUrl : "views/prodavac_narudzbe.html"
 							}
 						)
 						.when(
