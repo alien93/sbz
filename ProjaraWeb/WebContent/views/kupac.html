@@ -23,11 +23,8 @@
 	 				<img src="images/defaultImage.png"  style="width:180px;height:120px;" ng-click="viseInformacija(artikal.oznaka)">
 				    <figcaption>
 				    	<ul id="artikalPodaci">
-				    		<li>Oznaka: {{artikal.oznaka}}</li>
-				    		<li>Naziv: {{artikal.naziv}}</li>
-				    		<li>Kategorija: {{artikal.kategorija}}</li>
-				    		<li>Popust: {{artikal.popust}}</li>
-				    		<li>Cena: <b>{{artikal.cena}}</b></li>
+				    		<li>{{artikal.naziv}}</li>
+				    		<li><b><font size="5">{{artikal.cena}},00 RSD</font></b></li>
 				    		<li>
 				    			<input id="kolicinaArtikla" type="number" min=0 value=0>
 				    			<button type="button" class="btn btn-default btn-sm">

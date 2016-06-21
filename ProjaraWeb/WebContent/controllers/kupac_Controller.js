@@ -33,7 +33,12 @@ angular.module('sbzApp')
 					
 	}])
 	
-	.controller('kupac_artikalInfoController', ['$scope', 
-	       function($scope){
+	.controller('kupac_artikalInfoController', ['$scope', '$uibModalInstance', 'oznakaArtikla',
+	       function($scope, $uibModalInstance, oznakaArtikla){
+				
+				$scope.oznakaArtikla = oznakaArtikla;
 		
+				$scope.zatvori = function(){
+					$uibModalInstance.close();
+				}
 	}]);
