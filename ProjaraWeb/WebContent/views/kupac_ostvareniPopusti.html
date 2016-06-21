@@ -1,6 +1,8 @@
 <div class="col-md-2"></div>
 <div class="col-md-8" ng-controller="kupac_ostvareniPopustiController">
 	<h2>Izveštaj</h2>
+	<button class="btn btn-danger" style="float:right;" ng-click="otkazKupovine()">Otkaži kupovinu</button>
+
 	<br><br><br>
 	<h4>Lista primenjenih popusta na stavke računa</h4>
 	<table class="table table-striped">
@@ -39,16 +41,77 @@
 			</tr>
 		</tbody>
 	</table>
+	<br><br>
+	<h4>Bodovi i iznos računa</h4>
 	<div class="col-md-6">
-		<label>Ukupna cena računa: {{racun.ukupnaCena}}</label><br>
-		<label>Procenat umanjenja: {{racun.procenatUmanjenja}}%</label><br>
-		<label>Plaćena cena: {{racun.placenaCena}}</label>
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th colspan=5>Račun sa iskorišćenim bodovima</th>
+				</tr>
+			</thead>
+				<tr>
+					<td>Ukupna cena računa:</th>
+					<td>{{racun.ukupnaCena}}</td>
+				</tr>
+				<tr>
+					<td>Procenat umanjenja:</th>
+					<td>{{racun.procenatUmanjenja}}%</td>
+				</tr>
+				<tr>
+					<td>Plaćena cena:</th>
+					<td>{{racun.placenaCena}}</td>
+				</tr>
+				<tr>
+					<td>Broj potrošenih nagradnih bodova:</th>
+					<td>{{racun.brPotrosenihBodova}}</td>
+				</tr>
+				<tr>
+					<td>Broj ostvarenih nagradnih bodova:</th>
+					<td>{{racun.brOstvarenihBodova}}</td>
+				</tr>
+				<tr>
+					<td colspan="2"><button class="btn btn-success" style="float:right;">Koristi ovaj račun</button></td>
+				</tr>
+			<tbody>
+			</tbody>
+		</table>
 	</div>
 	<div class="col-md-6">
-		<label>Broj potrošenih nagradnih bodova: {{racun.brPotrosenihBodova}}</label><br>
-		<label>Broj ostvarenih nagradnih bodova: {{racun.brOstvarenihBodova}}</label><br>
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th colspan=5>Račun bez iskorišćenih bodova</th>
+				</tr>
+			</thead>
+				<tr>
+					<td>Ukupna cena računa:</th>
+					<td>{{racun.ukupnaCena}}</td>
+				</tr>
+				<tr>
+					<td>Procenat umanjenja:</th>
+					<td>{{racun.procenatUmanjenja}}%</td>
+				</tr>
+				<tr>
+					<td>Plaćena cena:</th>
+					<td>{{racun.placenaCena}}</td>
+				</tr>
+				<tr>
+					<td>Broj potrošenih nagradnih bodova:</th>
+					<td>{{racun.brPotrosenihBodova}}</td>
+				</tr>
+				<tr>
+					<td>Broj ostvarenih nagradnih bodova:</th>
+					<td>{{racun.brOstvarenihBodova}}</td>
+				</tr>
+				<tr>
+					<td colspan="2"><button class="btn btn-success" style="float:right;">Koristi ovaj račun</button></td>
+				</tr>
+			<tbody>
+			</tbody>
+		</table>
 	</div>
 	<br><br><br><br><br><br><br><br><br>
-	<button class="btn btn-primary" style="float:right;" ng-click="naslovna()">Nazad na naslovnu</button>
+	<br><br><br><br><br><br><br><br><br>
 </div>
 <div class="col-md-2"></div>

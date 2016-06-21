@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('kupac_korpaController', ['$scope', 
-	        function($scope){
+	.controller('kupac_korpaController', ['$scope', '$location',
+	        function($scope, $location){
 		
 				//-----------------------------------test podaci------------------------------------
 				var artikal1={
@@ -38,23 +38,20 @@ angular.module('sbzApp')
 				//-----------------------------------/test podaci------------------------------------
 
 				//za uplatu
-				for(var i=0; i<$scope.artikli.length; i++){
-					$scope.zaUplatu+=parseInt($scope.artikli[i].ukupno);
+				var izracunajZaUplatu = function(){
+					$scope.zaUplatu = 0;
+					for(var i=0; i<$scope.artikli.length; i++){
+						$scope.zaUplatu+=parseInt($scope.artikli[i].ukupno);
+					}
+				};
+				izracunajZaUplatu();
+				
+				$scope.obrisiIzKorpe = function(indeks, oznakaArtikla){
+					$scope.artikli.splice(indeks, 1);
+					izracunajZaUplatu();
 				}
 				
-		
-				//bodovi
-				$scope.bodovi = 0;
-				$scope.tekst = "bodova.";
-				$scope.izmenaBodova = function(){
-					if($scope.bodovi == 1){
-						$scope.tekst = "bod.";
-					}
-					else if($scope.bodovi>1 && $scope.bodovi<5){
-						$scope.tekst = "boda."
-					}
-					else{
-						$scope.tekst = "bodova.";
-					}
+				$scope.racunOdabran = function(){
+					$location.path("/kupac/korpa/popusti");
 				}
 	}])
