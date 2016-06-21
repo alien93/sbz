@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('kupac_racun1Controller', ['$scope', 
-	        function($scope){
+	.controller('kupac_racun1Controller', ['$scope', '$location',
+	        function($scope, $location){
 		
 				//-----------------------------------test podaci------------------------------------
 				var artikal1={
@@ -52,6 +52,6 @@ angular.module('sbzApp')
 				}
 				
 				$scope.racunOdabran = function(){
-					
+					$location.path("/kupac/korpa/popusti");
 				}
 	}])

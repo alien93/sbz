@@ -1,38 +1,54 @@
-<div ng-controller="kupac_ostvareniPopustiController">
+<div class="col-md-2"></div>
+<div class="col-md-8" ng-controller="kupac_ostvareniPopustiController">
+	<h2>Izveštaj</h2>
+	<br><br><br>
+	<h4>Lista primenjenih popusta na stavke računa</h4>
 	<table class="table table-striped">
 		<thead>
 			<tr>
 				<th>Oznaka</th>
 				<th>Naziv</th>
-				<th>Cena</th>
-				<th>Količina</th>
-				<th>Originalna cena</th>
-				<th>Popust</th>
-				<th>Ukupno</th>
-				<th></th>
+				<th>Opis</th>
+				<th>Artikal</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="artikal in artikli">
-				<td>{{artikal.oznaka}}</td>
+				<td>{{artikal.popust.oznaka}}</td>
+				<td>{{artikal.popust.naziv}}</td>
+				<td>{{artikal.popust.opis}}</td>
 				<td>{{artikal.naziv}}</td>
-				<td>{{artikal.cena}}</td>
-				<td>{{artikal.kolicina}}</td>
-				<td>{{artikal.originalnaCena}}</td>
-				<td>{{artikal.popust}}</td>
-				<td>{{artikal.ukupno}}</td>
-				<td>
-					<button class="btn" data-toggle="tooltip" title="Obriši iz korpe" ng-click="obrisiIzKorpe($index, artikal.oznaka)">
-					    <span class="glyphicon glyphicon-remove"></span>
-					</button>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=6></td>
-				<td>Za uplatu</td>
-				<td>{{zaUplatu}}</td>
 			</tr>
 		</tbody>
 	</table>
-	<button class="btn btn-primary" style="float:right;" ng-click="racunOdabran()">Koristi ovaj račun</button>
+	<br><br>
+	<h4>Lista primenjenih popusta na ceo račun</h4>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Oznaka</th>
+				<th>Popust</th>
+				<th>Opis</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="popust in popusti">
+				<td>{{popust.oznaka}}</td>
+				<td>{{popust.naziv}}</td>
+				<td>{{popust.opis}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="col-md-6">
+		<label>Ukupna cena računa: {{racun.ukupnaCena}}</label><br>
+		<label>Procenat umanjenja: {{racun.procenatUmanjenja}}%</label><br>
+		<label>Plaćena cena: {{racun.placenaCena}}</label>
+	</div>
+	<div class="col-md-6">
+		<label>Broj potrošenih nagradnih bodova: {{racun.brPotrosenihBodova}}</label><br>
+		<label>Broj ostvarenih nagradnih bodova: {{racun.brOstvarenihBodova}}</label><br>
+	</div>
+	<br><br><br><br><br><br><br><br><br>
+	<button class="btn btn-primary" style="float:right;" ng-click="naslovna()">Nazad na naslovnu</button>
 </div>
+<div class="col-md-2"></div>
