@@ -11,8 +11,8 @@
 		<div class="row">
 			<div class="col-md-1"> &nbsp; </div>
 			<div class="col-md-4">
-				<select class="form-control" ng-model="izabraniStatus" ng-change="prikaziOdgRacune()"
-					ng-options="x for x in statusiRacuna">
+				<select class="form-control" ng-model="izabranoStanje" ng-change="prikaziOdgRacune()"
+					ng-options="x for x in stanjaRacuna">
 				</select>
 			</div>
 			<div class="col-md-7"></div>
@@ -26,18 +26,18 @@
 				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
-							<th>Oznaka narudžbe</th>
+							<th>Oznaka računa</th>
 							<th>Oznaka kupca</th>
-							<th>Status narudžbe</th>
-							<th>Detalji o narudžbi</th>
+							<th>Status računa</th>
+							<th>Detalji o računu</th>
 							<th>&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="nn in narudzbe | filter : prikaziOdgovarajuce">
-							<td>{{nn.orderID}}</td>
-							<td>{{nn.customerID}}</td>
-							<td>{{nn.status}}</td>
+						<tr ng-repeat="racun in racuni | filter : prikaziOdgovarajuce">
+							<td>{{racun.oznaka}}</td>
+							<td>{{racun.oznakaKupca}}</td>
+							<td>{{racun.stanje}}</td>
 							<td>
 								<a style='cursor: pointer;' ng-click="showDetails($index); $event.stopPropagation();"> 
 									Detalji 
@@ -54,7 +54,5 @@
 		    </div>
 		    
 		    <div class="col-md-1"> &nbsp; </div> 
-	
-
 	</div>
 </div>
