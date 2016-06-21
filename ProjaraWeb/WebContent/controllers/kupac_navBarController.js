@@ -7,4 +7,7 @@ angular.module('sbzApp')
 				$scope.podaciOKorisniku = function(){
 					$location.path('/kupac/info');
 				};
+				$scope.korpa = function(){
+					$location.path('/kupac/korpa');
+				}
 	}]);
