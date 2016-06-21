@@ -288,8 +288,8 @@ public class Item implements Serializable {
 	public void setDateBeforePersist(){
 		if(createdOn == null)
 			createdOn = new Date();
-		if(picture == null)
-			picture = "";
+		if(picture == null || picture.isEmpty())
+			picture = "defaultImage.png";
 	}
 
 	public Item(String name, double price, int inStock) {
