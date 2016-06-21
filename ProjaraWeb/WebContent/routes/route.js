@@ -52,6 +52,12 @@ sbzApp.config(function($routeProvider){
 							}
 						)
 						.when(
+							"/prodavac/narudzbe",
+							{
+									templateUrl : "views/prodavac_narudzbe.html"
+							}
+						)
+						.when(
 							"/prijava",
 							{
 									templateUrl: "views/prijava.html"
