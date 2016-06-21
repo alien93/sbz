@@ -1,10 +1,75 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>EBAY copycat</title>
-</head>
-<body>
-	<h1>Ovo je prijava</h1>
-</body>
-</html>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12"> &nbsp; </div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-4"> &nbsp; </div>
+		<div class="col-md-4">
+			<img alt="WebShop" src="images/logo.png" class="img-circle center-block" width="200px" height="200px" />
+		</div>
+		<div class="col-md-4"></div>
+	</div>
+	
+	<!-- 
+	<br/>
+	<div class="row">
+		<div class="col-md-4"> &nbsp; </div>
+		<div class="col-md-4"> <b> Prijava korisnika </b> </div>
+		<div class="col-md-4"> &nbsp; </div>
+	</div> 
+	-->
+	
+	<div class="row">
+		<div class="col-md-12"> &nbsp; </div>
+	</div>
+	
+	<!-- Error message -->
+	<div class="row">
+		<div class="col-md-offset-4 col-md-4">
+			<div class="alert alert-danger" role="alert" ng-show="error">
+            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            	{{errorMessage}}
+        	</div>
+		</div>
+		<div class="col-md-4"> &nbsp; </div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-4"> &nbsp; </div>
+		<div class="col-md-4">
+			<form role="form" name="loginForma" accept-charset="UTF-8"
+				  data-ng-controller="prijava_Controller" ng-submit="login()">
+				  
+				<div class="form-group">
+					<label for="idUsername">
+						 Korisničko ime 
+					</label>
+					<input type="text" class="form-control" id="idUsername"
+						   ng-model="user.username" placeholder="" required> 
+				</div>
+				
+				<div class="form-group">
+					<label for="idPassword">
+						 Lozinka 
+					</label>
+					<input type="password" class="form-control" id="idPassword" 
+						   ng-model="user.password" placeholder="" required>
+				</div>
+				
+				<div class="form-group">
+					<label for="idRole">
+						  Uloga korisnika
+					</label> <br/>
+					<select id="idRole" class="form-control" ng-model="user.role" ng-options="x for x in roles">
+					</select>
+					<br/>
+				</div>
+				
+				<input type="submit" value="Log in" class="btn btn-primary btn-block">
+			</form>
+		</div>
+		
+		<div class="col-md-4"> &nbsp; </div>
+	</div>
+</div>
