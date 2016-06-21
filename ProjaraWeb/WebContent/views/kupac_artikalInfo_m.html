@@ -1,0 +1,45 @@
+<div modal="showModal" close="zatvori()">
+    <div class="modal-header">
+        <h4>Pregled računa {{artikal.oznaka}}</h4>
+    </div>
+    <div class="modal-body">
+    	<div class="col-md-6">
+    		<img src="images/defaultImage.png"  style="width:180px;height:120px;" ng-click="viseInformacija(artikal.oznaka)">
+    	</div>
+    	<div class="col-md-6">
+    		<table class="table table-striped">
+    			<tr>
+    				<td>Naziv:</td>
+    				<td></td>
+    			</tr>
+    			<tr>
+    				<td>Kategorija:</td>
+    				<td></td>
+    			</tr>
+    			<tr>
+    				<td>Cena:</td>
+    				<td></td>
+    			</tr>
+    			<tr>
+    				<td>Akcijski događaj:</td>
+    				<td></td>
+    			</tr>
+    			<tr>
+    				<td>Trajanje akcije:</td>
+    				<td></td>
+    			</tr>
+    			<tr>
+    				<td>Popust:</td>
+    				<td></td>
+    			</tr>
+    			<tr>
+    				<td>Cena sa popustom:</td>
+    				<td></td>
+    			</tr>
+    		</table>
+    	</div>	
+    </div>
+    <div class="modal-footer">
+        <button class="btn" ng-click="zatvori()">Zatvori</button>
+    </div>
+</div>

@@ -8,7 +8,11 @@ angular.module('sbzApp')
 					$location.path('/kupac/info');
 				};
 				
-				 $scope.korpa = function(ev) {
-						$location.path('/kupac/korpa');
+				 $scope.korpa = function() {
+					$location.path('/kupac/korpa');
+				 }
+				 
+				 $scope.odjava = function(){
+					$location.path('/prijava');
 				 }
 	}])

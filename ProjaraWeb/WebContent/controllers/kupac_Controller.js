@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('kupac_Controller', ['$scope', 
-			function($scope){
+	.controller('kupac_Controller', ['$scope', '$uibModal',
+			function($scope, $uibModal){
 			
 				//-------------------------------------------test podaci-------------------------------------
 					
@@ -19,8 +19,21 @@ angular.module('sbzApp')
 				//-------------------------------------------/test podaci-------------------------------------
 
 					$scope.viseInformacija = function(oznakaArtikla){
-						console.log('hello from vise informacija');
-						console.log(oznakaArtikla);
+						var modalInstance = $uibModal.open({
+							animation: true,
+							templateUrl: 'views/kupac_artikalInfo_m.html',
+							controller: 'kupac_artikalInfoController',
+							resolve:{
+								oznakaArtikla : function(){
+									return oznakaArtikla;
+								}
+							}
+						});
 					}
 					
+	}])
+	
+	.controller('kupac_artikalInfoController', ['$scope', 
+	       function($scope){
+		
 	}]);
