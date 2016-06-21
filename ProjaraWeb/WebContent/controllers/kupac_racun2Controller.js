@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('kupac_racun2Controller', ['$scope', 
-	        function($scope){
+	.controller('kupac_racun2Controller', ['$scope', '$location',
+	        function($scope, $location){
 		
 				//-----------------------------------test podaci------------------------------------
 				var artikal1={
@@ -48,5 +48,9 @@ angular.module('sbzApp')
 				$scope.obrisiIzKorpe = function(indeks, oznakaArtikla){
 					$scope.artikli.splice(indeks, 1);
 					izracunajZaUplatu();
+				}
+				
+				$scope.racunOdabran = function(){
+					$location.path("/kupac/korpa/popusti");
 				}
 	}])
