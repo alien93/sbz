@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('prodavac_narudzbeController', ['$scope', 
-		function($scope){
+	.controller('prodavac_narudzbeController', ['$scope', '$uibModal', 
+		function($scope, $uibModal){
 			
 		 	$scope.statusiRacuna = ["SVI RAČUNI", "NARUČENO", "USPEŠNO REALIZOVANO", "OTKAZANO"];
 		 	$scope.izabraniStatus = $scope.statusiRacuna[0];
@@ -15,12 +15,28 @@ angular.module('sbzApp')
 		 	
 		 	$scope.narudzbe = [nn1, nn2, nn3, nn4, nn5];
 		 	$scope.prikaziOdgRacune = function() {
-		 		console.log('prikazi odg racune');
+		 		// Postavljanje promjenljive po kojoj se vrsi filtriranje po txt sadrzaju
 		 		if ($scope.izabraniStatus == $scope.statusiRacuna[0]) {
 		 			$scope.prikaziOdgovarajuce = "";
-		 		} 
-		 		else 
+		 		} else {
 		 			$scope.prikaziOdgovarajuce = $scope.izabraniStatus;
+		 		}		 		
+		 	};
+		 	
+		 	$scope.showDetails = function(index) {
+		 		var modalInstance = $uibModal.open({
+					animation: false,
+					templateUrl: 'views/prodavac_racunInfo_m.html',
+					controller: 'prodavac_racunInfoController',
+					resolve: {
+						items: function(){
+								return $scope.narudzbe[index];
+							},
+						index: function(){
+								return index;
+							}
+						}
+			});
 		 		
 		 	};
 
