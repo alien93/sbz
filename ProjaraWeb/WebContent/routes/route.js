@@ -22,6 +22,12 @@ sbzApp.config(function($routeProvider){
 							}
 						)
 						.when(
+							"/kupac/korpa/popusti",
+							{
+									templateUrl : "views/kupac_ostvareniPopusti.html"
+							}
+						)
+						.when(
 							"/menadzer",
 							{
 									templateUrl : "views/menadzer.html"

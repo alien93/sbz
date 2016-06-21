@@ -1,5 +1,7 @@
 package projara.test.rest;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -18,6 +20,7 @@ import projara.util.exception.CustomerCategoryException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.exception.UserException;
+import projara.util.json.view.ItemJson;
 
 public interface TestRest {
 
@@ -60,5 +63,15 @@ public interface TestRest {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void uploadImage(TestEntity test);
+	
+	@GET
+	@Path("/test/items/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ItemJson getItemById(@PathParam("id") int id);
+	
+	@GET
+	@Path("/test/items")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<ItemJson> getItems();
 	
 }

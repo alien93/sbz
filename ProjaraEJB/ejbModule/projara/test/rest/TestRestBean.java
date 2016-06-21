@@ -1,5 +1,6 @@
 package projara.test.rest;
 
+import java.awt.ItemSelectable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -65,6 +66,7 @@ import projara.util.json.search.ItemCategorySearch;
 import projara.util.json.search.ItemCostSearch;
 import projara.util.json.view.BillCostInfo;
 import projara.util.json.view.BillInfo;
+import projara.util.json.view.ItemJson;
 
 @Stateless
 @Path("/test")
@@ -386,6 +388,48 @@ public class TestRestBean implements TestRest {
 			e.printStackTrace();
 		}
 
+	}
+	
+	@GET
+	@Path("/test/items/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ItemJson getItemById(@PathParam("id") int id){
+		
+		try {
+			return itemManager.transformToJson(item.findById(id));
+		} catch (ItemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadArgumentsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ItemCategoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@GET
+	@Path("/test/items")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<ItemJson> getItems(){
+		
+		try {
+			return itemManager.transformItems(item.findAll());
+		} catch (ItemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ItemCategoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadArgumentsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+		
 	}
 
 

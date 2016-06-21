@@ -1,5 +1,6 @@
 package projara.session.beans;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,10 @@ import projara.util.exception.ItemException;
 import projara.util.exception.ItemNotExistsException;
 import projara.util.interceptors.CheckParametersInterceptor;
 import projara.util.json.search.AdvancedSearch;
+import projara.util.json.view.ActionInfo;
+import projara.util.json.view.ItemCategoryInfo;
+import projara.util.json.view.ItemInfo;
+import projara.util.json.view.ItemJson;
 
 @Stateless
 @Local(ItemManagerLocal.class)
@@ -33,7 +38,7 @@ public class ItemManagerBean implements ItemManagerLocal {
 
 	@EJB
 	private ItemCategoryDaoLocal itemCategoryDao;
-	
+
 	@EJB
 	private ActionEventDaoLocal actionEventDao;
 
@@ -175,21 +180,20 @@ public class ItemManagerBean implements ItemManagerLocal {
 			String name, double maxDiscount) throws BadArgumentsException,
 			ItemCategoryException {
 		ItemCategory parent = null;
-		if(parentCategory == null || parentCategory.isEmpty())
+		if (parentCategory == null || parentCategory.isEmpty())
 			return makeItemCategory(parent, code, name, maxDiscount);
-		
-		
-		try{
+
+		try {
 			parent = itemCategoryDao.findById(parentCategory);
-		}catch(Exception e){
-			throw new ItemCategoryException("Item category with code: "+parentCategory+" not exists");
+		} catch (Exception e) {
+			throw new ItemCategoryException("Item category with code: "
+					+ parentCategory + " not exists");
 		}
-		
-		if(parent == null)
-			throw new ItemCategoryException("Item category with code: "+parentCategory+" not exists");
-		
-		
-		
+
+		if (parent == null)
+			throw new ItemCategoryException("Item category with code: "
+					+ parentCategory + " not exists");
+
 		return makeItemCategory(parent, code, name, maxDiscount);
 	}
 
@@ -198,23 +202,24 @@ public class ItemManagerBean implements ItemManagerLocal {
 	public ItemCategory changeParentCategory(ItemCategory thisItemCat,
 			ItemCategory parentItemCategory) throws BadArgumentsException,
 			ItemCategoryException {
-		
-		try{
+
+		try {
 			thisItemCat = itemCategoryDao.merge(thisItemCat);
 			parentItemCategory = itemCategoryDao.merge(parentItemCategory);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new ItemCategoryException("Item category not found");
 		}
-		
+
 		thisItemCat.setParentCategory(parentItemCategory);
-		
-		try{
+
+		try {
 			thisItemCat = itemCategoryDao.persist(thisItemCat);
 			parentItemCategory = itemCategoryDao.persist(parentItemCategory);
-		}catch(Exception e){
-			throw new ItemCategoryException("Item category parent can not be set");
+		} catch (Exception e) {
+			throw new ItemCategoryException(
+					"Item category parent can not be set");
 		}
-		
+
 		return thisItemCat;
 	}
 
@@ -223,20 +228,20 @@ public class ItemManagerBean implements ItemManagerLocal {
 	public ItemCategory changeParentCategory(String thisItemCat,
 			String parentItemCat) throws BadArgumentsException,
 			ItemCategoryException {
-		
+
 		ItemCategory parent = null;
 		ItemCategory thisCat = null;
-		
-		try{
+
+		try {
 			parent = itemCategoryDao.findById(parentItemCat);
 			thisCat = itemCategoryDao.findById(thisItemCat);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new ItemCategoryException("oafafinfnasin poamfpoas");
 		}
-		
-		if(parent == null || thisCat == null)
+
+		if (parent == null || thisCat == null)
 			throw new ItemCategoryException("oafafinfnasin poamfpoas");
-		
+
 		return changeParentCategory(thisCat, parent);
 	}
 
@@ -244,18 +249,19 @@ public class ItemManagerBean implements ItemManagerLocal {
 	@Interceptors({CheckParametersInterceptor.class})
 	public ActionEvent createActionEvent(String name, Date from, Date until,
 			double dicount) throws BadArgumentsException {
-		
-		if(from.after(until))
-			throw new BadArgumentsException("date from is greater then date until");
-		
+
+		if (from.after(until))
+			throw new BadArgumentsException(
+					"date from is greater then date until");
+
 		ActionEvent actionEvent = new ActionEvent(name, from, until, dicount);
-		
-		try{
+
+		try {
 			actionEvent = actionEventDao.persist(actionEvent);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new BadArgumentsException("Cant create action event");
 		}
-		
+
 		return actionEvent;
 	}
 
@@ -264,23 +270,25 @@ public class ItemManagerBean implements ItemManagerLocal {
 	public ActionEvent addCategoryToAction(ActionEvent actionEvent,
 			ItemCategory itemCategory) throws BadArgumentsException,
 			ItemCategoryException {
-		
-		try{
+
+		try {
 			actionEvent = actionEventDao.merge(actionEvent);
 			itemCategory = itemCategoryDao.merge(itemCategory);
-		}catch(Exception e){
-			throw new BadArgumentsException("Action or item category not exists");
+		} catch (Exception e) {
+			throw new BadArgumentsException(
+					"Action or item category not exists");
 		}
-		
+
 		actionEvent.addCategories(itemCategory);
-		
-		try{
+
+		try {
 			actionEvent = actionEventDao.persist(actionEvent);
 			itemCategory = itemCategoryDao.persist(itemCategory);
-		}catch(Exception e){
-			throw new ItemCategoryException("Error while persisting action event and itemCategoty");
+		} catch (Exception e) {
+			throw new ItemCategoryException(
+					"Error while persisting action event and itemCategoty");
 		}
-		
+
 		return actionEvent;
 	}
 
@@ -288,39 +296,40 @@ public class ItemManagerBean implements ItemManagerLocal {
 	@Interceptors({CheckParametersInterceptor.class})
 	public ActionEvent addCategoryToAction(int actionId, String itemCategoryCode)
 			throws BadArgumentsException, ItemCategoryException {
-		
+
 		ItemCategory ic = null;
 		ActionEvent ae = null;
-		
-		try{
+
+		try {
 			ic = itemCategoryDao.findById(itemCategoryCode);
 			ae = actionEventDao.findById(actionId);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new BadArgumentsException();
 		}
-		if(ae == null || ic == null)
-			throw new BadArgumentsException("action event and item category are null");
-		
+		if (ae == null || ic == null)
+			throw new BadArgumentsException(
+					"action event and item category are null");
+
 		return addCategoryToAction(ae, ic);
 	}
 
 	@Override
 	public void automaticOrdering() throws ItemException, JessException {
-		
+
 		Rete engine = new Rete();
 		engine.reset();
 		engine.eval("(watch all)");
 		engine.batch("projara/resources/jess/model_templates.clp");
-		
+
 		List<Item> items = itemDao.findAll();
-		for(Item item:items){
+		for (Item item : items) {
 			item = itemDao.merge(item);
 			engine.definstance(item.getClass().getSimpleName(), item, false);
 		}
-		
+
 		engine.batch("projara/resources/jess/items_rules.clp");
 		engine.run();
-		
+
 	}
 
 	@Override
@@ -328,4 +337,58 @@ public class ItemManagerBean implements ItemManagerLocal {
 		return itemDao.advancedSearch(advSearch);
 	}
 
+	@Override
+	public ItemJson transformToJson(Item item) throws ItemException,
+			BadArgumentsException, ItemCategoryException {
+
+		try {
+			item = itemDao.merge(item);
+		} catch (Exception e) {
+			throw new ItemNotExistsException("Item not exists");
+		}
+
+		List<ActionEvent> acEv = actionEventDao.findActiveEvents();
+
+		ItemJson retVal = new ItemJson();
+
+		ItemInfo itemInfo = new ItemInfo(item.getId(), item.getName(),
+				item.getPrice(), item.getPicture(), item.getInStock(),
+				item.getNeedOrdering(), item.getCreatedOn(),
+				item.getMinQuantity());
+
+		ItemCategoryInfo ici = new ItemCategoryInfo(item.getCategory()
+				.getCode(), item.getCategory().getName(), item.getCategory()
+				.getMaxDiscount());
+		
+		List<ActionInfo> listAi = new ArrayList<ActionInfo>();
+		for(ActionEvent ae:acEv){
+			for(ItemCategory ic:ae.getCategories()){
+				ic = itemCategoryDao.merge(ic);
+				if(item.isCategoryOf(ic)){
+					ActionInfo ai = new ActionInfo(ae.getId(), ae.getName(), ae.getFrom(), ae.getUntil(), ae.getDiscount());
+					listAi.add(ai);
+				}
+			}
+		}
+		
+		retVal.setCategory(ici);
+		retVal.setInfo(itemInfo);
+		retVal.setActions(listAi);
+		
+		retVal.calculateDiscountAndCost();
+		
+		return retVal;
+	}
+	
+	@Override
+	public List<ItemJson> transformItems(List<Item> items) throws ItemException,ItemCategoryException,BadArgumentsException{
+		
+		List<ItemJson> retVal = new ArrayList<>();
+		for(Item i:items){
+			ItemJson ij = transformToJson(i);
+			retVal.add(ij);
+		}
+		
+		return retVal;
+	}
 }

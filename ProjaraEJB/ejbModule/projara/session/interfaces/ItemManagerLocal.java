@@ -11,6 +11,7 @@ import projara.util.exception.BadArgumentsException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.json.search.AdvancedSearch;
+import projara.util.json.view.ItemJson;
 
 public interface ItemManagerLocal {
 
@@ -57,4 +58,11 @@ public interface ItemManagerLocal {
 	public void automaticOrdering() throws ItemException, JessException;
 	
 	public List<Item> filterItems(AdvancedSearch advSearch);
+
+	public ItemJson transformToJson(Item item) throws ItemException,
+			BadArgumentsException, ItemCategoryException;
+
+	public List<ItemJson> transformItems(List<Item> items) throws ItemException,
+			ItemCategoryException, BadArgumentsException;
+
 }

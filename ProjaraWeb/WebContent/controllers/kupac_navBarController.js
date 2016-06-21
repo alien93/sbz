@@ -9,7 +9,6 @@ angular.module('sbzApp')
 				};
 				
 				 $scope.korpa = function(ev) {
-					$location.path('/kupac/korpa');
 					var modalInstance = $uibModal.open({
 							backdrop: 'static',
 							keyboard: false,
@@ -22,9 +21,10 @@ angular.module('sbzApp')
 				 }
 	}])
 	
-	.controller('kupac_unosBodovaController', ['$scope', '$uibModalInstance',
-	         function($scope, $uibModalInstance){
+	.controller('kupac_unosBodovaController', ['$scope', '$uibModalInstance', '$location',
+	         function($scope, $uibModalInstance, $location){
 					$scope.potvrdi = function(){
+						$location.path('/kupac/korpa');
 						$uibModalInstance.close();
 					}
 	}]);
