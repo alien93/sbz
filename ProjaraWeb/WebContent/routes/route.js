@@ -16,6 +16,12 @@ sbzApp.config(function($routeProvider){
 							}
 						)
 						.when(
+							"/kupac/korpa",
+							{
+									templateUrl : "views/kupac_korpa.html"
+							}
+						)
+						.when(
 							"/menadzer",
 							{
 									templateUrl : "views/menadzer.html"
