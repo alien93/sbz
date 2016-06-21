@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//WebContent/controllers/prodavac_narudzbeController.js=UTF-8
 encoding//WebContent/views/kupac_info.html=UTF-8
 encoding//WebContent/views/kupac_istorijaKupovina.html=UTF-8
 encoding//WebContent/views/kupac_korpa.html=UTF-8
@@ -8,3 +9,4 @@ encoding//WebContent/views/kupac_racun1.html=UTF-8
 encoding//WebContent/views/kupac_racun2.html=UTF-8
 encoding//WebContent/views/kupac_racunInfo_m.html=UTF-8
 encoding//WebContent/views/kupac_unosBodova_m.html=UTF-8
+encoding//WebContent/views/prodavac_narudzbe.html=UTF-8

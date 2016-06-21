@@ -1,3 +1,50 @@
-<div ng-controller="prodavac_Controller">
- <p> U izradi </p>
+<div ng-controller="prodavac_narudzbeController">
+	<div class="container">
+	
+		<div class="row">
+			<div class="col-md-1"> &nbsp; </div>
+			<div class="col-md-4">
+				<label><b> Status računa: </b></label>
+			</div>
+			<div class="col-md-7"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"> &nbsp; </div>
+			<div class="col-md-4">
+				<select class="form-control" ng-model="izabraniStatus" ng-change="prikaziOdgRacune()"
+					ng-options="x for x in statusiRacuna">
+				</select>
+			</div>
+			<div class="col-md-7"></div>
+		</div>
+	   
+	   <br/> <br/> 
+	   
+	   <div class="row">
+			<div class="col-md-1"> &nbsp; </div>
+			<div class="col-md-10">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Oznaka narudžbe</th>
+							<th>Oznaka kupca</th>
+							<th>Status narudžbe</th>
+							<th>Detalji o narudžbi</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="nn in narudzbe | filter : prikaziOdgovarajuce">
+							<td>{{nn.orderID}}</td>
+							<td>{{nn.customerID}}</td>
+							<td>{{nn.status}}</td>
+							<td><a> details </a></td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    
+		    <div class="col-md-1"> &nbsp; </div> 
+	
+
+	</div>
 </div>
