@@ -41,7 +41,7 @@ sbzApp.config(function($routeProvider){
 						)
 						.otherwise(
 							{
-							redirectTo: "/kupac"
+							redirectTo: "/prijava"
 							}	
 						);
 	}
