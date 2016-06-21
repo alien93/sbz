@@ -18,4 +18,9 @@ angular.module('sbzApp')
 					
 				//-------------------------------------------/test podaci-------------------------------------
 
+					$scope.viseInformacija = function(oznakaArtikla){
+						console.log('hello from vise informacija');
+						console.log(oznakaArtikla);
+					}
+					
 	}]);

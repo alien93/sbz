@@ -2,12 +2,29 @@
  * 
  */
 angular.module('sbzApp')
-	.controller('kupac_navBarController', ['$scope', '$location',
-			function($scope, $location){
+	.controller('kupac_navBarController', ['$scope', '$location', '$uibModal',
+			function($scope, $location, $uibModal){
 				$scope.podaciOKorisniku = function(){
 					$location.path('/kupac/info');
 				};
-				$scope.korpa = function(){
+				
+				 $scope.korpa = function(ev) {
 					$location.path('/kupac/korpa');
-				}
+					var modalInstance = $uibModal.open({
+							backdrop: 'static',
+							keyboard: false,
+							animation: true,
+							templateUrl: 'views/kupac_unosBodova_m.html',
+							controller: 'kupac_unosBodovaController',
+							resolve:{
+							}
+						});
+				 }
+	}])
+	
+	.controller('kupac_unosBodovaController', ['$scope', '$uibModalInstance',
+	         function($scope, $uibModalInstance){
+					$scope.potvrdi = function(){
+						$uibModalInstance.close();
+					}
 	}]);

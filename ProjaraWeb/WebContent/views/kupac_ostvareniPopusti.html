@@ -1,0 +1,38 @@
+<div ng-controller="kupac_ostvareniPopustiController">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Oznaka</th>
+				<th>Naziv</th>
+				<th>Cena</th>
+				<th>Količina</th>
+				<th>Originalna cena</th>
+				<th>Popust</th>
+				<th>Ukupno</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="artikal in artikli">
+				<td>{{artikal.oznaka}}</td>
+				<td>{{artikal.naziv}}</td>
+				<td>{{artikal.cena}}</td>
+				<td>{{artikal.kolicina}}</td>
+				<td>{{artikal.originalnaCena}}</td>
+				<td>{{artikal.popust}}</td>
+				<td>{{artikal.ukupno}}</td>
+				<td>
+					<button class="btn" data-toggle="tooltip" title="Obriši iz korpe" ng-click="obrisiIzKorpe($index, artikal.oznaka)">
+					    <span class="glyphicon glyphicon-remove"></span>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=6></td>
+				<td>Za uplatu</td>
+				<td>{{zaUplatu}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<button class="btn btn-primary" style="float:right;" ng-click="racunOdabran()">Koristi ovaj račun</button>
+</div>

@@ -1,38 +1,18 @@
-<div ng-include="'views/kupac_navBar.html'"></div>
-<br><br><br><br><br>
 <div class="col-md-2"></div>
-<div class="col-md-8" ng-controller="kupac_korpaController">
-	<h4>Želim da iskoristim <input type="number" min=0 style="width:50px" ng-model="bodovi" ng-change="izmenaBodova()"> {{tekst}}</h4>
-	<br><br>
-	<h2>Sadržaj korpe:</h2>
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>Oznaka</th>
-				<th>Naziv</th>
-				<th>Cena</th>
-				<th>Količina</th>
-				<th>Originalna cena</th>
-				<th>Popust</th>
-				<th>Ukupno</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="artikal in artikli">
-				<td>{{artikal.oznaka}}</td>
-				<td>{{artikal.naziv}}</td>
-				<td>{{artikal.cena}}</td>
-				<td>{{artikal.kolicina}}</td>
-				<td>{{artikal.originalnaCena}}</td>
-				<td>{{artikal.popust}}</td>
-				<td>{{artikal.ukupno}}</td>
-			</tr>
-			<tr>
-				<td colspan=6>Za uplatu</td>
-				<td>{{zaUplatu}}</td>
-			</tr>
-		</tbody>
-	</table>
-	<button class="btn btn-primary" style="float:right;">Potvrdi</button>
-</div>
+	<div ng-cloak="" class="tabsdemoDynamicHeight col-md-8" ng-app="sbzApp" ng-controller="kupac_korpaController">
+	  <md-content>
+	    <md-tabs md-dynamic-height="" md-border-bottom="">
+	      <md-tab label="Sa iskorišćenim bodovima">
+	        <md-content class="md-padding">
+			  <div ng-include="'views/kupac_racun1.html'"></div>
+	        </md-content>
+	      </md-tab>
+	      <md-tab label="Bez bodova">
+	        <md-content class="md-padding">
+	         	<div ng-include="'views/kupac_racun2.html'"></div>
+	        </md-content>
+	      </md-tab>
+	    </md-tabs>
+	  </md-content>
+	</div>
 <div class="col-md-2"></div>
