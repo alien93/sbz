@@ -30,6 +30,7 @@
 							<th>Oznaka kupca</th>
 							<th>Status narudžbe</th>
 							<th>Detalji o narudžbi</th>
+							<th>&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -37,7 +38,16 @@
 							<td>{{nn.orderID}}</td>
 							<td>{{nn.customerID}}</td>
 							<td>{{nn.status}}</td>
-							<td><a> details </a></td>
+							<td>
+								<a style='cursor: pointer;' ng-click="showDetails($index); $event.stopPropagation();"> 
+									Detalji 
+								</a> 
+							</td>
+							<td>
+								<input type="button" value="Potvrdi" class="btn btn-primary">
+							
+								<input type="button" value="Otkaži" class="btn btn-danger">
+							</td>
 						</tr>
 					</tbody>
 				</table>

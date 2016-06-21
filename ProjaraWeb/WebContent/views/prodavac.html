@@ -1,3 +1,58 @@
 <div ng-controller="prodavac_Controller">
- <p> Prodavac</p>
+	<div class="container">
+	
+		<div class="row">
+			<div class="col-md-1"> &nbsp; </div>
+			<div class="col-md-4">
+				<label><b> Status računa: </b></label>
+			</div>
+			<div class="col-md-7"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"> &nbsp; </div>
+			<div class="col-md-4">
+				<select class="form-control" ng-model="izabranoStanje" ng-change="prikaziOdgRacune()"
+					ng-options="x for x in stanjaRacuna">
+				</select>
+			</div>
+			<div class="col-md-7"></div>
+		</div>
+	   
+	   <br/> <br/> 
+	   
+	   <div class="row">
+			<div class="col-md-1"> &nbsp; </div>
+			<div class="col-md-10">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Oznaka računa</th>
+							<th>Oznaka kupca</th>
+							<th>Status računa</th>
+							<th>Detalji o računu</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="racun in racuni | filter : prikaziOdgovarajuce">
+							<td>{{racun.oznaka}}</td>
+							<td>{{racun.oznakaKupca}}</td>
+							<td>{{racun.stanje}}</td>
+							<td>
+								<a style='cursor: pointer;' ng-click="showDetails($index); $event.stopPropagation();"> 
+									Detalji 
+								</a> 
+							</td>
+							<td>
+								<input type="button" value="Potvrdi" class="btn btn-primary">
+							
+								<input type="button" value="Otkaži" class="btn btn-danger">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    
+		    <div class="col-md-1"> &nbsp; </div> 
+	</div>
 </div>
