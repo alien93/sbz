@@ -1,7 +1,7 @@
 <div class="col-md-2"></div>
 <div class="col-md-8" ng-controller="kupac_ostvareniPopustiController">
 	<h2>Izveštaj</h2>
-	<button class="btn btn-danger" style="float:right;" ng-click="otkazKupovine()">Otkaži kupovinu</button>
+	<button class="btn btn-danger" style="float:right;" ng-click="otkaziKupovinu()">Otkaži kupovinu</button>
 
 	<br><br><br>
 	<h4>Lista primenjenih popusta na stavke računa</h4>
@@ -71,7 +71,7 @@
 					<td>{{racun.brOstvarenihBodova}}</td>
 				</tr>
 				<tr>
-					<td colspan="2"><button class="btn btn-success" style="float:right;">Koristi ovaj račun</button></td>
+					<td colspan="2"><button class="btn btn-success" style="float:right;" ng-click="potvrdiRacun(1)">Koristi ovaj račun</button></td>
 				</tr>
 			<tbody>
 			</tbody>
@@ -105,7 +105,7 @@
 					<td>{{racun.brOstvarenihBodova}}</td>
 				</tr>
 				<tr>
-					<td colspan="2"><button class="btn btn-success" style="float:right;">Koristi ovaj račun</button></td>
+					<td colspan="2"><button class="btn btn-success" style="float:right;" ng-click="potvrdiRacun(2)">Koristi ovaj račun</button></td>
 				</tr>
 			<tbody>
 			</tbody>

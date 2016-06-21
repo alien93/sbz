@@ -1,6 +1,14 @@
 <div ng-controller="kupac_Controller">
 	<div class="col-md-2">
 	  <uib-accordion close-others="oneAtATime">
+	  	<uib-accordion-group heading="Pretraga" is-open="true">
+	      <div>Šifra:<input type="text" class="form-control"></div>
+	      <div>Naziv:<input type="text" class="form-control"></div>
+	      <div>Kategorija:<input type="text" class="form-control"></div>
+	      <div>Opseg cene:<br>Minimum:<input type="text" class="form-control" >Maksimum:<input type="text" class="form-control"></div>
+	      <br>
+	      <div><button class="btn" style="float:right;">Pretraži</button></div>
+	    </uib-accordion-group>
 	    <uib-accordion-group heading="{{kategorija.naziv}}" ng-repeat="kategorija in kategorije">
 	      <div ng-repeat="podkategorija in kategorija.podkategorije">{{podkategorija}}</div>
 	    </uib-accordion-group>
@@ -9,8 +17,6 @@
 	 <div class="col-md-1">
 	 </div>
 	 <div class="col-md-9">
-	 	<div ng-include="'views/kupac_pretraga.html'"></div>
-	 	<br><br>
 	 	<div class="artikli" ng-repeat="artikal in artikli" class="row">
 	 		<div class="col-xs-4" id="artikal">
 		 		<figure>

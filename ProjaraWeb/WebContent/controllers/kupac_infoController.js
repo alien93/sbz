@@ -1,7 +1,7 @@
 
 angular.module('sbzApp')
-	.controller('kupac_infoController', ['$scope', '$uibModal',
-	     function($scope, $uibModal){
+	.controller('kupac_infoController', ['$scope', '$uibModal', '$location',
+	     function($scope, $uibModal, $location){
 			
 			//----------------------------------test podaci------------------------------------------
 				
@@ -100,7 +100,10 @@ angular.module('sbzApp')
 					}
 				});
 			}
-				
+			
+			$scope.cuvajIzmene = function(){
+				$location.path('/kupac');
+			}
 	}])
 	
 	.controller('kupac_racunInfoController', ['$scope', 'oznaka', 'racuni', '$uibModalInstance',
