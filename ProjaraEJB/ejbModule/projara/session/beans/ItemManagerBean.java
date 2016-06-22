@@ -26,6 +26,7 @@ import projara.util.interceptors.CheckParametersInterceptor;
 import projara.util.json.search.AdvancedSearch;
 import projara.util.json.view.ActionInfo;
 import projara.util.json.view.ItemCategoryInfo;
+import projara.util.json.view.ItemCategoryJson;
 import projara.util.json.view.ItemInfo;
 import projara.util.json.view.ItemJson;
 
@@ -405,8 +406,60 @@ public class ItemManagerBean implements ItemManagerLocal {
 				item.getPrice(), item.getPicture(), item.getInStock(),
 				item.getNeedOrdering(), item.getCreatedOn(),
 				item.getMinQuantity());
-		
+
 		return ii;
+
+	}
+
+	@Override
+	public List<ItemCategoryJson> getTree() {
+		List<ItemCategory> roots = itemCategoryDao.getRoots();
+
+		if (roots == null) {
+			System.out.println("NULL");
+		}
+
+		List<ItemCategoryJson> itemCatJsonList = new ArrayList<>();
+
+		for (ItemCategory ic : roots) {
+			ItemCategoryJson icj = new ItemCategoryJson();
+			ItemCategoryInfo info = new ItemCategoryInfo(ic.getCode(),
+					ic.getName(), ic.getMaxDiscount());
+			icj.setParentCategory(null);
+			icj.setInfo(info);
+
+			List<ItemCategoryJson> children = new ArrayList<>();
+			if (ic.getSubCategories() != null
+					&& !ic.getSubCategories().isEmpty()) {
+				for (ItemCategory catChild : ic.getSubCategories()) {
+					children.add(children(catChild, icj));
+				}
+			}
+
+			icj.setSubCategories(children);
+
+			itemCatJsonList.add(icj);
+		}
+
+		return itemCatJsonList;
+	}
+
+	private ItemCategoryJson children(ItemCategory itemCategory,
+			ItemCategoryJson parent) {
+		List<ItemCategoryJson> childrenOfChildren = new ArrayList<>();
+		ItemCategoryJson currentCat = new ItemCategoryJson();
+		ItemCategoryInfo currentInfo = new ItemCategoryInfo(
+				itemCategory.getCode(), itemCategory.getName(),
+				itemCategory.getMaxDiscount());
+		currentCat.setInfo(currentInfo);
+		currentCat.setParentCategory(parent.getInfo().getCode());
+
+		for (ItemCategory child : itemCategory.getSubCategories()) {
+			childrenOfChildren.add(children(child, currentCat));
+		}
+		currentCat.setSubCategories(childrenOfChildren);
+
+		return currentCat;
 
 	}
 }

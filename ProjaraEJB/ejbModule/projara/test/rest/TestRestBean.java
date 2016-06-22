@@ -59,6 +59,7 @@ import projara.util.json.search.AdvancedSearch;
 import projara.util.json.search.ItemCategorySearch;
 import projara.util.json.search.ItemCostSearch;
 import projara.util.json.view.BillInfo;
+import projara.util.json.view.ItemCategoryJson;
 import projara.util.json.view.ItemJson;
 
 @Stateless
@@ -431,6 +432,14 @@ public class TestRestBean implements TestRest {
 		
 		return null;
 		
+	}
+	
+	@Override
+	@GET
+	@Path("/test/categories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<ItemCategoryJson> getAllCategories(){
+		return itemManager.getTree();
 	}
 
 

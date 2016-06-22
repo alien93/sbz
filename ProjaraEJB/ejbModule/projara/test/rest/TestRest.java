@@ -21,6 +21,7 @@ import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.exception.UserException;
 import projara.util.json.view.BillInfo;
+import projara.util.json.view.ItemCategoryJson;
 import projara.util.json.view.ItemJson;
 
 public interface TestRest {
@@ -75,5 +76,11 @@ public interface TestRest {
 	@Path("/test/items")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ItemJson> getItems();
+	
+
+	@GET
+	@Path("/test/categories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<ItemCategoryJson> getAllCategories();
 	
 }
