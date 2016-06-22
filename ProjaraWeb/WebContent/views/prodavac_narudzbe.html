@@ -1,52 +1,36 @@
 <div ng-controller="prodavac_narudzbeController">
 	<div class="container">
-	
-		<div class="row">
+	  <br/> 
+	 	<div class="row">
 			<div class="col-md-1"> &nbsp; </div>
-			<div class="col-md-4">
-				<label><b> Status računa: </b></label>
+			<div class="col-md-10">
+			 	<label>Narudžbe artikala</label>
 			</div>
-			<div class="col-md-7"></div>
-		</div>
-		<div class="row">
 			<div class="col-md-1"> &nbsp; </div>
-			<div class="col-md-4">
-				<select class="form-control" ng-model="izabraniStatus" ng-change="prikaziOdgRacune()"
-					ng-options="x for x in statusiRacuna">
-				</select>
-			</div>
-			<div class="col-md-7"></div>
 		</div>
-	   
-	   <br/> <br/> 
-	   
+	   <br/> 
 	   <div class="row">
 			<div class="col-md-1"> &nbsp; </div>
 			<div class="col-md-10">
 				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
-							<th>Oznaka narudžbe</th>
-							<th>Oznaka kupca</th>
-							<th>Status narudžbe</th>
-							<th>Detalji o narudžbi</th>
-							<th>&nbsp;</th>
+							<th>Oznaka</th>
+							<th>Naziv artikla</th>
+							<th>Razlog narudžbe</th>
+							<th>Količina</th>
+							<th>Naruči</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="nn in narudzbe | filter : prikaziOdgovarajuce">
-							<td>{{nn.orderID}}</td>
-							<td>{{nn.customerID}}</td>
-							<td>{{nn.status}}</td>
+						<tr ng-repeat="nn in narudzbe">
+							<td>{{nn.oznaka}}</td>
+							<td>{{nn.naziv}}</td>
+							<td>{{nn.razlog}}</td>
+							<td>{{nn.kolicina}}</td> 
 							<td>
-								<a style='cursor: pointer;' ng-click="showDetails($index); $event.stopPropagation();"> 
-									Detalji 
-								</a> 
-							</td>
-							<td>
-								<input type="button" value="Potvrdi" class="btn btn-primary">
-							
-								<input type="button" value="Otkaži" class="btn btn-danger">
+								<input type="checkbox" ng-checked="checkBoxArtikl($index)" 
+									   ng-click="stateChanged($index)"></input>
 							</td>
 						</tr>
 					</tbody>
@@ -54,7 +38,24 @@
 		    </div>
 		    
 		    <div class="col-md-1"> &nbsp; </div> 
-	
-
-	</div>
+		</div>
+		
+	    <br/>
+	    
+		<div class="row">
+			<div class="col-md-7"> &nbsp; </div>
+			<div class="col-md-4">
+			 	<input type="button" class="btn btn-primary btn-block" value="Poruči označene artikle" ng-click="poruciArtikle()">
+			</div>
+			<div class="col-md-1"> &nbsp; </div>
+		</div>
+		
+		<!-- Provjera stanja checkbox-ova -->
+		<div class="row">
+			<div class="col-md-7"> &nbsp; </div>
+			<div class="col-md-4">
+			 	<label>{{ispis}}</label>
+			</div>
+			<div class="col-md-1"> &nbsp; </div>
+		</div>
 </div>

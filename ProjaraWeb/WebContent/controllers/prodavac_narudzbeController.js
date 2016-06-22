@@ -1,43 +1,49 @@
 angular.module('sbzApp')
-	.controller('prodavac_narudzbeController', ['$scope', '$uibModal', 
-		function($scope, $uibModal){
-			
-		 	$scope.statusiRacuna = ["SVI RAČUNI", "NARUČENO", "USPEŠNO REALIZOVANO", "OTKAZANO"];
-		 	$scope.izabraniStatus = $scope.statusiRacuna[0];
-		 	$scope.prikaziOdgovarajuce = "";
+	.controller('prodavac_narudzbeController', ['$rootScope', '$scope', '$location', '$http',
+		function($rootScope, $scope, $location, $http){
+		
+			if ($rootScope.user.role != "PRODAVAC") {
+				$location.path('/prijava');
+			};	
 		 	
 		 	//------------------ Test data --------------------------------------------------
-		 	var nn1 = {"orderID":"123", "customerID":"453", "status":$scope.statusiRacuna[1]};
-		 	var nn2 = {"orderID":"124", "customerID":"454", "status":$scope.statusiRacuna[1]};
-		 	var nn3 = {"orderID":"125", "customerID":"455", "status":$scope.statusiRacuna[1]};
-		 	var nn4 = {"orderID":"126", "customerID":"456", "status":$scope.statusiRacuna[2]};
-		 	var nn5 = {"orderID":"127", "customerID":"457", "status":$scope.statusiRacuna[3]};
+			var aa1 = {"oznaka":"010", "naziv":"Pegla", "razlog":"Nestalo", "kolicina": "50"};
+			var aa2 = {"oznaka":"011", "naziv":"Flasa", "razlog":"Nestalo", "kolicina":"100"};
+			var aa3 = {"oznaka":"012", "naziv":"Trotinet", "razlog":"Nestalo", "kolicina":"20"};
+			var aa4 = {"oznaka":"013", "naziv":"Krevet", "razlog":"Pri kraju", "kolicina":"40"};
+			var aa5 = {"oznaka":"014", "naziv":"Prskalica", "razlog":"Praznik se blizi", "kolicina":"100"};
 		 	
-		 	$scope.narudzbe = [nn1, nn2, nn3, nn4, nn5];
-		 	$scope.prikaziOdgRacune = function() {
-		 		// Postavljanje promjenljive po kojoj se vrsi filtriranje po txt sadrzaju
-		 		if ($scope.izabraniStatus == $scope.statusiRacuna[0]) {
-		 			$scope.prikaziOdgovarajuce = "";
-		 		} else {
-		 			$scope.prikaziOdgovarajuce = $scope.izabraniStatus;
-		 		}		 		
+		 	$scope.narudzbe = [aa1, aa2, aa3, aa4, aa5];
+		 	$scope.zaPoruciti = [];
+		 	
+		 	//Inicijalizacija stanja, svi su na inicijalno oznaceni sa true
+		 	$scope.azurirajCheckbox = function() {
+		 		for (var i = 0; i < $scope.narudzbe.length; i++) {
+		 			$scope.zaPoruciti.push(true);
+		 		};		 		
 		 	};
 		 	
-		 	$scope.showDetails = function(index) {
-		 		var modalInstance = $uibModal.open({
-					animation: false,
-					templateUrl: 'views/prodavac_racunInfo_m.html',
-					controller: 'prodavac_racunInfoController',
-					resolve: {
-						items: function(){
-								return $scope.narudzbe[index];
-							},
-						index: function(){
-								return index;
-							}
-						}
-			});
+		 	$scope.azurirajCheckbox();
+		 	
+		 	// Binding - ng-checked za svaki checkbox
+		 	$scope.checkBoxArtikl = function(ind) {
+		 		return $scope.zaPoruciti[ind];
+		 	};
+		 	
+		 	// Klik na checkbox
+		 	$scope.stateChanged = function(ind) {
+		 		$scope.zaPoruciti[ind] = !$scope.zaPoruciti[ind];
+		 	};
+		 	
+		 	$scope.poruciArtikle = function() {
+		 		//Provjera stanja checkbox-ova, ispis u labeli ispod buttona
+		 		$scope.ispis = "";
+		 		for (var i = 0; i < $scope.narudzbe.length; i++) {
+		 			$scope.ispis += $scope.zaPoruciti[i];
+		 			$scope.ispis += ' ';
+		 		};
 		 		
+		 		// TODO Poruci oznacene artikle stvarno
 		 	};
 
 		}

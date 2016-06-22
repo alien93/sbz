@@ -43,10 +43,21 @@
 									Detalji 
 								</a> 
 							</td>
-							<td>
-								<input type="button" value="Potvrdi" class="btn btn-primary">
+							<td>  
+								<input type="button" value="Potvrdi" class="btn btn-primary" 
+									   ng-if="racun.stanje == 'NARUČENO'">
 							
-								<input type="button" value="Otkaži" class="btn btn-danger">
+								<input type="button" value="Otkaži" class="btn btn-danger"
+									   ng-if="racun.stanje == 'NARUČENO'">
+							    <label ng-if="racun.stanje != 'NARUČENO'"> 
+							    	&nbsp;&nbsp;&nbsp;&nbsp; 
+							    	&nbsp;&nbsp;&nbsp;&nbsp; 
+							    	&nbsp;&nbsp;&nbsp;&nbsp;
+							    	---
+							    	&nbsp;&nbsp;&nbsp;&nbsp; 
+							    	&nbsp;&nbsp;&nbsp;&nbsp; 
+							    	&nbsp;&nbsp;&nbsp;&nbsp;
+							    </label>
 							</td>
 						</tr>
 					</tbody>

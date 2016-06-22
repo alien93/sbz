@@ -4,36 +4,39 @@
 		<b> {{headerMsg}} </b>
 	</div>
 	
+	<form name='f1' ng-submit="ok()">
 	<div class='modal-body'>
-			<input type='text' ng-model='customerCategory.categoryCode' class="form-control" placeholder='Id'/>
-		   	<br/>
-		    <input type='text' ng-model='customerCategory.name' class="form-control" placeholder='Name'/>
-		    <br/>
-		    <table class='table'>
-		    	<tr>
-		    		<td> <input type='text' ng-model='newThreshold.from' placeholder='From' class='form-control'/> </td>
-		    		<td> <input type='text' ng-model='newThreshold.to' placeholder='To' class='form-control'/> </td>
-		    		<td> <input type='text' ng-model='newThreshold.percentage' placeholder='Percentage' class='form-control'/> </td>
-		    		<td> <button class='btn btn-primary' ng-click="addThreshold()">+</button></td>
-		    	 </tr>
-		    	 <tr> <td colspan='4'> &nbsp </td> </tr>
-		    	  <tr>
-		    	 	<th> From </th>
-		    	 	<th> To </th>
-		    	 	<th> Percentage </th>
-		    	 	<th> &nbsp </th>
-		    	 </tr>
-		    	 <tr ng-repeat="t in customerCategory.thresholds">
-		    	 	<td> {{t.from}} </td>
-		    	 	<td> {{t.to}} </td>
-		    	 	<td> {{t.percentage}} </td>
-		    	 	<td> <button class="btn btn-primary" ng-click="deleteThreshold(t)"> - </button></td>
-		    	 </tr>
-		    </table>
+			<p style='color: red;'> {{errorMsg}} </p>
+				<input type='text' ng-model='customerCategory.categoryCode' class="form-control" placeholder='Id' required/>
+			   	<br/>
+			    <input type='text' ng-model='customerCategory.name' class="form-control" placeholder='Name' required/>
+			    <br/>
+			    <table class='table'>
+			    	<tr>
+			    		<td> <input type='number' data-ng-model='newThreshold.from' placeholder='From' class='form-control'/> </td>
+			    		<td> <input type='number' data-ng-model='newThreshold.to' placeholder='To' class='form-control'/> </td>
+			    		<td> <input type='number' data-ng-model='newThreshold.percentage' placeholder='Percentage' class='form-control'/> </td>
+			    		<td> <input type='button' value='+' class='btn btn-primary' ng-click="addThreshold()"/> </td>
+			    	 </tr> 
+			    	 <tr> <td colspan='4'> &nbsp </td> </tr>
+			    	  <tr>
+			    	 	<th> From </th>
+			    	 	<th> To </th>
+			    	 	<th> Percentage </th>
+			    	 	<th> &nbsp </th>
+			    	 </tr>
+			    	 <tr ng-repeat="t in customerCategory.thresholds">
+			    	 	<td> {{t.from}} </td>
+			    	 	<td> {{t.to}} </td>
+			    	 	<td> {{t.percentage}} </td>
+			    	 	<td> <input type='button' value='-' class="btn btn-primary" ng-click="deleteThreshold(t)"/> </td>
+			    	 </tr>
+			    </table>
 	</div>
 	
 	<div class="modal-footer">
-		<button class='btn btn-primary' data-ng-click="ok()">Ok</button>
+		<input type='submit' value='Ok' class='btn btn-primary'/>
 		<button class='btn btn-warning' data-ng-click="cancel()">Cancel</button>
 	</div>
+	</form>
 </div>
