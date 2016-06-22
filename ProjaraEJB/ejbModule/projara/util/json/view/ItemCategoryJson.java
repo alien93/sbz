@@ -9,6 +9,7 @@ public class ItemCategoryJson implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ItemCategoryInfo info;
 	private String parentCode;
+	private String parentName;
 	private List<ItemCategoryJson> subCategories;
 	private List<ActionInfo> actions;
 	
@@ -51,6 +52,14 @@ public class ItemCategoryJson implements Serializable {
 
 	public void setActions(List<ActionInfo> actions) {
 		this.actions = actions;
+	}
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
 	}
 	
 

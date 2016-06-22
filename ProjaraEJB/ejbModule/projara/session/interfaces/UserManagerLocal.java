@@ -32,5 +32,6 @@ public interface UserManagerLocal {
 	
 	public User updateUser(UserProfileInfoJson userProfile) throws UserException,BadArgumentsException;
 	
+	public UserProfileInfoJson transformToJson(User u) throws UserException,BadArgumentsException;
 
 }

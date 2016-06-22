@@ -359,6 +359,21 @@ public class ItemCategory implements Serializable {
 		}
 		return true;
 	}
+	
+	public boolean isChildCategory(ItemCategory oneCategory){
+		if(oneCategory == null)
+			return false;
+		
+		ItemCategory current = this;
+		while(current!=null){
+			if(current.equals(oneCategory))
+				return true;
+			current = current.getParentCategory();
+		}
+		
+		return false;
+		
+	}
 
 	public ItemCategory() {
 		super();
