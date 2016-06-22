@@ -4,7 +4,7 @@
 	
 	<div style='margin-left: 20%;margin-right: 20%'>
 		<div class='table-responsive'>
-			<table class='table'>
+			<table class='table table-bordered'>
 				<thead>
 					<tr>
 						<th colspan="5"> Kategorije artikala </th>
@@ -15,8 +15,7 @@
 						<th> Parent category </th>
 						<th> Name </th>
 						<th> Max percentage </th>
-						<th> </th>
-						<th> </th>
+						<th colspan='2'> </th>
 					</tr>
 				</thead>
 				<tbody>
@@ -24,7 +23,7 @@
 						<td> {{cat.code}} </td>
 						<td> {{cat.parentCategory}} </td>
 						<td> {{cat.name}} </td>
-						<td> {{cat.maxDiscount}} </td>
+						<td> {{cat.maxDiscount}}% </td>
 						<td> <button class='btn btn-primary' ng-click="deleteCategory(cat.code)">Delete</button> </td>
 						<td> <button class='btn btn-primary' ng-click="modifyCategory(cat)"> Modify </button></td>
 					</tr>
