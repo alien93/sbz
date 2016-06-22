@@ -1,20 +1,27 @@
 package projara.util.json.view;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemCategoryJson implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private ItemCategoryInfo info;
 	private String parentCode;
 	private List<ItemCategoryJson> subCategories;
+	private List<ActionInfo> actions;
 	
 	public ItemCategoryJson() {
-		// TODO Auto-generated constructor stub
+		info = new ItemCategoryInfo();
+		actions = new ArrayList<ActionInfo>();
+		subCategories = new ArrayList<ItemCategoryJson>();
+		parentCode = "";
 	}
 
 	public String getParentCode() {
 		return parentCode;
+
 	}
 
 	public void setParentCategory(String parentCode) {
@@ -38,7 +45,13 @@ public class ItemCategoryJson implements Serializable {
 		this.info = info;
 	}
 	
-	
+	public List<ActionInfo> getActions() {
+		return actions;
+	}
+
+	public void setActions(List<ActionInfo> actions) {
+		this.actions = actions;
+	}
 	
 
 }
