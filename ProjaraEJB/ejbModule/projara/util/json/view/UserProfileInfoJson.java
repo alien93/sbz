@@ -11,9 +11,10 @@ public class UserProfileInfoJson implements Serializable {
 	private int id;
 	private String firstName;
 	private String lastName;
-	private UserType userType;
+	private String userType;
 	private Date registeredOn;
 	private int points;
+	private CustomerCategoryBasicInfo category;
 	
 	public UserProfileInfoJson() {
 		username = "";
@@ -21,6 +22,7 @@ public class UserProfileInfoJson implements Serializable {
 		address = "";
 		firstName = "";
 		lastName = "";
+		category = new CustomerCategoryBasicInfo();
 	}
 
 	public String getUsername() {
@@ -71,17 +73,17 @@ public class UserProfileInfoJson implements Serializable {
 		this.lastName = lastName;
 	}
 
-	public UserType getUserType() {
+	public String getUserType() {
 		return userType;
 	}
 
-	public void setUserType(UserType userType) {
+	public void setUserType(String userType) {
 		this.userType = userType;
 	}
 
 	public UserProfileInfoJson(String username, String password,
 			String address, int id, String firstName, String lastName,
-			UserType userType, Date registeredOn, int points) {
+			String userType, Date registeredOn, int points) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -108,6 +110,14 @@ public class UserProfileInfoJson implements Serializable {
 
 	public void setPoints(int points) {
 		this.points = points;
+	}
+
+	public CustomerCategoryBasicInfo getCategory() {
+		return category;
+	}
+
+	public void setCategory(CustomerCategoryBasicInfo category) {
+		this.category = category;
 	}
 	
 	

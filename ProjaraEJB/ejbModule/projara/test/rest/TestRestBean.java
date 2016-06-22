@@ -118,6 +118,8 @@ public class TestRestBean implements TestRest {
 			e.printStackTrace();
 		}
 		
+		
+		
 		return "JEEEEEEEEE";
 	}
 
@@ -277,12 +279,15 @@ public class TestRestBean implements TestRest {
 				"Podkategorija siroke", 5.0);
 		ItemCategory ic3 = itemManager.makeItemCategory((ItemCategory) null,
 				"C", "Televizori, racunari, laptopovi", 15.0);
+		
+		ItemCategory ic4 = itemManager.makeItemCategory(ic2, "D", "Druga dubina siroke", 10);
 
 		Item i1 = itemManager.addItem("Item 1", 5000.0, 200, 20, ic2);
 		Item i2 = itemManager.addItem("Item 2", 40000.00, 10, 5, ic3);
 		Item i3 = itemManager.addItem("Item 3", 20000.0, 30, 45, ic);
 		Item i4 = itemManager.addItem("Item 4", 400.00, 30, 10, ic3);
 		Item i5 = itemManager.addItem("Item 5", 200.00, 20, 12, ic3);
+		Item i6 = itemManager.addItem("Tralal", 2000.00, 20, 10, ic4);
 
 		Calendar calB = Calendar.getInstance();
 		calB.set(2016, 5, 1);

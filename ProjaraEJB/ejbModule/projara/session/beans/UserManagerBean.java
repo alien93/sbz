@@ -19,6 +19,7 @@ import projara.util.exception.UserAlreadyExistsException;
 import projara.util.exception.UserException;
 import projara.util.exception.UserNotExistsException;
 import projara.util.interceptors.CheckParametersInterceptor;
+import projara.util.json.view.CustomerCategoryBasicInfo;
 import projara.util.json.view.UserProfileInfoJson;
 
 @Stateless
@@ -89,16 +90,15 @@ public class UserManagerBean implements UserManagerLocal {
 			throw new UserNotExistsException("User not exists");
 		}
 
-
 		try {
 			customerCategory = customerCategoryDao.merge(customerCategory);
 
 		} catch (Exception e) {
 			throw new CustomerCategoryException("Customer category not exists");
 		}
-		
 
-		if (customer.getCategory() !=null && customer.getCategory().equals(customerCategory)) {
+		if (customer.getCategory() != null
+				&& customer.getCategory().equals(customerCategory)) {
 			throw new UserException("Already has category: "
 					+ customerCategory.getName());
 		}
@@ -128,7 +128,7 @@ public class UserManagerBean implements UserManagerLocal {
 			throw new UserNotExistsException("Customer with id: " + userId
 					+ " not exists");
 		}
-		if(cust == null )
+		if (cust == null)
 			throw new UserNotExistsException("Customer with id: " + userId
 					+ " not exists");
 
@@ -139,7 +139,7 @@ public class UserManagerBean implements UserManagerLocal {
 					"Customer category not exists with code: "
 							+ customerCategoryCode);
 		}
-		if(custCat == null )
+		if (custCat == null)
 			throw new CustomerCategoryException(
 					"Customer category not exists with code: "
 							+ customerCategoryCode);
@@ -159,97 +159,126 @@ public class UserManagerBean implements UserManagerLocal {
 	@Interceptors({CheckParametersInterceptor.class})
 	public User updateUser(UserProfileInfoJson userProfile)
 			throws UserException, BadArgumentsException {
-		
+
 		User u = null;
-		try{
+		try {
 			u = userDao.findById(userProfile.getId());
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new UserNotExistsException("User not exists");
 		}
-		if( u == null)
+		if (u == null)
 			throw new UserNotExistsException("User not exists");
+
 		
-		switch (userProfile.getUserType()) {
-			case CUSTOMER :{
-				Customer c;
-				try{
-				 c = (Customer)u;
-				}catch(Exception e){
-					throw new UserNotExistsException("Its not customer");
-				}
-				
-				return updateCustomer(c,userProfile);
+		if(userProfile.getUserType().equals("C")){
+			Customer c;
+			try {
+				c = (Customer) u;
+			} catch (Exception e) {
+				throw new UserNotExistsException("Its not customer");
 			}
-			default :
-			{
-				return updatePerson(u,userProfile);
-			}
-				
+
+			return updateCustomer(c, userProfile);
+		}else{
+			return updatePerson(u, userProfile);
 		}
+		
 	}
 
 	@Interceptors({CheckParametersInterceptor.class})
-	private User updatePerson(User u, UserProfileInfoJson userProfile) throws UserException,BadArgumentsException{
-		
-		try{
+	private User updatePerson(User u, UserProfileInfoJson userProfile)
+			throws UserException, BadArgumentsException {
+
+		try {
 			u = userDao.merge(u);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new UserNotExistsException("User not exists");
 		}
-		
+
 		String username = userProfile.getUsername().trim();
 		String password = userProfile.getPassword().trim();
 		String firstName = userProfile.getFirstName().trim();
 		String lastName = userProfile.getLastName().trim();
-		
-		if(!username.isEmpty() && !u.getUsername().equals(username)){
+
+		if (!username.isEmpty() && !u.getUsername().equals(username)) {
 			User u1 = userDao.findByUsername(username);
-			if(u1!=null)
-				throw new UserAlreadyExistsException("Username is already taken");
-			
+			if (u1 != null)
+				throw new UserAlreadyExistsException(
+						"Username is already taken");
+
 			u.setUsername(username);
 		}
-		
-		if(!password.isEmpty() && !u.getPassword().equals(password)){
+
+		if (!password.isEmpty() && !u.getPassword().equals(password)) {
 			u.setPassword(password);
 		}
-		
-		if(!firstName.isEmpty() && !u.getFirstName().equals(firstName))
+
+		if (!firstName.isEmpty() && !u.getFirstName().equals(firstName))
 			u.setFirstName(firstName);
-		
-		if(!lastName.isEmpty() && !u.getLastName().equals(lastName))
+
+		if (!lastName.isEmpty() && !u.getLastName().equals(lastName))
 			u.setLastName(lastName);
-		
-		
-		try{
+
+		try {
 			u = userDao.persist(u);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new UserException("Some problem occured, try again");
 		}
-		
+
 		return u;
 	}
 
 	@Interceptors({CheckParametersInterceptor.class})
-	private User updateCustomer(Customer c, UserProfileInfoJson userProfile) throws UserException,BadArgumentsException{
-		
-		c = (Customer)updatePerson(c, userProfile);
-		
+	private User updateCustomer(Customer c, UserProfileInfoJson userProfile)
+			throws UserException, BadArgumentsException {
+
+		c = (Customer) updatePerson(c, userProfile);
+
 		String address = userProfile.getAddress().trim();
-		
-		if(!address.isEmpty() && !address.equals(userProfile.getAddress())){
+
+		if (!address.isEmpty() && !address.equals(userProfile.getAddress())) {
 			c.setAddress(address);
-			
-			try{
+
+			try {
 				c = (Customer) userDao.persist(c);
-			}catch(Exception e){
+			} catch (Exception e) {
 				throw new UserException("Problem occured");
 			}
 		}
-		
-		
-		
+
 		return c;
+	}
+
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public UserProfileInfoJson transformToJson(User u) throws UserException,
+			BadArgumentsException {
+		try {
+			u = userDao.merge(u);
+		} catch (Exception e) {
+			throw new UserException();
+		}
+
+		UserProfileInfoJson userProfile = new UserProfileInfoJson();
+		userProfile.setId(u.getId());
+		userProfile.setFirstName(u.getFirstName());
+		userProfile.setLastName(u.getLastName());
+		userProfile.setPassword(u.getPassword());
+		userProfile.setUsername(u.getUsername());
+		userProfile.setRegisteredOn(u.getRegisteredOn());
+		userProfile.setUserType(u.getRole());
+
+		if (u instanceof Customer) {
+			Customer c = (Customer) u;
+			userProfile.setPoints(c.getPoints());
+			userProfile.setAddress(c.getAddress());
+			userProfile
+					.setCategory(new CustomerCategoryBasicInfo(c.getCategory()
+							.getCategoryCode(), c.getCategory().getName()));
+		}
+		
+		return userProfile;
+
 	}
 
 }

@@ -22,7 +22,13 @@ public class AuthorizationBean implements AuthorizationLocal {
 	@Override
 	public User checkIsLogged(HttpSession session) throws UserException {
 		
-		int userId = (int) session.getAttribute("userID");
+		Object obj =  session.getAttribute("userID");
+		
+		if(obj==null)
+			throw new UserNotLoggedException();
+		
+		int userId = (int)obj;
+		
 		User u = null;
 		try{
 			u = userDao.findById(userId);
