@@ -1,6 +1,10 @@
 angular.module('sbzApp')
-	.controller('prodavac_Controller', ['$scope', '$uibModal', 
-		function($scope, $uibModal){
+	.controller('prodavac_Controller', ['$rootScope', '$scope', '$location', '$http', '$uibModal', 
+		function($rootScope, $scope, $location, $http, $uibModal){
+		
+			if ($rootScope.user.role != "PRODAVAC") {
+				$location.path('/prijava');
+			};	
 			
 		 	$scope.stanjaRacuna = ["SVI RAČUNI", "NARUČENO", "USPEŠNO REALIZOVANO", "OTKAZANO"];
 		 	$scope.izabranoStanje = $scope.stanjaRacuna[0];
@@ -15,19 +19,68 @@ angular.module('sbzApp')
 
 		 	var artikli = [aa1, aa2, aa3, aa4, aa5];
 		 	
-		 	var rr1 = {"oznaka":"123", "oznakaKupca":"453", "stanje":$scope.stanjaRacuna[1], 
-		 				"datum": "21-06-2016", "artikli": artikli};
-		 	var rr2 = {"oznaka":"124", "oznakaKupca":"454", "stanje":$scope.stanjaRacuna[1], 
-		 				"datum": "21-06-2016", "artikli": artikli};
-		 	var rr3 = {"oznaka":"125", "oznakaKupca":"455", "stanje":$scope.stanjaRacuna[1], 
-		 				"datum": "21-06-2016", "artikli": artikli};
-		 	var rr4 = {"oznaka":"126", "oznakaKupca":"456", "stanje":$scope.stanjaRacuna[2], 
-		 				"datum": "21-06-2016", "artikli": artikli};
-		 	var rr5 = {"oznaka":"127", "oznakaKupca":"457", "stanje":$scope.stanjaRacuna[3],
-		 				"datum": "21-06-2016", "artikli": artikli};
+		 	var popust1 = {
+					"oznaka":"548",
+					"naziv":"Novogodisnji popust",
+					"opis":"50% popusta na jelke",
+					"artikli":[aa4, aa2, aa5]
+			};
+			
+			var popust2 = {
+					"oznaka":"100",
+					"naziv":"Popust za skolarce",
+					"opis":"60% na skolski pribor",
+					"artikli":[aa1, aa3]
+			};
 		 	
-		 	$scope.racuni = [rr1, rr2, rr3, rr4, rr5];
+		 	var racun1 = {
+					"oznaka":"123", 
+					"datum":"23/12/2015", 
+					"ukupanIznos":"50000",
+					"oznakaKupca":"56487", 
+					"stanje": $scope.stanjaRacuna[1], 
+					"artikli": artikli,
+					"popusti":[popust1, popust2],
+					"suma":"25666",
+					"popust":"30",
+					"ukupnaSuma":"20000",
+					"iskorisceniBodovi":"0",
+					"steceniBodovi":"20"
+					
+		 		};
+
+		 	var racun2 = {
+		 			"oznaka":"325", 
+		 			"datum":"15/12/2015", 
+		 			"ukupanIznos":"25000",
+		 			"oznakaKupca":"36000", 
+		 			"stanje": $scope.stanjaRacuna[2], 
+		 			"artikli": artikli,
+		 			"popusti":[popust2],
+		 			"suma":"35000",
+		 			"popust":"50",
+		 			"ukupnaSuma":"16000",
+		 			"iskorisceniBodovi":"7",
+		 			"steceniBodovi":"17"
+		 		};
 		 	
+		 	var racun3 = {
+		 			"oznaka":"445", 
+		 			"datum":"15/12/2015", 
+		 			"ukupanIznos":"25000",
+		 			"oznakaKupca":"36000", 
+		 			"stanje": $scope.stanjaRacuna[3], 
+		 			"artikli": artikli,
+		 			"popusti":[popust1],
+		 			"suma":"35000",
+		 			"popust":"50",
+		 			"ukupnaSuma":"16000",
+		 			"iskorisceniBodovi":"7",
+		 			"steceniBodovi":"17"
+		 		};
+	
+		 	$scope.racuni = [racun1, racun2, racun3];
+		 			 	
 		 	$scope.prikaziOdgRacune = function() {
 		 		// Postavljanje promjenljive po kojoj se vrsi filtriranje po txt sadrzaju
 		 		if ($scope.izabranoStanje == $scope.stanjaRacuna[0]) {
