@@ -15,4 +15,8 @@ public interface BillDaoLocal extends GenericDaoLocal<Bill, Integer>{
 	public List<Bill> getCancelledByUser(int customerId) throws UserException;
 	public List<Bill> getUserHistory(Customer customer) throws UserException;
 	public List<Bill> getUserHistory(int customerId) throws UserException;
+	public List<Bill> getAll();
+	public List<Bill> getByState(String state);
+	public List<Bill> getByStateAndUser(String state,Customer customer) throws UserException;
+	public List<Bill> getByStateAndUser(String state, int customerId) throws UserException;
 }

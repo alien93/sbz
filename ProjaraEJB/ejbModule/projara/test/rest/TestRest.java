@@ -20,6 +20,7 @@ import projara.util.exception.CustomerCategoryException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.exception.UserException;
+import projara.util.json.view.BillInfo;
 import projara.util.json.view.ItemJson;
 
 public interface TestRest {
@@ -51,9 +52,10 @@ public interface TestRest {
 	
 	@Path("/test/dummyBill")
 	@GET
-	public void makeDummyBill() throws CustomerCategoryException,
+	@Produces(MediaType.APPLICATION_JSON)
+	public BillInfo makeDummyBill() throws CustomerCategoryException,
 			BadArgumentsException, UserException, ItemCategoryException,
-			ItemException, BillException, JessException;
+			ItemException, BillException, JessException ;
 	
 	@Path("/test/query")
 	@GET

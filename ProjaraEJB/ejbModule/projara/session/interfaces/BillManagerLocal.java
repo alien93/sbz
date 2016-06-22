@@ -10,9 +10,11 @@ import projara.model.users.Customer;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
 import projara.util.exception.BillNotExistsException;
+import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.exception.UserException;
 import projara.util.exception.UserNotExistsException;
+import projara.util.json.create.WebShopCartJson;
 import projara.util.json.view.BillCostInfo;
 import projara.util.json.view.BillInfo;
 
@@ -50,4 +52,9 @@ public interface BillManagerLocal {
 			throws BillException;
 	public boolean validateBill(Bill bill) throws BillException;
 	public boolean validateBill(int billId) throws BillException;
+	public BillInfo populateBill(WebShopCartJson webShopCart) throws BillException,
+			ItemException, UserException, BadArgumentsException;
+	public BillInfo transform(Bill bill) throws BillException, BadArgumentsException,
+			ItemException, UserException, ItemCategoryException;
+	public List<BillInfo> transformList(List<Bill> result);
 }

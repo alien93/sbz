@@ -1,14 +1,9 @@
 package projara.test.rest;
 
-import java.awt.ItemSelectable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.List;
 
@@ -23,7 +18,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import jess.JessException;
 
@@ -64,7 +58,6 @@ import projara.util.exception.UserException;
 import projara.util.json.search.AdvancedSearch;
 import projara.util.json.search.ItemCategorySearch;
 import projara.util.json.search.ItemCostSearch;
-import projara.util.json.view.BillCostInfo;
 import projara.util.json.view.BillInfo;
 import projara.util.json.view.ItemJson;
 
@@ -259,14 +252,15 @@ public class TestRestBean implements TestRest {
 
 	@Path("/test/dummyBill")
 	@GET
-	public void makeDummyBill() throws CustomerCategoryException,
+	@Produces(MediaType.APPLICATION_JSON)
+	public BillInfo makeDummyBill() throws CustomerCategoryException,
 			BadArgumentsException, UserException, ItemCategoryException,
 			ItemException, BillException, JessException {
 		CustomerCategory cZlatni = custCatManager.makeCustomerCategory("A",
 				"Zlatni");
 
 		Customer cust1 = (Customer) userManager.registerUser("pera", "123",
-				"C", "Pera", "Peric");
+				"C", "Pera", "PerićčšđžŽĐŠČĆ");
 
 		Threshold t = custCatManager.makeThreshold(20000, 400000, 1.0);
 		cZlatni = custCatManager.addThreshold(cZlatni, t);
@@ -298,7 +292,8 @@ public class TestRestBean implements TestRest {
 				calB.getTime(), calA.getTime(), 15.0);
 
 		ae = itemManager.addCategoryToAction(ae, ic3);
-
+		
+		/*
 		Bill bill1 = billManager.createBill(cust1);
 
 		BillItem bi1 = billManager.addBillItem(bill1, i1, 2);
@@ -311,6 +306,11 @@ public class TestRestBean implements TestRest {
 
 		BillInfo bi = billManager.calculateCost(bill1, (short) 2390);
 
+		return bi;
+		*/
+		return null;
+		
+		/*
 		BillCostInfo withPoints = bi.getCostInfos().get(0);
 
 		billManager.finishOrder(bill1, withPoints);
@@ -318,6 +318,7 @@ public class TestRestBean implements TestRest {
 		billManager.approveOrder(bill1);
 
 		itemManager.automaticOrdering();
+		*/
 	}
 
 	@Path("/test/query")

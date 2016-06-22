@@ -351,44 +351,62 @@ public class ItemManagerBean implements ItemManagerLocal {
 
 		ItemJson retVal = new ItemJson();
 
-		ItemInfo itemInfo = new ItemInfo(item.getId(), item.getName(),
-				item.getPrice(), item.getPicture(), item.getInStock(),
-				item.getNeedOrdering(), item.getCreatedOn(),
-				item.getMinQuantity());
+		ItemInfo itemInfo = getBasicInfo(item);
 
 		ItemCategoryInfo ici = new ItemCategoryInfo(item.getCategory()
 				.getCode(), item.getCategory().getName(), item.getCategory()
 				.getMaxDiscount());
-		
+
 		List<ActionInfo> listAi = new ArrayList<ActionInfo>();
-		for(ActionEvent ae:acEv){
-			for(ItemCategory ic:ae.getCategories()){
+		for (ActionEvent ae : acEv) {
+			for (ItemCategory ic : ae.getCategories()) {
 				ic = itemCategoryDao.merge(ic);
-				if(item.isCategoryOf(ic)){
-					ActionInfo ai = new ActionInfo(ae.getId(), ae.getName(), ae.getFrom(), ae.getUntil(), ae.getDiscount());
+				if (item.isCategoryOf(ic)) {
+					ActionInfo ai = new ActionInfo(ae.getId(), ae.getName(),
+							ae.getFrom(), ae.getUntil(), ae.getDiscount());
 					listAi.add(ai);
 				}
 			}
 		}
-		
+
 		retVal.setCategory(ici);
 		retVal.setInfo(itemInfo);
 		retVal.setActions(listAi);
-		
+
 		retVal.calculateDiscountAndCost();
-		
+
 		return retVal;
 	}
-	
+
 	@Override
-	public List<ItemJson> transformItems(List<Item> items) throws ItemException,ItemCategoryException,BadArgumentsException{
-		
+	public List<ItemJson> transformItems(List<Item> items)
+			throws ItemException, ItemCategoryException, BadArgumentsException {
+
 		List<ItemJson> retVal = new ArrayList<>();
-		for(Item i:items){
+		for (Item i : items) {
 			ItemJson ij = transformToJson(i);
 			retVal.add(ij);
 		}
-		
+
 		return retVal;
+	}
+
+	@Override
+	public ItemInfo getBasicInfo(Item item) throws ItemException,
+			ItemCategoryException {
+
+		try {
+			item = itemDao.merge(item);
+		} catch (Exception e) {
+			throw new ItemNotExistsException();
+		}
+
+		ItemInfo ii = new ItemInfo(item.getId(), item.getName(),
+				item.getPrice(), item.getPicture(), item.getInStock(),
+				item.getNeedOrdering(), item.getCreatedOn(),
+				item.getMinQuantity());
+		
+		return ii;
+
 	}
 }

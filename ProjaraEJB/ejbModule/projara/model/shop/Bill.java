@@ -39,7 +39,13 @@ import projara.model.users.Customer;
 		@NamedQuery(name = "getCancelledByUser", query = "SELECT b FROM Bill b "
 				+ "WHERE b.customer = :myUser AND b.state LIKE 'C'"),
 		@NamedQuery(name = "getUserHistory", query = "SELECT b FROM Bill b "
-				+ "WHERE b.customer = :myUser")
+				+ "WHERE b.customer = :myUser AND b.state NOT LIKE 'T'"),
+		@NamedQuery (name = "getAll",query="SELECT b FROM Bill b "
+				+ "WHERE b.state NOT LIKE 'T'"),
+		@NamedQuery(name = "getByState", query = "SELECT b FROM Bill b WHERE "
+				+ "b.state LIKE :state"),
+		@NamedQuery(name = "getByStateAndUser", query = "SELECT b FROM Bill b "
+						+ "WHERE b.customer = :myUser AND b.state LIKE :state"),
 })
 public class Bill implements Serializable {
 

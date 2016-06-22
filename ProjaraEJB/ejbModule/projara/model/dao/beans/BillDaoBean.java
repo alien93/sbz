@@ -133,4 +133,50 @@ public class BillDaoBean extends GenericDaoBean<Bill, Integer>
 		return getUserHistory(customer);
 	}
 
+	@Override
+	public List<Bill> getAll() {
+		
+		Query q = em.createNamedQuery("getAll");
+		
+		List<Bill> result = q.getResultList();
+		
+		return result;
+	}
+	
+	@Override
+	public List<Bill> getByState(String state){
+		Query q = em.createNamedQuery("getByState");
+		q.setParameter("state", state);
+		
+		return q.getResultList();
+	}
+
+	@Override
+	public List<Bill> getByStateAndUser(String state, Customer customer) throws UserException {
+		Query q = em.createNamedQuery("getByStateAndUser");
+		
+		try{
+			customer = (Customer)userDao.merge(customer);
+		}catch(Exception e){
+			throw new UserException("User is not valid");
+		}
+		
+		q.setParameter("state", state);
+		q.setParameter("myUser", customer);
+		
+		return q.getResultList();
+	}
+
+	@Override
+	public List<Bill> getByStateAndUser(String state, int customerId)
+			throws UserException {
+		Customer customer = null;
+		try{
+			customer = (Customer)userDao.findById(customerId);
+		}catch(Exception e){
+			throw new UserNotExistsException("Customer with id: "+customer+" not exists");
+		}
+		return getByStateAndUser(state, customer);
+	}
+
 }
