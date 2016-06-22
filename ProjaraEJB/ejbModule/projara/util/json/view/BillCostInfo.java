@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class BillCostInfo implements Serializable{
 
+	private int billId;
 	private short awardPoints;
 	private short spentPoints;
 	private double discount;
@@ -46,13 +47,23 @@ public class BillCostInfo implements Serializable{
 	}
 
 	public BillCostInfo(short awardPoints, short spentPoints, double discount,
-			double total) {
+			double total,int billId) {
 		super();
 		this.awardPoints = awardPoints;
 		this.spentPoints = spentPoints;
 		this.discount = discount;
 		this.total = total;
+		this.billId = billId;
 	}
+
+	public int getBillId() {
+		return billId;
+	}
+
+	public void setBillId(int billId) {
+		this.billId = billId;
+	}
+	
 	
 	
 

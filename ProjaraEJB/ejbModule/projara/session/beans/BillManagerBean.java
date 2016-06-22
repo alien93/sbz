@@ -233,7 +233,7 @@ public class BillManagerBean implements BillManagerLocal {
 
 		// ///////////////////////////////////////////////
 		BillCostInfo withSpent = new BillCostInfo(awardAfterP, spentAfterP,
-				percentageAfterP, finalCostAfterP);
+				percentageAfterP, finalCostAfterP,bill.getId());
 		// ///////////////////////////////////////////////
 
 		System.out.println("After award+spent_points " + awardAfterP + " "
@@ -253,7 +253,7 @@ public class BillManagerBean implements BillManagerLocal {
 		// //////////////////////////////
 		BillCostInfo withoutSpentPoints = new BillCostInfo(
 				bill.getAwardPoints(), (short) 0, bill.getDiscountPercentage(),
-				bill.getTotal());
+				bill.getTotal(),bill.getId());
 		// ////////////////////////////
 
 		System.out.println("After award with 0 spent: " + bill.getAwardPoints()
