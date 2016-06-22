@@ -42,6 +42,23 @@ angular.module('sbzApp')
 						}
 					});
 					
+					//dobavljanje kategorija artikla
+					$http({
+						method: "GET", 
+						url : "http://localhost:8080/ProjaraWeb/rest/itemCategories",
+					}).then(function(value) {
+						console.log(value);
+						for(var i=0; i<value.data.length; i++){
+							if(value.data[i].info.inStock > 0){
+								/*var kategorija = {
+										"naziv":value.data[i].info.name,
+										"podkategorije":value.data[i].category.name
+								}
+								$scope.artikli.push(artikal);*/
+							}
+						}
+					});
+					
 					
 					$scope.viseInformacija = function(oznakaArtikla){
 						var modalInstance = $uibModal.open({
