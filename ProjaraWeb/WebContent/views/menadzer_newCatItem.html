@@ -1,0 +1,30 @@
+<meta charset="UTF-8">
+<div>
+	<div class="modal-header">
+		<b> {{headerMsg}} </b>
+	</div>
+	
+	<form name='f1' ng-submit="ok()">
+	<div class='modal-body'>
+			<p style='color: red;'> {{errorMsg}} </p>
+				<input type='text' ng-model='itemCategory.code' class="form-control" placeholder='Code' required/>
+			   	<br/>
+			   	<input type='text' ng-model='itemCategory.name' class="form-control" placeholder='Name' required/>
+			   	<br/>
+			   	<input type='number' ng-model='itemCategory.maxDiscount' class="form-control" placeholder='Max percentage' required/>
+			   	<br/>
+			   	Parent category:
+			   	<br/> <br/>
+			   	<select class="form-control" ng-model='itemCategory.parentCategory'>
+			   		<option ng-repeat="cat in categories" value='{{cat.code}}'>
+			   			{{cat.name}}
+			   		</option>
+			   	</select>
+	</div>
+	
+	<div class="modal-footer">
+		<input type='submit' value='Ok' class='btn btn-primary'/>
+		<button class='btn btn-warning' data-ng-click="cancel()">Cancel</button>
+	</div>
+	</form>
+</div>

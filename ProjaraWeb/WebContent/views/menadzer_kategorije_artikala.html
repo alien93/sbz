@@ -1,5 +1,35 @@
 <div ng-include="'views/menadzer_navBar.html'"></div>
 
-<div>
-	<h1> Kategorije artikala </h1>
+<div ng-controller="menadzer_kategorijeArtikalaController" style='margin-top: 7%'>
+	
+	<div style='margin-left: 20%;margin-right: 20%'>
+		<div class='table-responsive'>
+			<table class='table'>
+				<thead>
+					<tr>
+						<th colspan="5"> Kategorije artikala </th>
+						<th> <button class='btn btn-primary' ng-click="addCategory()"> Add </button> </th>
+					</tr>
+					<tr>
+						<th> ID </th>
+						<th> Parent category </th>
+						<th> Name </th>
+						<th> Max percentage </th>
+						<th> </th>
+						<th> </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="cat in kategorijeArtikala">
+						<td> {{cat.code}} </td>
+						<td> {{cat.parentCategory}} </td>
+						<td> {{cat.name}} </td>
+						<td> {{cat.maxDiscount}} </td>
+						<td> <button class='btn btn-primary' ng-click="deleteCategory(cat.code)">Delete</button> </td>
+						<td> <button class='btn btn-primary' ng-click="modifyCategory(cat)"> Modify </button></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
