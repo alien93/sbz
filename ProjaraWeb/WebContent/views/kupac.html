@@ -1,43 +1,15 @@
 <div ng-controller="kupac_Controller">
-		    <div class="col-md-2">
-		      
-		      <div id="MainMenu">
-		        <div class="list-group panel">
-		          <a data-target="#demo3" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">Item 3</a>
-		          <div class="panel">
-		          <div class="collapse" id="demo3">
-		            <a href="#SubMenu1" class="list-group-item" data-toggle="collapse" data-parent="#SubMenu1">Subitem 1 <i class="fa fa-caret-down"></i></a>
-		            <div class="collapse list-group-submenu" id="SubMenu1">
-		              <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 1 a</a>
-		              <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 2 b</a>
-		              <a href="#SubSubMenu1" class="list-group-item" data-toggle="collapse" data-parent="#SubSubMenu1">Subitem 3 c <i class="fa fa-caret-down"></i></a>
-		              <div class="collapse list-group-submenu list-group-submenu-1" id="SubSubMenu1">
-		                <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 1</a>
-		                <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 2</a>
-		              </div>
-		              <a href="#" class="list-group-item" data-parent="#SubMenu1">Subitem 4 d</a>
-		            </div>
-		            <a href="javascript:;" class="list-group-item">Subitem 2</a>
-		            <a href="javascript:;" class="list-group-item">Subitem 3</a>
-		          </div>
-		          </div>
-		          <a href="#demo4" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Item 4</a>
-		          <div class="collapse" id="demo4">
-		            <a href="" class="list-group-item">Subitem 1</a>
-		            <a href="" class="list-group-item">Subitem 2</a>
-		            <a href="" class="list-group-item">Subitem 3</a>
-		          </div>
-		           <a href="#demo5" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Item 5</a>
-		            <div class="collapse" id="demo5">
-		            <a href="#" class="list-group-item">Subitem 1</a>
-		            <a href="" class="list-group-item">Subitem 2</a>
-		            <a href="" class="list-group-item">Subitem 3</a>
-		          </div>
-		        </div>
-		      </div>
-		      
-		    </div>  
-	<!-- <div class="col-md-2">
+	<script type="text/ng-template" id="stablo">
+		{{ kategorija.info.name }}
+		<ul ng-if="kategorija.subCategories">
+			 <li ng-repeat="kategorija in kategorija.subCategories" ng-include="'stablo'">
+			        {{ kategorija.info.name }}
+			 </li>
+		</ul>
+	</script>
+
+
+	<div class="col-md-2">
 	  <uib-accordion close-others="oneAtATime">
 	  	<uib-accordion-group heading="Pretraga" is-open="true">
 	      <div>Šifra:<input type="text" class="form-control"></div>
@@ -47,11 +19,24 @@
 	      <br>
 	      <div><button class="btn" style="float:right;">Pretraži</button></div>
 	    </uib-accordion-group>
-	    <uib-accordion-group heading="{{kategorija.naziv}}" ng-repeat="kategorija in kategorije">
-	      <div ng-repeat="podkategorija in kategorija.podkategorije">{{podkategorija}}</div>
-	    </uib-accordion-group>
 	  </uib-accordion>
- 	 </div>-->
+      <!--  div id="MainMenu">
+        <div class="list-group panel" ng-repeat="kategorija in kategorije">
+        	<a href  data-target="#{{kategorija.oznaka}}" class="list-group-item list-group-item-info" data-toggle="collapse" data-parent="#{{kategorija.nadkategorija}}">{{kategorija.naziv}}</a>
+          	<div class="colapse" id="{{kategorija.oznaka}}">
+          		<a ng-repeat="podkategorija in kategorija.podkategorije" data-target="#{{podkategorija.oznaka}}" class="list-group-item" data-toggle="collapse" data-parent="#{{kategorija.oznaka}}">{{podkategorija.info.name}}</a>
+          	</div>
+        </div>
+      </div-->
+      <ul>
+    		<ul>
+			    <li ng-repeat="kategorija in kategorije" ng-include="'stablo'">
+			        
+			    </li>
+			</ul>
+	  </ul>
+	
+ 	 </div>
 	 <div class="col-md-1">
 	 </div>
 	 <div class="col-md-9">
@@ -78,3 +63,4 @@
 	 	</div>
 	 </div>
 </div>
+
