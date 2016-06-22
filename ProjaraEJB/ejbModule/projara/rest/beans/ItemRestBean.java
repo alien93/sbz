@@ -34,7 +34,6 @@ public class ItemRestBean implements ItemRestApi {
 	@EJB
 	private ItemDaoLocal itemDao;
 	
-	
 	/**
 	 * Potrebno je obraditi izuzetke
 	 */
