@@ -1,6 +1,10 @@
 angular.module('sbzApp')
-	.controller('prodavac_narudzbeController', ['$scope', 
-		function($scope){
+	.controller('prodavac_narudzbeController', ['$rootScope', '$scope', '$location', '$http',
+		function($rootScope, $scope, $location, $http){
+		
+			if ($rootScope.user.role != "PRODAVAC") {
+				$location.path('/prijava');
+			};	
 		 	
 		 	//------------------ Test data --------------------------------------------------
 			var aa1 = {"oznaka":"010", "naziv":"Pegla", "razlog":"Nestalo", "kolicina": "50"};
