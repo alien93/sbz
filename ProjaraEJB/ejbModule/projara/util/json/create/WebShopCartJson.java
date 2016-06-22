@@ -10,6 +10,8 @@ public class WebShopCartJson implements Serializable{
 	
 	private List<WebShopCartItem> items;
 	
+	private int points;
+	
 	public WebShopCartJson() {
 		items = new ArrayList<WebShopCartItem>();
 	}
@@ -28,6 +30,14 @@ public class WebShopCartJson implements Serializable{
 
 	public void setItems(List<WebShopCartItem> items) {
 		this.items = items;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
 	}
 	
 	

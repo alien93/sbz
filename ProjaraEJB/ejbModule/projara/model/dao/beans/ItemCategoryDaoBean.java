@@ -35,4 +35,11 @@ public class ItemCategoryDaoBean extends GenericDaoBean<ItemCategory, String>
 		return result;
 	}
 
+	@Override
+	public List<ItemCategory> getRoots() {
+		Query q = em.createNamedQuery("getRoots");
+		
+		return q.getResultList();
+	}
+
 }

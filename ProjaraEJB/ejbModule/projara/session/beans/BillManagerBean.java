@@ -8,6 +8,8 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
+import org.jboss.security.config.parser.UsersConfigParser;
+
 import jess.JessException;
 import jess.Rete;
 import projara.model.dao.interfaces.ActionEventDaoLocal;
@@ -24,14 +26,18 @@ import projara.model.items.Item;
 import projara.model.items.ItemCategory;
 import projara.model.shop.ActionEvent;
 import projara.model.shop.Bill;
+import projara.model.shop.BillDiscount;
 import projara.model.shop.BillItem;
+import projara.model.shop.BillItemDiscount;
 import projara.model.users.Customer;
 import projara.model.users.CustomerCategory;
 import projara.model.users.Threshold;
 import projara.session.interfaces.BillManagerLocal;
+import projara.session.interfaces.ItemManagerLocal;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
 import projara.util.exception.BillNotExistsException;
+import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.exception.ItemNotExistsException;
 import projara.util.exception.ItemQuantityIsOverLimitException;
@@ -41,8 +47,15 @@ import projara.util.exception.NotEnoughPontsException;
 import projara.util.exception.UserException;
 import projara.util.exception.UserNotExistsException;
 import projara.util.interceptors.CheckParametersInterceptor;
+import projara.util.json.create.WebShopCartItem;
+import projara.util.json.create.WebShopCartJson;
 import projara.util.json.view.BillCostInfo;
+import projara.util.json.view.BillDiscountInfo;
 import projara.util.json.view.BillInfo;
+import projara.util.json.view.BillItemDiscountInfo;
+import projara.util.json.view.BillitemInfo;
+import projara.util.json.view.CustomerBasicInfo;
+import projara.util.json.view.CustomerCategoryBasicInfo;
 @Stateless
 @Local(BillManagerLocal.class)
 public class BillManagerBean implements BillManagerLocal {
@@ -76,6 +89,9 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@EJB
 	private ThresholdDaoLocal thresholdDao;
+
+	@EJB
+	private ItemManagerLocal itemManager;
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
@@ -122,7 +138,6 @@ public class BillManagerBean implements BillManagerLocal {
 
 		if (points > bill.getCustomer().getPoints())
 			points = (short) bill.getCustomer().getPoints();
-		
 
 		// ///////////////////////////////////
 		// POZOVI JESS /////////////////////
@@ -233,7 +248,7 @@ public class BillManagerBean implements BillManagerLocal {
 
 		// ///////////////////////////////////////////////
 		BillCostInfo withSpent = new BillCostInfo(awardAfterP, spentAfterP,
-				percentageAfterP, finalCostAfterP,bill.getId());
+				percentageAfterP, finalCostAfterP, bill.getId());
 		// ///////////////////////////////////////////////
 
 		System.out.println("After award+spent_points " + awardAfterP + " "
@@ -253,7 +268,7 @@ public class BillManagerBean implements BillManagerLocal {
 		// //////////////////////////////
 		BillCostInfo withoutSpentPoints = new BillCostInfo(
 				bill.getAwardPoints(), (short) 0, bill.getDiscountPercentage(),
-				bill.getTotal(),bill.getId());
+				bill.getTotal(), bill.getId());
 		// ////////////////////////////
 
 		System.out.println("After award with 0 spent: " + bill.getAwardPoints()
@@ -282,6 +297,75 @@ public class BillManagerBean implements BillManagerLocal {
 		}
 
 		BillInfo bi = new BillInfo(bill.getId(), listBillCostInfo);
+
+		// CUSTOMER INFO
+		CustomerBasicInfo cbi = new CustomerBasicInfo();
+		CustomerCategoryBasicInfo ccbi = new CustomerCategoryBasicInfo();
+
+		Customer c = bill.getCustomer();
+
+		cbi.setId(c.getId());
+		cbi.setAddress(c.getAddress());
+		cbi.setFirstName(c.getFirstName());
+		cbi.setLastName(c.getLastName());
+		cbi.setUsername(c.getUsername());
+
+		ccbi.setCode(c.getCategory().getCategoryCode());
+		ccbi.setName(c.getCategory().getName());
+
+		cbi.setCustomerCategory(ccbi);
+
+		// Bill info
+
+		bi.setCustomer(cbi);
+		bi.setDate(bill.getDate());
+		bi.setOriginalTotal(bill.getOriginalTotal());
+		bi.setState(bill.getState());
+
+		List<BillDiscountInfo> billDiscounts = new ArrayList<>();
+		// Bill discounts
+		for (BillDiscount bd : bill.getBillDiscounts()) {
+			BillDiscountInfo bdi = new BillDiscountInfo(bd.getId(),
+					bd.getDiscount(), bd.getType());
+			billDiscounts.add(bdi);
+		}
+		bi.setBillDiscounts(billDiscounts);
+
+		// Bill Items
+		List<BillitemInfo> billItemsInfo = new ArrayList<>();
+		for (BillItem billItem : bill.getBillItems()) {
+			BillitemInfo billitemInfo = new BillitemInfo();
+			billitemInfo.setBillId(bill.getId());
+			billitemInfo
+					.setDiscountPercentage(billItem.getDiscountPercentage());
+			billitemInfo.setNumber(billItem.getItemNo());
+			billitemInfo.setOriginalCost(billItem.getOriginalTotal());
+			billitemInfo.setQuantity((int) billItem.getQuantity());
+			billitemInfo.setTotalCost(billItem.getTotal());
+
+			try {
+				billitemInfo.setItem(itemManager.getBasicInfo(billItem
+						.getItem()));
+			} catch (ItemException | ItemCategoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// discounts
+
+			List<BillItemDiscountInfo> discounts = new ArrayList<>();
+			for (BillItemDiscount billItemDiscount : billItem.getDiscounts()) {
+				BillItemDiscountInfo bidi = new BillItemDiscountInfo(
+						billItemDiscount.getId(),
+						billItemDiscount.getDiscount(),
+						billItemDiscount.getType());
+				discounts.add(bidi);
+			}
+			billitemInfo.setItemDiscounts(discounts);
+
+			billItemsInfo.add(billitemInfo);
+		}
+		bi.setBillItems(billItemsInfo);
 
 		return bi;
 	}
@@ -358,6 +442,7 @@ public class BillManagerBean implements BillManagerLocal {
 			throw new UserException("Problem with persisting customer");
 		}
 
+		bill.setState("C");
 		try {
 			bill = billDao.persist(bill);
 		} catch (Exception e) {
@@ -516,6 +601,19 @@ public class BillManagerBean implements BillManagerLocal {
 			throw new BillException(
 					"Cant reject order which is canceled, successful or ordered");
 
+		/*
+		for(BillItem bi:bill.getBillItems()){
+			for(BillItemDiscount bid:bi.getDiscounts()){
+				billItemDiscountDao.remove(bid);
+			}
+			billItemDao.remove(bi);
+		}
+		
+		for(BillDiscount bd:bill.getBillDiscounts()){
+			billDiscountDao.remove(bd);
+		}
+		*/
+		
 		billDao.remove(bill);
 
 	}
@@ -533,7 +631,24 @@ public class BillManagerBean implements BillManagerLocal {
 		if (bill == null)
 			throw new BillNotExistsException("Can not delete not existing bill");
 
-		rejectOrder(bill);
+		//rejectOrder(bill);
+		for(BillItem bi:bill.getBillItems()){
+			for(BillItemDiscount bid:bi.getDiscounts()){
+				billItemDiscountDao.remove(bid);
+			}
+			bi.removeAllDiscounts();
+			billItemDao.remove(bi);
+		}
+		
+		for(BillDiscount bd:bill.getBillDiscounts()){
+			billDiscountDao.remove(bd);
+		}
+		bill.removeAllBillDiscounts();
+		bill.removeAllBillItems();
+		bill.getCustomer().removeBills(bill);
+		
+		billDao.remove(bill);
+		
 	}
 
 	// vendor approves
@@ -569,10 +684,10 @@ public class BillManagerBean implements BillManagerLocal {
 				throw new NotEnoughItemsException("Item: " + item.getName()
 						+ " in stock: " + item.getInStock() + " requested: "
 						+ bi.getQuantity());
-			
-			item.setInStock(item.getInStock() - (int)bi.getQuantity());
-			
-			//item = itemDao.persist(item);
+
+			item.setInStock(item.getInStock() - (int) bi.getQuantity());
+
+			// item = itemDao.persist(item);
 		}
 
 		bill.setState("S");
@@ -625,36 +740,113 @@ public class BillManagerBean implements BillManagerLocal {
 
 		return approveOrder(bill);
 	}
-	
+
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public boolean validateBill(Bill bill) throws BillException{
-		
+	public boolean validateBill(Bill bill) throws BillException {
+
+		try {
+			bill = billDao.merge(bill);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists");
+		}
+
+		for (BillItem bi : bill.getBillItems()) {
+			if (bi.getItem().getInStock() < bi.getQuantity())
+				return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean validateBill(int billId) throws BillException {
+
+		Bill bill = null;
+		try {
+			bill = billDao.findById(billId);
+		} catch (Exception e) {
+			throw new BillNotExistsException("Bill not exists");
+		}
+
+		return validateBill(bill);
+	}
+
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public BillInfo populateBill(WebShopCartJson webShopCart)
+			throws BillException, ItemException, UserException,
+			BadArgumentsException {
+
+		Bill bill = createBill(webShopCart.getCustomerId());
+
+		if (webShopCart.getItems().isEmpty())
+			throw new BillException("No items in web shop cart");
+
+		for (WebShopCartItem item : webShopCart.getItems()) {
+			BillItem bi = addBillItem(bill.getId(), item.getItemId(),
+					item.getQuantity());
+		}
+
+		try {
+			bill = billDao.persist(bill);
+		} catch (Exception e) {
+			throw new BillException();
+		}
+
+		BillInfo billJson = null;
+		try {
+			billJson = calculateCost(bill, (short) webShopCart.getPoints());
+		} catch (JessException e) {
+			new BillException("JESS PUKO MAJKU MU");
+		}
+
+		return billJson;
+	}
+
+	@Override
+	@Interceptors({CheckParametersInterceptor.class})
+	public BillInfo transform(Bill bill) throws BillException,
+			BadArgumentsException, ItemException, UserException,
+			ItemCategoryException {
+
 		try{
 			bill = billDao.merge(bill);
 		}catch(Exception e){
-			throw new BillNotExistsException("Bill not exists");
+			e.printStackTrace();
 		}
 		
-		for(BillItem bi:bill.getBillItems()){
-			if(bi.getItem().getInStock() < bi.getQuantity())
-				return false;
-		}
+		List<BillCostInfo> bci = new ArrayList<>();
+		BillCostInfo info = new BillCostInfo(bill.getAwardPoints(),
+				bill.getSpentPoints(), bill.getDiscountPercentage(),
+				bill.getTotal(), bill.getId());
+		bci.add(info);
 		
-		return true;
+		return makeBillInfo(bill, bci);
 	}
-	
+
 	@Override
-	public boolean validateBill(int billId) throws BillException{
+	public List<BillInfo> transformList(List<Bill> result) {
+		List<BillInfo> billInfos = new ArrayList<BillInfo>();
 		
-		Bill bill = null;
-		try{
-			bill = billDao.findById(billId);
-		}catch(Exception e){
-			throw new BillNotExistsException("Bill not exists");
+		if(result == null)
+			return billInfos;
+		
+		for(Bill b:result){
+			BillInfo bi;
+			try {
+				bi = transform(b);
+				billInfos.add(bi);
+			} catch (BillException | BadArgumentsException | ItemException
+					| UserException | ItemCategoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				continue;
+			}
+			
 		}
 		
-		return validateBill(bill);
+		return billInfos;
 	}
 
 }

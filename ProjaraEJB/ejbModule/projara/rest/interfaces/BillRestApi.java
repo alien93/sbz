@@ -28,7 +28,7 @@ public interface BillRestApi {
 	@Path("/confirm")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public BillInfo finishmBill(BillCostInfo bci);
+	public BillInfo finishBill(BillCostInfo bci);
 	
 	@DELETE
 	@Path("/reject/{id}")
@@ -40,12 +40,18 @@ public interface BillRestApi {
 	
 	
 	@GET
-	@Path("/{type}")
-	public List<BillInfo> getBillsByType(@PathParam("type") String type);
+	@Path("/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<BillInfo> getAllBills();
+	
+	@GET
+	@Path("/{state}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<BillInfo> getBillsByState(@PathParam("state") String state);
 	
 	@GET
 	@Path("/approve/{id}")
-	public Response approveBill(@PathParam("id") String billId);
+	public Response approveBill(@PathParam("id") int billId);
 	
 	@GET
 	@Path("/ok")
