@@ -13,18 +13,18 @@ angular.module('sbzApp')
 					var artikal4 = {"oznaka":"123", "naziv":"Krevet", "kategorija":"Spavaca soba", "popust":"", "cena":"5000"};
 					var artikal5 = {"oznaka":"123", "naziv":"Prskalica", "kategorija":"Basta", "popust":"", "cena":"50000"};
 
-					$scope.kategorije = [kategorija1, kategorija2];
+					//$scope.kategorije = [kategorija1, kategorija2];
 					//$scope.artikli = [artikal1, artikal2, artikal3, artikal4, artikal5];
 					
 				//-------------------------------------------/test podaci-------------------------------------
 					$scope.artikli = [];
+					$scope.kategorije = [];
 					
 					//dobavljanje artikala
 					$http({
 						method: "GET", 
 						url : "http://localhost:8080/ProjaraWeb/rest/items",
 					}).then(function(value) {
-						console.log(value);
 						for(var i=0; i<value.data.length; i++){
 							if(value.data[i].info.inStock > 0){
 								var artikal = {
@@ -45,18 +45,18 @@ angular.module('sbzApp')
 					//dobavljanje kategorija artikla
 					$http({
 						method: "GET", 
-						url : "http://localhost:8080/ProjaraWeb/rest/itemCategories",
+						url : "http://localhost:8080/ProjaraWeb/rest/test/test/categories",
 					}).then(function(value) {
 						console.log(value);
-						for(var i=0; i<value.data.length; i++){
-							if(value.data[i].info.inStock > 0){
-								/*var kategorija = {
-										"naziv":value.data[i].info.name,
-										"podkategorije":value.data[i].category.name
+						$scope.kategorije = value.data;
+						/*for(var i=0; i<value.data.length; i++){
+								var kategorija = {
+										"naziv": value.data[i].info.name,
+										"oznaka": value.data[i].info.code,
+										"podkategorije":value.data[i].subCategories
 								}
-								$scope.artikli.push(artikal);*/
-							}
-						}
+								$scope.kategorije.push(kategorija);
+						}*/
 					});
 					
 					

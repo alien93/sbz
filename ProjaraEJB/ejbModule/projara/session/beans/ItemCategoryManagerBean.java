@@ -52,11 +52,10 @@ public class ItemCategoryManagerBean implements ItemCategoryManagerLocal{
 		
 		ItemCategoryInfo itemCategoryInfo = new ItemCategoryInfo(itemCategory.getCode(), itemCategory.getName(), itemCategory.getMaxDiscount());
 		
-		
 		List<ActionInfo> listAi = new ArrayList<ActionInfo>();
 		for(ActionEvent ae:acEv){
 			for(ItemCategory ic: ae.getCategories()){
-				if(ic.equals(itemCategory) || ic.equals(itemCategory.getParentCategory())){
+				if(itemCategory.equals(ic) || itemCategory.isChildCategory(ic)){
 					ActionInfo ai = new ActionInfo(ae.getId(), ae.getName(), ae.getFrom(), ae.getUntil(), ae.getDiscount());
 					listAi.add(ai);
 				}
@@ -65,7 +64,10 @@ public class ItemCategoryManagerBean implements ItemCategoryManagerLocal{
 		
 		retVal.setInfo(itemCategoryInfo);
 		retVal.setActions(listAi);
-		
+		if(itemCategory.getParentCategory()!=null){
+			retVal.setParentCategory(itemCategory.getParentCategory().getCode());
+			retVal.setParentName(itemCategory.getParentCategory().getName());
+		}
 		return retVal;
 	}
 
