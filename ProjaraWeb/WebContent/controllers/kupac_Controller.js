@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('kupac_Controller', ['$scope', '$uibModal',
-			function($scope, $uibModal){
+	.controller('kupac_Controller', ['$scope', '$uibModal', '$http',
+			function($scope, $uibModal, $http){
 			
 				//-------------------------------------------test podaci-------------------------------------
 					
@@ -14,10 +14,35 @@ angular.module('sbzApp')
 					var artikal5 = {"oznaka":"123", "naziv":"Prskalica", "kategorija":"Basta", "popust":"", "cena":"50000"};
 
 					$scope.kategorije = [kategorija1, kategorija2];
-					$scope.artikli = [artikal1, artikal2, artikal3, artikal4, artikal5];
+					//$scope.artikli = [artikal1, artikal2, artikal3, artikal4, artikal5];
 					
 				//-------------------------------------------/test podaci-------------------------------------
-
+					$scope.artikli = [];
+					
+					//dobavljanje artikala
+					$http({
+						method: "GET", 
+						url : "http://localhost:8080/ProjaraWeb/rest/items",
+					}).then(function(value) {
+						console.log(value);
+						for(var i=0; i<value.data.length; i++){
+							if(value.data[i].info.inStock > 0){
+								var artikal = {
+										"oznaka":value.data[i].info.id,
+										"naziv":value.data[i].info.name,
+										"kategorija":value.data[i].category.name,
+										"popust":value.data[i].discountPerc,
+										"cena":value.data[i].info.cost,
+										"cenaSaPopustom":value.data[i].costWithDiscount,
+										"akcije":value.data[i].actions,
+										"slika":"images/"+value.data[i].info.picture
+								}
+								$scope.artikli.push(artikal);
+							}
+						}
+					});
+					
+					
 					$scope.viseInformacija = function(oznakaArtikla){
 						var modalInstance = $uibModal.open({
 							animation: true,
@@ -26,6 +51,13 @@ angular.module('sbzApp')
 							resolve:{
 								oznakaArtikla : function(){
 									return oznakaArtikla;
+								},
+								artikli : function(){
+									var artikli = {};
+									for (var i = 0, len = $scope.artikli.length; i < len; i++) {
+									    artikli[$scope.artikli[i].oznaka] = $scope.artikli[i];
+									}
+									return artikli;
 								}
 							}
 						});
@@ -33,11 +65,11 @@ angular.module('sbzApp')
 					
 	}])
 	
-	.controller('kupac_artikalInfoController', ['$scope', '$uibModalInstance', 'oznakaArtikla',
-	       function($scope, $uibModalInstance, oznakaArtikla){
+	.controller('kupac_artikalInfoController', ['$scope', '$uibModalInstance', 'oznakaArtikla', 'artikli',
+	       function($scope, $uibModalInstance, oznakaArtikla, artikli){
+								
+				$scope.artikal = artikli[oznakaArtikla];
 				
-				$scope.oznakaArtikla = oznakaArtikla;
-		
 				$scope.zatvori = function(){
 					$uibModalInstance.close();
 				}

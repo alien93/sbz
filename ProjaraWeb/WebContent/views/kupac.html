@@ -20,11 +20,13 @@
 	 	<div class="artikli" ng-repeat="artikal in artikli" class="row">
 	 		<div class="col-xs-4" id="artikal">
 		 		<figure>
-	 				<img src="images/defaultImage.png"  style="width:180px;height:120px;" ng-click="viseInformacija(artikal.oznaka)">
+		 			<div style="width:180px;height:120px">
+	 					<img ng-src="{{artikal.slika || 'images/defaultImage.png'}}"   style="max-width:180px;max-height:120px;" ng-click="viseInformacija(artikal.oznaka)">
+				    </div>
 				    <figcaption>
 				    	<ul id="artikalPodaci">
 				    		<li>{{artikal.naziv}}</li>
-				    		<li><b><font size="5">{{artikal.cena}},00 RSD</font></b></li>
+				    		<li><b><font size="5">{{artikal.cenaSaPopustom}} RSD</font></b></li>
 				    		<li>
 				    			<input id="kolicinaArtikla" type="number" min=0 value=0>
 				    			<button type="button" class="btn btn-default btn-sm">
