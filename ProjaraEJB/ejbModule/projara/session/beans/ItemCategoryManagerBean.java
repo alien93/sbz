@@ -55,8 +55,12 @@ public class ItemCategoryManagerBean implements ItemCategoryManagerLocal{
 		
 		List<ActionInfo> listAi = new ArrayList<ActionInfo>();
 		for(ActionEvent ae:acEv){
-			ActionInfo ai = new ActionInfo(ae.getId(), ae.getName(), ae.getFrom(), ae.getUntil(), ae.getDiscount());
-			listAi.add(ai);
+			for(ItemCategory ic: ae.getCategories()){
+				if(ic.equals(itemCategory) || ic.equals(itemCategory.getParentCategory())){
+					ActionInfo ai = new ActionInfo(ae.getId(), ae.getName(), ae.getFrom(), ae.getUntil(), ae.getDiscount());
+					listAi.add(ai);
+				}
+			}
 		}
 		
 		retVal.setInfo(itemCategoryInfo);
