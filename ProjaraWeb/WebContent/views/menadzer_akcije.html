@@ -1,5 +1,43 @@
-<div ng-include="'views/menadzer_navBar.html'"></div>
+<div data-ng-include="'views/menadzer_navBar.html'"></div>
 
-<div style="margin-top: 2cm;">
-	<h1> Akcije </h1>
+<div data-ng-controller="menadzer_akcijeController" style='margin-top: 7%'>
+	
+	<div style='margin-left: 20%;margin-right: 20%'>
+		<div class='table-responsive'>
+			<table class='table'>
+				<thead>
+					<tr>
+						<th colspan="7"> Akcije </th>
+						<th> <button class='btn btn-primary' data-ng-click="addAction()"> Add </button> </th>
+					</tr>
+					<tr>
+						<th> ID </th>
+						<th> Name </th>
+						<th> From </th>
+						<th> To </th>
+						<th> Discount </th>
+						<th> Categories</th>
+						<th> </th>
+						<th> </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="a in akcije">
+						<td> {{a.id}} </td>
+						<td> {{a.name}} </td>
+						<td> {{filterDate(a.from)}} </td>
+						<td> {{filterDate(a.until)}} </td>
+						<td> {{a.discount}} </td>
+						<td> 
+							<span data-ng-repeat="cat in a.categories track by $index">
+								{{$index + 1}} - {{cat.name}} <br/>
+							</span>
+						</td>
+						<td> <button class='btn btn-primary' data-ng-click="deleteAction(a.code)">Delete</button> </td>
+						<td> <button class='btn btn-primary' data-ng-click="modifyAction(a)"> Modify </button></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>

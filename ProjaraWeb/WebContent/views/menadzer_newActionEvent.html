@@ -1,0 +1,26 @@
+<meta charset="UTF-8">
+<div>
+	<div class="modal-header">
+		<b> {{headerMsg}} </b>
+	</div>
+	
+	<form name='f1' ng-submit="ok()">
+	<div class='modal-body'>
+			 <input type='text' class='form-control' data-ng-model='newAction.name'  placeholder='Name'/>
+			 <br/>
+			 From: <br/> 
+			 <input type='date' min="1970-01-01" class='form-control' data-ng-model='newAction.from'/>
+			 <br/>
+			 To: <br/> 
+			 <input type='date' min="1970-01-01" class='form-control' data-ng-model='newAction.until'/>
+			 <br/>
+			 <input type='number' min=0 class='form-control' data-ng-model='newAction.discount'  placeholder='Discount'/>
+			 <br/>
+	</div>
+	
+	<div class="modal-footer">
+		<input type='submit' value='Ok' class='btn btn-primary'/>
+		<button class='btn btn-warning' data-ng-click="cancel()">Cancel</button>
+	</div>
+	</form>
+</div>
