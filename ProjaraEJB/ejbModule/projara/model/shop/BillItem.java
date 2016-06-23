@@ -20,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import projara.model.items.Item;
@@ -55,7 +56,7 @@ public class BillItem implements Serializable {
 	 * @pdRoleInfo migr=no name=BillItemDiscount assc=itemHasDiscounts coll=Set
 	 *             impl=HashSet mult=0..*
 	 */
-	@OneToMany(cascade= CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="billItem")
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER,mappedBy="billItem")
 	private Set<BillItemDiscount> discounts = new HashSet<>();
 	/** @pdRoleInfo migr=no name=Item assc=isOnBill mult=1..1 side=A */
 	@ManyToOne
@@ -314,12 +315,26 @@ public class BillItem implements Serializable {
 		setBill(bill);
 	}
 	
+	public BillItem(double price, int quantity, Item item) {
+		this.price = price;
+		this.quantity = quantity;
+		setItem(item);
+	}
+
 	public int getItemNo(){
 		return id.getItemNo();
 	}
 	
 	public Customer getCustomer(){
 		return getBill().getCustomer();
+	}
+	
+	@PreRemove
+	public void preRemoveBillItem(){
+		if(bill !=null)
+			bill.removeBillItems(this);
+		item.removeItems(this);
+		removeAllDiscounts();
 	}
 	
 	

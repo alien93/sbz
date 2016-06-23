@@ -10,6 +10,9 @@ public class ItemCategoryInfo implements Serializable {
 	
 	public ItemCategoryInfo() {
 		// TODO Auto-generated constructor stub
+		code = "";
+		name = "";
+		maxDiscount = 0;
 	}
 
 	public ItemCategoryInfo(String code, String name, double maxDiscount) {

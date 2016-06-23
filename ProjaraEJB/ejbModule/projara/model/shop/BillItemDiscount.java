@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 /** @pdOid c2f9f85e-0f6b-4f23-9a54-a1d250c2462a */
@@ -153,6 +154,11 @@ public class BillItemDiscount implements Serializable {
 		setBillItem(billItem);
 	}
 	
-	
+	@PreRemove
+	public void preRemoveBillItemDiscount() {
+		if (billItem != null)
+			billItem.removeDiscounts(this);
+
+	}
 
 }

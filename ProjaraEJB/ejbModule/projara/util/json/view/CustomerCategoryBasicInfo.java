@@ -9,6 +9,8 @@ public class CustomerCategoryBasicInfo implements Serializable {
 	
 	public CustomerCategoryBasicInfo() {
 		// TODO Auto-generated constructor stub
+		code = "";
+		name = "";
 	}
 
 	public CustomerCategoryBasicInfo(String code, String name) {

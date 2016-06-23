@@ -18,6 +18,7 @@ public class ItemCategoryJson implements Serializable {
 		actions = new ArrayList<ActionInfo>();
 		subCategories = new ArrayList<ItemCategoryJson>();
 		parentCode = "";
+		parentName = "";
 	}
 
 	public String getParentCode() {

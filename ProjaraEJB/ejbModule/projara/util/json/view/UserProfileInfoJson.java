@@ -22,6 +22,8 @@ public class UserProfileInfoJson implements Serializable {
 		address = "";
 		firstName = "";
 		lastName = "";
+		userType = "";
+		registeredOn = null;
 		category = new CustomerCategoryBasicInfo();
 	}
 

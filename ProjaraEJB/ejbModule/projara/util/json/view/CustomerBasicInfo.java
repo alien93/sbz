@@ -14,6 +14,11 @@ public class CustomerBasicInfo implements Serializable {
 	
 	public CustomerBasicInfo() {
 		// TODO Auto-generated constructor stub
+		id = 0;
+		firstName = "";
+		username = "";
+		address ="";
+		lastName = "";
 	}
 
 	public int getId() {

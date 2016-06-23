@@ -3,6 +3,8 @@ package projara.util.json.view;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.sun.xml.internal.bind.v2.runtime.output.Pcdata;
+
 public class ItemInfo implements Serializable {
 
 	private int id;
@@ -16,6 +18,14 @@ public class ItemInfo implements Serializable {
 	
 	public ItemInfo() {
 		// TODO Auto-generated constructor stub
+		id = 0;
+		name = "";
+		cost = 0;
+		picture = "";
+		inStock = 0;
+		needOrdering = false;
+		createdOn = null;
+		minQuantity = 0;
 	}
 
 	public int getId() {

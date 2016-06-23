@@ -72,5 +72,9 @@ public abstract class GenericDaoBean<T, ID extends Serializable>
 	public void clear() {
 		em.clear();
 	}
+	
+	public void detach(T entity){
+		em.detach(entity);
+	}
 
 }

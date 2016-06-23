@@ -21,6 +21,7 @@ import projara.session.interfaces.AuthorizationLocal;
 import projara.session.interfaces.UserManagerLocal;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.UserException;
+import projara.util.exception.UserNotLoggedException;
 import projara.util.json.view.UserProfileInfoJson;
 
 @Stateless
@@ -41,31 +42,20 @@ public class UserRestBean implements UserRestApi {
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserProfileInfoJson login(@FormParam("username") String username,
-			@FormParam("password") String password) {
+			@FormParam("password") String password) throws UserException,
+			BadArgumentsException {
 
 		try {
 			authorization.checkIsLogged(request.getSession());
-			// VEC JE ULOGOVAN
-			// RETURN GRESKU
-			return null;
+			throw new UserException("Already logged");
 		} catch (UserException e1) {
 		}
 
-		try {
-			User u = userManager.login(username, password);
-			
-			request.getSession().setAttribute("userID", u.getId());
-			
-			return userManager.transformToJson(u);
-		} catch (UserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		User u = userManager.login(username, password);
 
-		return null;
+		request.getSession().setAttribute("userID", u.getId());
+
+		return userManager.transformToJson(u);
 
 	}
 
@@ -76,32 +66,22 @@ public class UserRestBean implements UserRestApi {
 			@FormParam("password") String password,
 			@FormParam("firstName") String firstName,
 			@FormParam("lastName") String lastName,
-			@FormParam("role") String role) {
+			@FormParam("role") String role) throws UserException,
+			BadArgumentsException {
 
 		try {
 			authorization.checkIsLogged(request.getSession());
-			// VEC JE ULOGOVAN
-			// RETURN GRESKU
-			return null;
-		} catch (UserException e1) {
-		}
-
-		try {
-			User u = userManager.registerUser(username, password, role,
-					firstName, lastName);
-			
-			request.getSession().setAttribute("userID", u.getId());
-			
-			return userManager.transformToJson(u);
+			throw new UserException("Already logged");
 		} catch (UserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// OK
 		}
 
-		return null;
+		User u = userManager.registerUser(username, password, role, firstName,
+				lastName);
+
+		request.getSession().setAttribute("userID", u.getId());
+
+		return userManager.transformToJson(u);
 
 	}
 
@@ -109,48 +89,25 @@ public class UserRestBean implements UserRestApi {
 	@Path("/update")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public UserProfileInfoJson update(UserProfileInfoJson userProfile) {
+	public UserProfileInfoJson update(UserProfileInfoJson userProfile)
+			throws UserException, BadArgumentsException {
 
-		try {
-			authorization.checkIsLogged(request.getSession());
-		} catch (UserException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			//RETURN
-			//NIJE USPESNO
-		}
-		
-		try {
-			User u = userManager.updateUser(userProfile);
-			return userManager.transformToJson(u);
-		} catch (UserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return null;
-		
+		authorization.checkIsLogged(request.getSession());
+
+		User u = userManager.updateUser(userProfile);
+		return userManager.transformToJson(u);
+
 	}
-	
+
 	@POST
 	@Path("/logout")
-	public Response logout(){
-		
-		try {
-			authorization.checkIsLogged(request.getSession());
-		} catch (UserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			//greska return
-		}
-		
+	public Response logout() throws UserException {
+
+		authorization.checkIsLogged(request.getSession());
+
 		request.getSession().setAttribute("userID", null);
-		
+
 		return Response.ok().build();
 	}
-
 
 }

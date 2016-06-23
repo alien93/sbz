@@ -12,6 +12,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import projara.util.exception.BadArgumentsException;
+import projara.util.exception.BillException;
+import projara.util.exception.ItemException;
+import projara.util.exception.UserException;
 import projara.util.json.create.WebShopCartJson;
 import projara.util.json.view.BillCostInfo;
 import projara.util.json.view.BillInfo;
@@ -22,7 +26,8 @@ public interface BillRestApi {
 	@Path("/create")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public BillInfo makeBill(WebShopCartJson webShopCart);
+	public BillInfo makeBill(WebShopCartJson webShopCart) throws UserException,
+			BadArgumentsException, BillException, ItemException;
 	
 	@POST
 	@Path("/confirm")

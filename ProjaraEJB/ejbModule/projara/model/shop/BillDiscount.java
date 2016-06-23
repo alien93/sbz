@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 /** @pdOid c05e91d1-9a51-46b5-9ffd-f9cf2aa5e690 */
@@ -115,12 +116,12 @@ public class BillDiscount implements Serializable {
 
 	@Override
 	public int hashCode() {
-		
-		if(id == 0){
+
+		if (id == 0) {
 			Random rand = new Random();
-			return 31*rand.nextInt(10000000)+(new Date()).hashCode();
+			return 31 * rand.nextInt(10000000) + (new Date()).hashCode();
 		}
-		
+
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + id;
@@ -151,7 +152,12 @@ public class BillDiscount implements Serializable {
 		this.type = type;
 		setBill(bill);
 	}
-	
-	
+
+	@PreRemove
+	public void preRemoveBillDiscount() {
+		if (bill != null)
+			bill.removeBillDiscounts(this);
+
+	}
 
 }

@@ -6,7 +6,10 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagementType;
 import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.jboss.security.config.parser.UsersConfigParser;
 
@@ -29,9 +32,11 @@ import projara.model.shop.Bill;
 import projara.model.shop.BillDiscount;
 import projara.model.shop.BillItem;
 import projara.model.shop.BillItemDiscount;
+import projara.model.shop.BillItemPK;
 import projara.model.users.Customer;
 import projara.model.users.CustomerCategory;
 import projara.model.users.Threshold;
+import projara.session.interfaces.BillExceptionRecoveryLocal;
 import projara.session.interfaces.BillManagerLocal;
 import projara.session.interfaces.ItemManagerLocal;
 import projara.util.exception.BadArgumentsException;
@@ -93,8 +98,12 @@ public class BillManagerBean implements BillManagerLocal {
 	@EJB
 	private ItemManagerLocal itemManager;
 
+	@EJB
+	private BillExceptionRecoveryLocal billRecovery;
+
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(rollbackOn = UserException.class, value = TxType.SUPPORTS)
 	public Bill createBill(Customer customer) throws UserNotExistsException,
 			BadArgumentsException {
 
@@ -113,28 +122,12 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(rollbackOn = BillException.class, value = TxType.SUPPORTS)
 	public BillInfo calculateCost(Bill bill, short points)
 			throws BillException, JessException {
 
-		try {
-			bill = billDao.merge(bill);
-		} catch (Exception e) {
-			throw new BillNotExistsException("Bill not exists");
-		}
-
 		if (bill.getBillItems().isEmpty())
 			throw new NoBillItemsException("Bill is empty");
-
-		// try {
-		// for (BillItem bi : bill.getBillItems()) {
-		// bi.removeAllDiscounts();
-		// bi = billItemDao.persist(bi);
-		// }
-		// bill.removeAllBillDiscounts();
-		// bill = billDao.persist(bill);
-		// } catch (Exception e) {
-		// throw new BillException("Cant remove discounts");
-		// }
 
 		if (points > bill.getCustomer().getPoints())
 			points = (short) bill.getCustomer().getPoints();
@@ -454,25 +447,27 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(rollbackOn = {ItemException.class, BillException.class,
+			BadArgumentsException.class}, value = TxType.SUPPORTS)
 	public BillItem addBillItem(Bill bill, Item item, int quantity)
 			throws BillException, ItemException, BadArgumentsException {
 
 		if (quantity <= 0)
 			throw new BillException(
 					"Quantity of item can not be less or equal then 0");
-
+		
+		/*
 		try {
 			bill = billDao.merge(bill);
 		} catch (Exception e) {
-			throw new BillNotExistsException("Bill with id: " + bill.getId()
-					+ " not exists");
+			throw new BillNotExistsException("Bill not exist");
 		}
-
+		*/
+		
 		try {
 			item = itemDao.merge(item);
 		} catch (Exception e) {
-			throw new ItemNotExistsException("Item with id: " + item.getId()
-					+ " not exists");
+			throw new ItemNotExistsException("Item not exist");
 		}
 
 		if (item.getInStock() < quantity)
@@ -491,6 +486,8 @@ public class BillManagerBean implements BillManagerLocal {
 	}
 
 	@Override
+	@Transactional(rollbackOn = {ItemException.class, BillException.class,
+			BadArgumentsException.class}, value = TxType.SUPPORTS)
 	public BillItem addBillItem(int billId, int itemId, int quantity)
 			throws BillException, ItemException, BadArgumentsException {
 
@@ -503,6 +500,9 @@ public class BillManagerBean implements BillManagerLocal {
 			throw new BillNotExistsException("Bill with id: " + billId
 					+ "not exists");
 		}
+		if (bill == null)
+			throw new BillNotExistsException("Bill with id: " + billId
+					+ "not exists");
 
 		try {
 			item = itemDao.findById(itemId);
@@ -510,11 +510,15 @@ public class BillManagerBean implements BillManagerLocal {
 			throw new ItemNotExistsException("Item with id: " + itemId
 					+ " not exists");
 		}
+		if (item == null)
+			throw new ItemNotExistsException("Item with id: " + itemId
+					+ " not exists");
 
 		return addBillItem(bill, item, quantity);
 	}
 
 	@Override
+	@Transactional(rollbackOn = UserException.class, value = TxType.SUPPORTS)
 	public Bill createBill(int customerId) throws UserNotExistsException,
 			BadArgumentsException {
 
@@ -525,6 +529,9 @@ public class BillManagerBean implements BillManagerLocal {
 			throw new UserNotExistsException("User with id: " + customerId
 					+ " not exists");
 		}
+		if (cust == null)
+			throw new UserNotExistsException("User with id: " + customerId
+					+ " not exists");
 
 		return createBill(cust);
 	}
@@ -602,18 +609,14 @@ public class BillManagerBean implements BillManagerLocal {
 					"Cant reject order which is canceled, successful or ordered");
 
 		/*
-		for(BillItem bi:bill.getBillItems()){
-			for(BillItemDiscount bid:bi.getDiscounts()){
-				billItemDiscountDao.remove(bid);
-			}
-			billItemDao.remove(bi);
-		}
-		
-		for(BillDiscount bd:bill.getBillDiscounts()){
-			billDiscountDao.remove(bd);
-		}
-		*/
-		
+		 * for(BillItem bi:bill.getBillItems()){ for(BillItemDiscount
+		 * bid:bi.getDiscounts()){ billItemDiscountDao.remove(bid); }
+		 * billItemDao.remove(bi); }
+		 * 
+		 * for(BillDiscount bd:bill.getBillDiscounts()){
+		 * billDiscountDao.remove(bd); }
+		 */
+
 		billDao.remove(bill);
 
 	}
@@ -631,24 +634,24 @@ public class BillManagerBean implements BillManagerLocal {
 		if (bill == null)
 			throw new BillNotExistsException("Can not delete not existing bill");
 
-		//rejectOrder(bill);
-		for(BillItem bi:bill.getBillItems()){
-			for(BillItemDiscount bid:bi.getDiscounts()){
+		// rejectOrder(bill);
+		for (BillItem bi : bill.getBillItems()) {
+			for (BillItemDiscount bid : bi.getDiscounts()) {
 				billItemDiscountDao.remove(bid);
 			}
 			bi.removeAllDiscounts();
 			billItemDao.remove(bi);
 		}
-		
-		for(BillDiscount bd:bill.getBillDiscounts()){
+
+		for (BillDiscount bd : bill.getBillDiscounts()) {
 			billDiscountDao.remove(bd);
 		}
 		bill.removeAllBillDiscounts();
 		bill.removeAllBillItems();
 		bill.getCustomer().removeBills(bill);
-		
+
 		billDao.remove(bill);
-		
+
 	}
 
 	// vendor approves
@@ -768,26 +771,65 @@ public class BillManagerBean implements BillManagerLocal {
 		} catch (Exception e) {
 			throw new BillNotExistsException("Bill not exists");
 		}
+		if (bill == null)
+			throw new BillNotExistsException("Bill not exists");
 
 		return validateBill(bill);
 	}
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(rollbackOn = {BillException.class, ItemException.class}, value = TxType.REQUIRES_NEW)
 	public BillInfo populateBill(WebShopCartJson webShopCart)
 			throws BillException, ItemException, UserException,
 			BadArgumentsException {
 
 		Bill bill = createBill(webShopCart.getCustomerId());
-
+		/*
+		 * int customerId = webShopCart.getCustomerId(); Customer cust = null;
+		 * try { cust = (Customer) userDao.findById(customerId); } catch
+		 * (Exception e) { throw new UserNotExistsException("User with id: " +
+		 * customerId + " not exists"); } if (cust == null) throw new
+		 * UserNotExistsException("User with id: " + customerId +
+		 * " not exists");
+		 * 
+		 * 
+		 * Bill bill = new Bill("T", cust);
+		 */
 		if (webShopCart.getItems().isEmpty())
 			throw new BillException("No items in web shop cart");
 
-		for (WebShopCartItem item : webShopCart.getItems()) {
-			BillItem bi = addBillItem(bill.getId(), item.getItemId(),
-					item.getQuantity());
-		}
+		List<BillItem> billitems = new ArrayList<>();
+		for (WebShopCartItem cartItem : webShopCart.getItems()) {
+			Item item = null;
+			try {
+				item = itemDao.findById(cartItem.getItemId());
+			} catch (Exception e) {
+				throw new ItemNotExistsException("Item with id: "
+						+ cartItem.getItemId() + " not exists");
+			}
+			if (item == null)
+				throw new ItemNotExistsException("Item with id: "
+						+ cartItem.getItemId() + " not exists");
+			/*if (item.getInStock() < cartItem.getQuantity())
+				throw new ItemQuantityIsOverLimitException("Order is: "
+						+ cartItem.getQuantity() + " but in stock is: "
+						+ item.getInStock());
 
+			BillItem billItem = new BillItem(item.getPrice(),
+					cartItem.getQuantity(), item);
+			billItem.setOriginalTotal(item.getPrice() * cartItem.getQuantity());
+			billItem.setTotal(billItem.getOriginalTotal());
+			billitems.add(billItem);
+			*/
+			addBillItem(bill, item, cartItem.getQuantity());
+		}
+		/*
+		for (int i = 0; i < billitems.size(); i++) {
+			billitems.get(i).setId(new BillItemPK(bill.getId(), i + 1));
+			bill.addBillItems(billitems.get(i));
+		}
+		*/
 		try {
 			bill = billDao.persist(bill);
 		} catch (Exception e) {
@@ -810,29 +852,29 @@ public class BillManagerBean implements BillManagerLocal {
 			BadArgumentsException, ItemException, UserException,
 			ItemCategoryException {
 
-		try{
+		try {
 			bill = billDao.merge(bill);
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		List<BillCostInfo> bci = new ArrayList<>();
 		BillCostInfo info = new BillCostInfo(bill.getAwardPoints(),
 				bill.getSpentPoints(), bill.getDiscountPercentage(),
 				bill.getTotal(), bill.getId());
 		bci.add(info);
-		
+
 		return makeBillInfo(bill, bci);
 	}
 
 	@Override
 	public List<BillInfo> transformList(List<Bill> result) {
 		List<BillInfo> billInfos = new ArrayList<BillInfo>();
-		
-		if(result == null)
+
+		if (result == null)
 			return billInfos;
-		
-		for(Bill b:result){
+
+		for (Bill b : result) {
 			BillInfo bi;
 			try {
 				bi = transform(b);
@@ -843,9 +885,9 @@ public class BillManagerBean implements BillManagerLocal {
 				e.printStackTrace();
 				continue;
 			}
-			
+
 		}
-		
+
 		return billInfos;
 	}
 

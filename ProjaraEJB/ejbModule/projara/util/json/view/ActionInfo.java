@@ -12,7 +12,11 @@ public class ActionInfo implements Serializable {
 	private double dicount;
 	
 	public ActionInfo() {
-		// TODO Auto-generated constructor stub
+		id = -1;
+		name = "";
+		from = null;
+		until = null;
+		dicount = -1;
 	}
 
 	public int getId() {
