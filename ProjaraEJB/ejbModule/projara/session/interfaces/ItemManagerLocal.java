@@ -72,4 +72,6 @@ public interface ItemManagerLocal {
 
 	public List<ItemCategoryJson> getTree();
 
+	public ItemCategoryJson getCategoryById(String id);
+
 }

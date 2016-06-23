@@ -1,13 +1,11 @@
 package projara.rest.beans;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -22,11 +20,7 @@ import projara.model.dao.interfaces.BillDaoLocal;
 import projara.model.dao.interfaces.BillDiscountDaoLocal;
 import projara.model.dao.interfaces.BillItemDaoLocal;
 import projara.model.dao.interfaces.BillItemDiscountDaoLocal;
-import projara.model.dao.interfaces.GenericDaoLocal;
 import projara.model.shop.Bill;
-import projara.model.shop.BillDiscount;
-import projara.model.shop.BillItem;
-import projara.model.shop.BillItemDiscount;
 import projara.model.users.Customer;
 import projara.model.users.User;
 import projara.rest.interfaces.BillRestApi;
@@ -37,6 +31,9 @@ import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
+import projara.util.exception.ItemNotExistsException;
+import projara.util.exception.NotEnoughItemsException;
+import projara.util.exception.NotEnoughPontsException;
 import projara.util.exception.UserException;
 import projara.util.json.create.WebShopCartJson;
 import projara.util.json.view.BillCostInfo;
@@ -58,7 +55,7 @@ public class BillRestBean implements BillRestApi {
 
 	@EJB
 	private BillDaoLocal billDao;
-	
+
 	@EJB
 	private BillExceptionRecoveryLocal billRecovery;
 
@@ -79,12 +76,10 @@ public class BillRestBean implements BillRestApi {
 	public BillInfo makeBill(WebShopCartJson webShopCart) throws UserException,
 			BadArgumentsException, BillException, ItemException {
 
-		// authorization.checkRole("C", request.getSession());
+		authorization.checkRole("C", request.getSession());
 
-		// webShopCart.setCustomerId((int) request.getSession().getAttribute(
-		// "userID"));
-
-		
+		webShopCart.setCustomerId((int) request.getSession().getAttribute(
+				"userID"));
 
 		return billManager.populateBill(webShopCart);
 
@@ -95,103 +90,69 @@ public class BillRestBean implements BillRestApi {
 	@Path("/confirm")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public BillInfo finishBill(BillCostInfo bci) {
+	public BillInfo finishBill(BillCostInfo bci) throws BillException,
+			BadArgumentsException, UserException, ItemException,
+			ItemCategoryException {
+
+		authorization.checkRole("C", request.getSession());
 
 		Bill bill = null;
 		try {
 			bill = billManager.finishOrder(bci.getBillId(), bci);
-		} catch (BillException e) {
-			e.printStackTrace();
-		} catch (BadArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (NotEnoughPontsException e) {
+			billManager.cancelOrder(bci.getBillId());
+			throw e;
 		}
 
-		try {
-			return billManager.transform(bill);
-		} catch (BillException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ItemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ItemCategoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+		return billManager.transform(bill);
 	}
 
 	@Override
 	@POST
 	@Path("/reject/{id}")
-	public Response rejectBill(@PathParam("id") int billId) {
+	public Response rejectBill(@PathParam("id") int billId)
+			throws BillException, BadArgumentsException, UserException {
 
-		try {
-			billManager.rejectOrder(billId);
-		} catch (BillException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		authorization.checkRole("C", request.getSession());
 
-		return null;
+		billManager.rejectOrder(billId);
+
+		return Response.ok().build();
 	}
 
 	@Override
 	@POST
 	@Path("/cancel/{id}")
-	public Response cancelBill(@PathParam("id") int billId) {
+	public Response cancelBill(@PathParam("id") int billId)
+			throws BillException, UserException, BadArgumentsException {
 
-		try {
-			billManager.cancelOrder(billId);
-		} catch (BillException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		authorization.checkRole("V", request.getSession());
 
-		return null;
+		billManager.cancelOrder(billId);
+
+		return Response.ok().build();
 	}
 
 	@Override
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<BillInfo> getAllBills() {
+	public List<BillInfo> getAllBills() throws UserException {
+
+		User u = authorization.checkIsLogged(request.getSession());
 
 		// U zavisnosti od uloge dobija odgovarajucu kolekciju
-		User u = new Customer(); // iz sesije izvuce i proveri da li je
-									// ulogovan;
-		u.setId(1);
+		// User u = new Customer(); // iz sesije izvuce i proveri da li je
+		// // ulogovan;
+		// u.setId(1);
 		// ////////////////////////////
 
 		List<Bill> result = null;
 
 		if (u instanceof Customer) {
-			try {
-				result = billDao.getUserHistory(u.getId());
-			} catch (UserException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+			result = billDao.getUserHistory(u.getId());
+
 		} else
 			result = billDao.getAll();
 
@@ -201,12 +162,10 @@ public class BillRestBean implements BillRestApi {
 	@GET
 	@Path("/{state}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<BillInfo> getBillsByState(@PathParam("state") String state) {
+	public List<BillInfo> getBillsByState(@PathParam("state") String state)
+			throws UserException {
 
-		// U zavisnosti od uloge dobija odgovarajucu kolekciju
-		User u = new Customer(); // iz sesije izvuce i proveri da li je
-									// ulogovan;
-		u.setId(1);
+		User u = authorization.checkIsLogged(request.getSession());
 
 		List<Bill> result = null;
 
@@ -227,25 +186,31 @@ public class BillRestBean implements BillRestApi {
 	@Override
 	@GET
 	@Path("/approve/{id}")
-	public Response approveBill(@PathParam("id") int billId) {
+	public Response approveBill(@PathParam("id") int billId)
+			throws ItemException, BillException, BadArgumentsException,
+			UserException {
+
+		User u = authorization.checkRole("V", request.getSession());
 
 		try {
 			billManager.approveOrder(billId);
-		} catch (BillException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ItemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ItemNotExistsException | NotEnoughItemsException e) {
+			try {
+				billManager.cancelOrder(billId);
+			} catch (BillException e1) {
+				// TODO Auto-generated catch block
+				 e1.printStackTrace();
+			} catch (UserException e1) {
+				// TODO Auto-generated catch block
+				 e1.printStackTrace();
+			} catch (BadArgumentsException e1) {
+				// TODO Auto-generated catch block
+				 e1.printStackTrace();
+			}
+			throw e;
 		}
 
-		return null;
+		return Response.ok().build();
 	}
 
 	@Override

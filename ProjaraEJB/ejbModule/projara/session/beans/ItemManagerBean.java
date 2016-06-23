@@ -443,6 +443,31 @@ public class ItemManagerBean implements ItemManagerLocal {
 
 		return itemCatJsonList;
 	}
+	
+	@Override
+	public ItemCategoryJson getCategoryById(String id){
+		ItemCategoryJson retVal = new ItemCategoryJson();
+		if(id == null || id.isEmpty())
+			return retVal;
+		
+		ItemCategory root = itemCategoryDao.findById(id);
+		
+		ItemCategoryInfo ici = new ItemCategoryInfo(root.getCode(), root.getName(), root.getMaxDiscount());
+		retVal.setInfo(ici);
+		retVal.setParentCategory(root.getParentCategory()==null?null:root.getParentCategory().getCode());
+		retVal.setParentName(root.getParentCategory()==null?null:root.getParentCategory().getName());
+		List<ItemCategoryJson> children = new ArrayList<>();
+		if (root.getSubCategories() != null
+				&& !root.getSubCategories().isEmpty()) {
+			for (ItemCategory catChild : root.getSubCategories()) {
+				children.add(children(catChild, retVal));
+			}
+		}
+
+		retVal.setSubCategories(children);
+		
+		return retVal;
+	}
 
 	private ItemCategoryJson children(ItemCategory itemCategory,
 			ItemCategoryJson parent) {
@@ -453,6 +478,7 @@ public class ItemManagerBean implements ItemManagerLocal {
 				itemCategory.getMaxDiscount());
 		currentCat.setInfo(currentInfo);
 		currentCat.setParentCategory(parent.getInfo().getCode());
+		currentCat.setParentName(parent.getInfo().getName());
 
 		for (ItemCategory child : itemCategory.getSubCategories()) {
 			childrenOfChildren.add(children(child, currentCat));

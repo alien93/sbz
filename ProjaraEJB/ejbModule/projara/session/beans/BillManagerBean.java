@@ -365,6 +365,8 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(rollbackOn = {BillException.class,
+			BadArgumentsException.class}, value = TxType.REQUIRED)
 	public Bill finishOrder(Bill bill, BillCostInfo billCostInfo)
 			throws BillException, BadArgumentsException {
 
@@ -405,6 +407,7 @@ public class BillManagerBean implements BillManagerLocal {
 	// vendor cancel
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public Bill cancelOrder(Bill bill) throws BillException, UserException,
 			BadArgumentsException {
 
@@ -455,15 +458,12 @@ public class BillManagerBean implements BillManagerLocal {
 		if (quantity <= 0)
 			throw new BillException(
 					"Quantity of item can not be less or equal then 0");
-		
+
 		/*
-		try {
-			bill = billDao.merge(bill);
-		} catch (Exception e) {
-			throw new BillNotExistsException("Bill not exist");
-		}
-		*/
-		
+		 * try { bill = billDao.merge(bill); } catch (Exception e) { throw new
+		 * BillNotExistsException("Bill not exist"); }
+		 */
+
 		try {
 			item = itemDao.merge(item);
 		} catch (Exception e) {
@@ -556,6 +556,8 @@ public class BillManagerBean implements BillManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(rollbackOn = {BillException.class,
+			BadArgumentsException.class}, value = TxType.REQUIRES_NEW)
 	public Bill finishOrder(int billId, BillCostInfo billCostInfo)
 			throws BillException, BadArgumentsException {
 
@@ -575,6 +577,7 @@ public class BillManagerBean implements BillManagerLocal {
 
 	// Vendor cancel
 	@Override
+	@Transactional(value = TxType.REQUIRED)
 	public Bill cancelOrder(int billId) throws BillException,
 			BadArgumentsException, UserException {
 
@@ -657,6 +660,9 @@ public class BillManagerBean implements BillManagerLocal {
 	// vendor approves
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(rollbackOn = {BillException.class,
+			BadArgumentsException.class, UserException.class,
+			ItemException.class}, value = TxType.REQUIRED)
 	public Bill approveOrder(Bill bill) throws BillException,
 			BadArgumentsException, UserException, ItemException {
 
@@ -727,6 +733,9 @@ public class BillManagerBean implements BillManagerLocal {
 
 	// vendor approves
 	@Override
+	@Transactional(rollbackOn = {BillException.class,
+			BadArgumentsException.class, UserException.class,
+			ItemException.class}, value = TxType.REQUIRES_NEW)
 	public Bill approveOrder(int billId) throws BillException,
 			BadArgumentsException, UserException, ItemException {
 
@@ -811,25 +820,26 @@ public class BillManagerBean implements BillManagerLocal {
 			if (item == null)
 				throw new ItemNotExistsException("Item with id: "
 						+ cartItem.getItemId() + " not exists");
-			/*if (item.getInStock() < cartItem.getQuantity())
-				throw new ItemQuantityIsOverLimitException("Order is: "
-						+ cartItem.getQuantity() + " but in stock is: "
-						+ item.getInStock());
-
-			BillItem billItem = new BillItem(item.getPrice(),
-					cartItem.getQuantity(), item);
-			billItem.setOriginalTotal(item.getPrice() * cartItem.getQuantity());
-			billItem.setTotal(billItem.getOriginalTotal());
-			billitems.add(billItem);
-			*/
+			/*
+			 * if (item.getInStock() < cartItem.getQuantity()) throw new
+			 * ItemQuantityIsOverLimitException("Order is: " +
+			 * cartItem.getQuantity() + " but in stock is: " +
+			 * item.getInStock());
+			 * 
+			 * BillItem billItem = new BillItem(item.getPrice(),
+			 * cartItem.getQuantity(), item);
+			 * billItem.setOriginalTotal(item.getPrice() *
+			 * cartItem.getQuantity());
+			 * billItem.setTotal(billItem.getOriginalTotal());
+			 * billitems.add(billItem);
+			 */
 			addBillItem(bill, item, cartItem.getQuantity());
 		}
 		/*
-		for (int i = 0; i < billitems.size(); i++) {
-			billitems.get(i).setId(new BillItemPK(bill.getId(), i + 1));
-			bill.addBillItems(billitems.get(i));
-		}
-		*/
+		 * for (int i = 0; i < billitems.size(); i++) {
+		 * billitems.get(i).setId(new BillItemPK(bill.getId(), i + 1));
+		 * bill.addBillItems(billitems.get(i)); }
+		 */
 		try {
 			bill = billDao.persist(bill);
 		} catch (Exception e) {

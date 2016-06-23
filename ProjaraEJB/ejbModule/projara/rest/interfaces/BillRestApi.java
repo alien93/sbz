@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.BillException;
+import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
 import projara.util.exception.UserException;
 import projara.util.json.create.WebShopCartJson;
@@ -33,30 +34,34 @@ public interface BillRestApi {
 	@Path("/confirm")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public BillInfo finishBill(BillCostInfo bci);
+	public BillInfo finishBill(BillCostInfo bci) throws BillException,
+			BadArgumentsException, UserException, ItemException, ItemCategoryException;
 	
 	@DELETE
 	@Path("/reject/{id}")
-	public Response rejectBill(@PathParam("id") int billId);
+	public Response rejectBill(@PathParam("id") int billId) throws BillException, BadArgumentsException, UserException;
 	
 	@DELETE
 	@Path("/cancel/{id}")
-	public Response cancelBill(@PathParam("id") int billId);
+	public Response cancelBill(@PathParam("id") int billId)
+			throws BillException, UserException, BadArgumentsException;
 	
 	
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<BillInfo> getAllBills();
+	public List<BillInfo> getAllBills() throws UserException;
 	
 	@GET
 	@Path("/{state}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<BillInfo> getBillsByState(@PathParam("state") String state);
+	public List<BillInfo> getBillsByState(@PathParam("state") String state) throws UserException;
 	
 	@GET
 	@Path("/approve/{id}")
-	public Response approveBill(@PathParam("id") int billId);
+	public Response approveBill(@PathParam("id") int billId)
+			throws ItemException, BillException, BadArgumentsException,
+			UserException;
 	
 	@GET
 	@Path("/ok")
