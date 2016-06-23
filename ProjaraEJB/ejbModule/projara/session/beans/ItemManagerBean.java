@@ -1,5 +1,10 @@
 package projara.session.beans;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +13,8 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import jess.JessException;
 import jess.Rete;
@@ -20,9 +27,11 @@ import projara.model.shop.ActionEvent;
 import projara.session.interfaces.ItemManagerLocal;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.ItemCategoryException;
+import projara.util.exception.ItemCategoryNotExistsException;
 import projara.util.exception.ItemException;
 import projara.util.exception.ItemNotExistsException;
 import projara.util.interceptors.CheckParametersInterceptor;
+import projara.util.json.create.CreateItemForm;
 import projara.util.json.search.AdvancedSearch;
 import projara.util.json.view.ActionInfo;
 import projara.util.json.view.ItemCategoryInfo;
@@ -45,6 +54,8 @@ public class ItemManagerBean implements ItemManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(value = TxType.REQUIRED, rollbackOn = {ItemException.class,
+			BadArgumentsException.class, ItemCategoryException.class})
 	public Item addItem(String name, double cost, int inStock, int minQuantity,
 			ItemCategory itemCat) throws ItemException, BadArgumentsException,
 			ItemCategoryException {
@@ -99,6 +110,9 @@ public class ItemManagerBean implements ItemManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
+	@Transactional(value = TxType.REQUIRED, rollbackOn = {
+			ItemCategoryException.class, ItemException.class,
+			BadArgumentsException.class})
 	public Item addItem(String name, double cost, int inStock, int minQuality,
 			String itemCat) throws ItemException, BadArgumentsException,
 			ItemCategoryException {
@@ -405,7 +419,7 @@ public class ItemManagerBean implements ItemManagerLocal {
 		ItemInfo ii = new ItemInfo(item.getId(), item.getName(),
 				item.getPrice(), item.getPicture(), item.getInStock(),
 				item.getNeedOrdering(), item.getCreatedOn(),
-				item.getMinQuantity());
+				item.getMinQuantity(),item.getRecordState());
 
 		return ii;
 
@@ -443,19 +457,22 @@ public class ItemManagerBean implements ItemManagerLocal {
 
 		return itemCatJsonList;
 	}
-	
+
 	@Override
-	public ItemCategoryJson getCategoryById(String id){
+	public ItemCategoryJson getCategoryById(String id) {
 		ItemCategoryJson retVal = new ItemCategoryJson();
-		if(id == null || id.isEmpty())
+		if (id == null || id.isEmpty())
 			return retVal;
-		
+
 		ItemCategory root = itemCategoryDao.findById(id);
-		
-		ItemCategoryInfo ici = new ItemCategoryInfo(root.getCode(), root.getName(), root.getMaxDiscount());
+
+		ItemCategoryInfo ici = new ItemCategoryInfo(root.getCode(),
+				root.getName(), root.getMaxDiscount());
 		retVal.setInfo(ici);
-		retVal.setParentCategory(root.getParentCategory()==null?null:root.getParentCategory().getCode());
-		retVal.setParentName(root.getParentCategory()==null?null:root.getParentCategory().getName());
+		retVal.setParentCategory(root.getParentCategory() == null ? null : root
+				.getParentCategory().getCode());
+		retVal.setParentName(root.getParentCategory() == null ? null : root
+				.getParentCategory().getName());
 		List<ItemCategoryJson> children = new ArrayList<>();
 		if (root.getSubCategories() != null
 				&& !root.getSubCategories().isEmpty()) {
@@ -465,7 +482,7 @@ public class ItemManagerBean implements ItemManagerLocal {
 		}
 
 		retVal.setSubCategories(children);
-		
+
 		return retVal;
 	}
 
@@ -487,5 +504,148 @@ public class ItemManagerBean implements ItemManagerLocal {
 
 		return currentCat;
 
+	}
+
+	@Override
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = {
+			ItemException.class, BadArgumentsException.class,
+			ItemCategoryException.class})
+	public ItemJson formToItem(CreateItemForm form) throws ItemException,
+			ItemCategoryException, BadArgumentsException {
+
+		Item newItem = addItem(form.getName(), form.getCost(),
+				form.getInStock(), form.getMinQuantity(), form.getCategory());
+
+		if (form.getImage() != null) {
+			// SNIMANJE SLIKE
+			String warPath = getClass().getProtectionDomain().getCodeSource()
+					.getLocation().getPath()
+					+ "/../ProjaraWeb.war/images";
+			File file = new File(warPath);
+			String image_name = newItem.getId() + "." + form.getFormat();
+			try (FileOutputStream fos = new FileOutputStream(new File(warPath
+					+ "/" + image_name))) {
+				byte[] fileBytes = form.getImage();
+				fos.write(fileBytes);
+				newItem.setPicture(image_name);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return transformToJson(newItem);
+	}
+
+	@Override
+	@Transactional(value = TxType.REQUIRED, rollbackOn = {ItemException.class,
+			ItemCategoryException.class, BadArgumentsException.class})
+	@Interceptors({CheckParametersInterceptor.class})
+	public Item updateItem(int itemId, String name, String catCode,
+			double cost, int minQuantity) throws ItemException,
+			ItemCategoryException {
+
+		Item item = null;
+		ItemCategory itemCat = null;
+
+		try {
+			item = itemDao.findById(itemId);
+		} catch (Exception e) {
+			throw new ItemNotExistsException("Item not exists");
+		}
+		if (item == null)
+			throw new ItemNotExistsException("Item not exists");
+
+		try {
+			itemCat = itemCategoryDao.findById(catCode);
+		} catch (Exception e) {
+			throw new ItemCategoryNotExistsException("Item category not exists");
+		}
+		if (itemCat == null)
+			throw new ItemCategoryNotExistsException("Item category not exists");
+
+		name = name.trim();
+
+		if (!name.equals(item.getName()))
+			item.setName(name);
+
+		item.setPrice(cost);
+		item.setMinQuantity(minQuantity);
+
+		item.setCategory(itemCat);
+
+		try {
+			item = itemDao.persist(item);
+		} catch (Exception e) {
+			throw new ItemException();
+		}
+
+		return item;
+	}
+
+	@Override
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = {
+			ItemException.class, ItemCategoryException.class,
+			BadArgumentsException.class})
+	public ItemJson updateItemForm(CreateItemForm itemForm)
+			throws ItemException, ItemCategoryException,BadArgumentsException {
+
+		Item item = updateItem(itemForm.getId(), itemForm.getName(),
+				itemForm.getCategory(), itemForm.getCost(),
+				itemForm.getMinQuantity());
+		
+		if (itemForm.getImage() != null) {
+			// SNIMANJE SLIKE
+			
+			String warPath = getClass().getProtectionDomain().getCodeSource()
+					.getLocation().getPath()
+					+ "/../ProjaraWeb.war/images";
+			String image_name = item.getId() + "." + itemForm.getFormat();
+			
+			if(!item.getPicture().startsWith("def")){
+				File file = new File(warPath+"/"+item.getPicture());
+				if(file.exists())
+					file.delete();
+			}
+			
+			
+			File file = new File(warPath);
+			
+			try (FileOutputStream fos = new FileOutputStream(new File(warPath
+					+ "/" + image_name))) {
+				byte[] fileBytes = itemForm.getImage();
+				fos.write(fileBytes);
+				item.setPicture(image_name);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return transformToJson(item);
+
+	}
+
+	@Override
+	@Transactional(value=TxType.REQUIRES_NEW)
+	public void setActive(int itemId,boolean active) throws ItemException {
+		
+		Item item = null;
+		try {
+			item = itemDao.findById(itemId);
+		} catch (Exception e) {
+			throw new ItemNotExistsException("Item not exists");
+		}
+		if (item == null)
+			throw new ItemNotExistsException("Item not exists");
+		
+		item.setRecordState(active);
+		
 	}
 }
