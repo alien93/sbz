@@ -79,8 +79,6 @@ public class UserRestBean implements UserRestApi {
 		User u = userManager.registerUser(username, password, address, firstName,
 				lastName);
 
-		request.getSession().setAttribute("userID", u.getId());
-
 		return userManager.transformToJson(u);
 
 	}

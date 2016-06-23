@@ -30,15 +30,23 @@ angular.module('sbzApp')
 					        'Content-Type' : 'application/x-www-form-urlencoded'
 					    }
 					}).then(function(value) {
-						console.log(value);
 						if(value.statusText === "OK"){
 							$scope.izvestajUspesnosti = "Uspešno ste se registrovali.";
+							$scope.greska = "";
 							 $timeout(function() {
 							      $location.path('/prijava');
 							 }, 1000);
 						}
 						else{
-							$scope.greska = "Korisnik sa korisničkim imenom " + $scope.username + "već postoji. Molimo unesite drugo korisničko ime.";
+							$scope.greska = "Došlo je do neočekivane greške. Molimo pokušajte ponovo.";
+						}
+						
+					},function(reason){
+						if(reason.data.name === "UserAlreadyExistsException"){
+							$scope.greska = "Korisnik sa korisničkim imenom '" + $scope.username + "' već postoji."
+						}
+						else{
+							$scope.greska = "Došlo je do neočekivane greške. Molimo pokušajte ponovo.";
 						}
 					});
 				}
