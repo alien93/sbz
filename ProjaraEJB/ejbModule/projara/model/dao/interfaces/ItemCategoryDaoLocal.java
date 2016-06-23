@@ -8,4 +8,5 @@ public interface ItemCategoryDaoLocal extends GenericDaoLocal<ItemCategory, Stri
 
 	public List<ItemCategory> filterByName(String name);
 	public List<ItemCategory> getRoots();
+	public List<ItemCategory> singleFieldSearch(String text);
 }

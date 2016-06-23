@@ -55,6 +55,9 @@ public class ItemDaoBean extends GenericDaoBean<Item, Integer>
 
 		// FILTER BY ITEM CATEGORY CODE
 		String catCode = "";
+		catCode = advSearch.getCategory()==null?"":advSearch.getCategory().trim();
+		
+		/*
 		if (advSearch.getCategory().getCode() != null
 				&& !advSearch.getCategory().getCode().isEmpty())
 			catCode = advSearch.getCategory().getCode();
@@ -64,7 +67,8 @@ public class ItemDaoBean extends GenericDaoBean<Item, Integer>
 				&& !advSearch.getCategory().getName().isEmpty()) {
 			catName = advSearch.getCategory().getName();
 		}
-
+		*/
+		/*
 		if (!catCode.isEmpty()) {
 
 			List<Item> filteredResult = new ArrayList<>();
@@ -89,9 +93,11 @@ public class ItemDaoBean extends GenericDaoBean<Item, Integer>
 			return filteredResult;
 
 		} else if (!catName.isEmpty()) {
+		*/
+		if(!catCode.isEmpty()){
 			List<Item> filteredResult = new ArrayList<>();
 			
-			List<ItemCategory> itemCategories = itemCatDao.filterByName(catName);
+			List<ItemCategory> itemCategories = itemCatDao.singleFieldSearch(catCode);
 			
 			if(itemCategories == null || itemCategories.isEmpty())
 				return filteredResult;

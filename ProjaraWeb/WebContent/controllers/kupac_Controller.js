@@ -85,6 +85,41 @@ angular.module('sbzApp')
 						});
 					}
 					
+					$scope.advancedSearch = {
+							id :"",
+							name:"",
+							category:"",
+							costRange:{
+								minCost:null,
+								maxCost:null,
+							}
+					}
+					$scope.search = function(){
+						$http({
+							method:"POST",
+							url:"http://localhost:8080/ProjaraWeb/rest/items/search",
+							data:$scope.advancedSearch,
+							headers: {'Content-Type': 'application/json'}
+						}).then(function(value){
+							$scope.artikli = [];
+							for(var i=0; i<value.data.length; i++){
+							if(value.data[i].info.inStock > 0){
+								var artikal = {
+										"oznaka":value.data[i].info.id,
+										"naziv":value.data[i].info.name,
+										"kategorija":value.data[i].category.name,
+										"popust":value.data[i].discountPerc,
+										"cena":value.data[i].info.cost,
+										"cenaSaPopustom":value.data[i].costWithDiscount,
+										"akcije":value.data[i].actions,
+										"slika":"images/"+value.data[i].info.picture
+								}
+								$scope.artikli.push(artikal);
+							}
+						}
+						})
+					}
+					
 	}])
 	
 	.controller('kupac_artikalInfoController', ['$scope', '$uibModalInstance', 'oznakaArtikla', 'artikli',

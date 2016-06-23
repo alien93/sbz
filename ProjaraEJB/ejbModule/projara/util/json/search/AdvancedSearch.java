@@ -7,19 +7,19 @@ public class AdvancedSearch implements Serializable {
 	
 	private String name;
 	private int id;
-	private ItemCategorySearch category;
+	private String category;
 	private ItemCostSearch costRange;
 	
 	
 	
 	public AdvancedSearch() {
-		category = new ItemCategorySearch("", "");
+		category = "";
 		costRange = new ItemCostSearch(0, 0);
 	}
 
 
 
-	public AdvancedSearch(String name, int id, ItemCategorySearch category,
+	public AdvancedSearch(String name, int id, String category,
 			ItemCostSearch costRange) {
 		super();
 		this.name = name;
@@ -54,18 +54,6 @@ public class AdvancedSearch implements Serializable {
 
 
 
-	public ItemCategorySearch getCategory() {
-		return category;
-	}
-
-
-
-	public void setCategory(ItemCategorySearch category) {
-		this.category = category;
-	}
-
-
-
 	public ItemCostSearch getCostRange() {
 		return costRange;
 	}
@@ -75,6 +63,20 @@ public class AdvancedSearch implements Serializable {
 	public void setCostRange(ItemCostSearch costRange) {
 		this.costRange = costRange;
 	}
+
+
+
+	public String getCategory() {
+		return category;
+	}
+
+
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	
 	
 	
 

@@ -648,4 +648,41 @@ public class ItemManagerBean implements ItemManagerLocal {
 		item.setRecordState(active);
 		
 	}
+	
+	@Override
+	public List<ItemJson> getAllByCategory(String code){
+		List<Item> list = new ArrayList<>();
+		List<ItemJson> listJson = new ArrayList<>();
+		
+		ItemCategory ic = null;
+		try{
+			ic = itemCategoryDao.findById(code);
+		}catch(Exception e){ return listJson;}
+		if(ic == null)
+			return listJson;
+		
+		List<ItemCategory> categories = new ArrayList<>();
+		categories.add(ic);
+		while(!categories.isEmpty()){
+			ItemCategory current = categories.remove(0);
+			
+			for(Item i:current.getItems()){
+				i = itemDao.merge(i);
+				list.add(i);
+			}
+			
+			for(ItemCategory subCat:current.getSubCategories()){
+				subCat = itemCategoryDao.merge(subCat);
+				categories.add(subCat);
+			}
+			
+		}
+		
+		
+		try {
+			return transformItems(list);
+		} catch (Exception e){
+			return new ArrayList<>();
+		}
+	}
 }

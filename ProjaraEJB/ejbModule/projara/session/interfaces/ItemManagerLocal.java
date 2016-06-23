@@ -87,4 +87,6 @@ public interface ItemManagerLocal {
 
 	public void setActive(int itemId, boolean active) throws ItemException;
 
+	public List<ItemJson> getAllByCategory(String code);
+
 }
