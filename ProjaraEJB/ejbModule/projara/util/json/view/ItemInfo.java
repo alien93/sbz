@@ -15,6 +15,7 @@ public class ItemInfo implements Serializable {
 	private boolean needOrdering;
 	private Date createdOn;
 	private int minQuantity;
+	private boolean active;
 	
 	public ItemInfo() {
 		// TODO Auto-generated constructor stub
@@ -26,6 +27,7 @@ public class ItemInfo implements Serializable {
 		needOrdering = false;
 		createdOn = null;
 		minQuantity = 0;
+		active = true;
 	}
 
 	public int getId() {
@@ -93,7 +95,7 @@ public class ItemInfo implements Serializable {
 	}
 
 	public ItemInfo(int id, String name, double cost, String picture,
-			int inStock, boolean needOrdering, Date createdOn, int minQuantity) {
+			int inStock, boolean needOrdering, Date createdOn, int minQuantity,boolean active) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -103,6 +105,15 @@ public class ItemInfo implements Serializable {
 		this.needOrdering = needOrdering;
 		this.createdOn = createdOn;
 		this.minQuantity = minQuantity;
+		this.active = active;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 	
 	

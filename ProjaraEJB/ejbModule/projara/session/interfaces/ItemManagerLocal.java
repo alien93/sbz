@@ -10,6 +10,7 @@ import projara.model.shop.ActionEvent;
 import projara.util.exception.BadArgumentsException;
 import projara.util.exception.ItemCategoryException;
 import projara.util.exception.ItemException;
+import projara.util.json.create.CreateItemForm;
 import projara.util.json.search.AdvancedSearch;
 import projara.util.json.view.ItemCategoryJson;
 import projara.util.json.view.ItemInfo;
@@ -56,16 +57,16 @@ public interface ItemManagerLocal {
 
 	public ActionEvent addCategoryToAction(int actionId, String itemCategoryCode)
 			throws BadArgumentsException, ItemCategoryException;
-	
+
 	public void automaticOrdering() throws ItemException, JessException;
-	
+
 	public List<Item> filterItems(AdvancedSearch advSearch);
 
 	public ItemJson transformToJson(Item item) throws ItemException,
 			BadArgumentsException, ItemCategoryException;
 
-	public List<ItemJson> transformItems(List<Item> items) throws ItemException,
-			ItemCategoryException, BadArgumentsException;
+	public List<ItemJson> transformItems(List<Item> items)
+			throws ItemException, ItemCategoryException, BadArgumentsException;
 
 	public ItemInfo getBasicInfo(Item item) throws ItemException,
 			ItemCategoryException;
@@ -73,5 +74,17 @@ public interface ItemManagerLocal {
 	public List<ItemCategoryJson> getTree();
 
 	public ItemCategoryJson getCategoryById(String id);
+
+	public ItemJson formToItem(CreateItemForm form) throws ItemException,
+			ItemCategoryException, BadArgumentsException;
+
+	public ItemJson updateItemForm(CreateItemForm itemForm) throws ItemException,
+			ItemCategoryException, BadArgumentsException;
+
+	public Item updateItem(int itemId, String name, String catCode, double cost,
+			int minQuantity) throws ItemException, ItemCategoryException;
+
+
+	public void setActive(int itemId, boolean active) throws ItemException;
 
 }
