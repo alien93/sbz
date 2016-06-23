@@ -69,6 +69,12 @@ sbzApp.config(function($routeProvider){
 									templateUrl: "views/prijava.html"
 							}
 						)
+						.when(
+							"/registracija",
+							{
+									templateUrl: "views/registracija.html"
+							}
+						)
 						.otherwise(
 							{
 							redirectTo: "/prijava"

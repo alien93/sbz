@@ -79,5 +79,9 @@ angular.module('sbzApp')
 					$rootScope.ulogaMenadzer = true;
 					$location.path('/menadzer');
 				};
+				
+				$scope.registrujSe = function(){
+					$location.path('/registracija');
+				}
 			}
 	]);

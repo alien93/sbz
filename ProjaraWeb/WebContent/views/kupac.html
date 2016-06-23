@@ -24,14 +24,13 @@
         <div class="list-group panel" ng-repeat="kategorija in kategorije">
         	<a href  data-target="#{{kategorija.oznaka}}" class="list-group-item list-group-item-info" data-toggle="collapse" data-parent="#{{kategorija.nadkategorija}}">{{kategorija.naziv}}</a>
           	<div class="colapse" id="{{kategorija.oznaka}}">
-          		<a ng-repeat="podkategorija in kategorija.podkategorije" data-target="#{{podkategorija.oznaka}}" class="list-group-item" data-toggle="collapse" data-parent="#{{kategorija.oznaka}}">{{podkategorija.info.name}}</a>
+          		<a ng-repeat="podkategorija in kategorija.podkategorije" data-target="#{{podkategorija.oznaka}}" class="list-group-item" data-toggle="collapse" data-parent="#{{kategorija.oznaka}}">info.namegorija.info.name}}</a>
           	</div>
         </div>
       </div-->
       <ul>
     		<ul>
 			    <li ng-repeat="kategorija in kategorije" ng-include="'stablo'">
-			        
 			    </li>
 			</ul>
 	  </ul>

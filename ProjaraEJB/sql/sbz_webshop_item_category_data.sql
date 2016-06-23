@@ -53,3 +53,14 @@ VALUES
 "Bela tehnika",
 60);
 
+INSERT INTO `webshop_sbz`.`item_category`
+(`ITCAT_CODE`,
+`ITE_ITCAT_CODE`,
+`ITCAT_NAME`,
+`ITCAT_MDISCOUNT`)
+VALUES
+("6",
+"5",
+"Frizideri",
+60);
+

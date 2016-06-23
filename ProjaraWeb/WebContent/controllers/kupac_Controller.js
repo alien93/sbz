@@ -1,6 +1,19 @@
 angular.module('sbzApp')
 	.controller('kupac_Controller', ['$scope', '$uibModal', '$http',
 			function($scope, $uibModal, $http){
+		
+	    $(".collapse").click(function () {
+
+	        $(this).parent().children().toggle();
+	        $(this).toggle();
+
+	    });
+
+	$(".collapse").each(function(){
+
+	        $(this).parent().children().toggle();
+	        $(this).toggle();
+	});
 			
 				//-------------------------------------------test podaci-------------------------------------
 					
@@ -45,18 +58,10 @@ angular.module('sbzApp')
 					//dobavljanje kategorija artikla
 					$http({
 						method: "GET", 
-						url : "http://localhost:8080/ProjaraWeb/rest/test/test/categories",
+						url : "http://localhost:8080/ProjaraWeb/rest/itemCategories",
 					}).then(function(value) {
 						console.log(value);
 						$scope.kategorije = value.data;
-						/*for(var i=0; i<value.data.length; i++){
-								var kategorija = {
-										"naziv": value.data[i].info.name,
-										"oznaka": value.data[i].info.code,
-										"podkategorije":value.data[i].subCategories
-								}
-								$scope.kategorije.push(kategorija);
-						}*/
 					});
 					
 					

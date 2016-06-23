@@ -10,7 +10,7 @@ import projara.util.json.view.UserProfileInfoJson;
 
 public interface UserManagerLocal {
 
-	public User registerUser(String username, String password, String role,
+	public User registerUser(String username, String password, String address,
 			String firstName, String lastName) throws UserException,
 			BadArgumentsException;
 

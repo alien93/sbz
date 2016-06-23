@@ -34,7 +34,7 @@ public class UserManagerBean implements UserManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public User registerUser(String username, String password, String role,
+	public User registerUser(String username, String password, String address,
 			String firstName, String lastName) throws UserException,
 			BadArgumentsException {
 
@@ -44,15 +44,7 @@ public class UserManagerBean implements UserManagerLocal {
 			throw new UserAlreadyExistsException("User with username: "
 					+ username + " already exists");
 
-		if (role.equalsIgnoreCase("C")) {
-			u = new Customer(username, firstName, lastName, "", password);
-		} else if (role.equalsIgnoreCase("M")) {
-			u = new Manager(username, firstName, lastName, password);
-		} else if (role.equalsIgnoreCase("V")) {
-			u = new Vendor(username, firstName, lastName, password);
-		} else {
-			throw new UserException("Role is not valid");
-		}
+		u = new Customer(username, firstName, lastName, address, password);
 
 		try {
 			u = userDao.persist(u);
@@ -272,9 +264,14 @@ public class UserManagerBean implements UserManagerLocal {
 			Customer c = (Customer) u;
 			userProfile.setPoints(c.getPoints());
 			userProfile.setAddress(c.getAddress());
-			userProfile
-					.setCategory(new CustomerCategoryBasicInfo(c.getCategory()
-							.getCategoryCode(), c.getCategory().getName()));
+			if(c.getCategory()!=null)
+				userProfile
+						.setCategory(new CustomerCategoryBasicInfo(c.getCategory()
+								.getCategoryCode(), c.getCategory().getName()));
+			else{
+				userProfile
+						.setCategory(new CustomerCategoryBasicInfo(null, null));
+			}
 		}
 		
 		return userProfile;

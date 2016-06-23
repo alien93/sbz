@@ -23,11 +23,13 @@ public interface UserRestApi {
 
 	@POST
 	@Path("/register")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserProfileInfoJson register(@FormParam("username") String username,
-			@FormParam("password") String password,
-			@FormParam("firstName") String firstName,
-			@FormParam("lastName") String lastName, @FormParam("role") String role) throws UserException, BadArgumentsException;
+										@FormParam("password") String password,
+										@FormParam("firstName") String firstName,
+										@FormParam("lastName") String lastName,
+										@FormParam("address") String address) throws UserException, BadArgumentsException;
 	
 	@POST
 	@Path("/update")

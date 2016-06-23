@@ -1,0 +1,91 @@
+<div class="container-fluid" ng-controller="registracijaController">
+	<div class="row">
+		<div class="col-md-12"> &nbsp; </div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-12"> &nbsp; </div>
+	</div>
+	
+	<!-- Error message -->
+	<div class="row">
+		<div class="col-md-offset-4 col-md-4">
+			<div class="alert alert-danger" role="alert" ng-show="greska">
+            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            	{{greska}}
+        	</div>
+		</div>
+		<div class="col-md-4"> &nbsp; </div>
+	</div>
+	
+	<!-- Success message -->
+	<div class="row">
+		<div class="col-md-offset-4 col-md-4">
+			<div class="alert alert-success" role="alert" ng-show="izvestajUspesnosti">
+            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            	{{izvestajUspesnosti}}
+        	</div>
+		</div>
+		<div class="col-md-4"> &nbsp; </div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-4"> &nbsp; </div>
+		<div class="col-md-4">
+			<form role="form" accept-charset="UTF-8" ng-submit="registrujMe()">
+				  
+				<div class="form-group">
+					<label for="korisnickoIme">
+						 Korisničko ime 
+					</label>
+					<input type="text" class="form-control" id="korisnickoIme"
+						   ng-model="username" placeholder="" required> 
+				</div>
+				
+				<div class="form-group">
+					<label for="lozinka">
+						 Lozinka 
+					</label>
+					<input type="password" class="form-control" id="lozinka" 
+						   ng-model="password" placeholder="" ng-change="proveraLozinki()" required>
+				</div>
+				
+				<div class="form-group">
+					<label for="lozinka">
+						 Ponovni unos lozinke 
+					</label>
+					<input type="password" class="form-control" id="lozinka2" 
+						   ng-model="password2" placeholder="" ng-change="proveraLozinki()" required>
+				</div>
+				
+				<div class="form-group">
+					<label for="ime">
+						 Ime 
+					</label>
+					<input type="text" class="form-control" id="ime" 
+						   ng-model="firstName" placeholder="" required>
+				</div>
+				
+				<div class="form-group">
+					<label for="prezime">
+						 Prezime 
+					</label>
+					<input type="text" class="form-control" id="prezime" 
+						   ng-model="lastName" placeholder="" required>
+				</div>
+				
+				<div class="form-group">
+					<label for="adresa">
+						 Adresa 
+					</label>
+					<br>
+					<textarea rows="4" class="form-control" ng-model="address" style="resize:none" required></textarea>
+				</div>
+				
+				<input type="submit" value="Registruj se" class="btn btn-primary btn-block">
+			</form>
+		</div>
+		
+		<div class="col-md-4"> &nbsp; </div>
+	</div>
+</div>
