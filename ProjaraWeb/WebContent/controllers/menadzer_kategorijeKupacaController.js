@@ -70,6 +70,7 @@ angular.module('sbzApp')
 		
 		$scope.headerMsg = modify ? "Izmena kategorije: " + cat.name : "Dodavanje nove kategorije";
 		$scope.errorMsg = "";
+		$scope.disableId = modify;
 		
 		$scope.customerCategory = {};
 		if(modify){

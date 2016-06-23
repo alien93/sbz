@@ -1,14 +1,14 @@
-<div ng-include="'views/menadzer_navBar.html'"></div>
+<!--<div data-ng-include="'views/menadzer_navBar.html'"></div>-->
 
-<div ng-controller="menadzer_kategorijeKupacaController" style='margin-top: 7%'>
+<div data-ng-controller="menadzer_kategorijeKupacaController">
 	
 	<div style='margin-left: 20%;margin-right: 20%'>
 		<div class='table-responsive'>
 			<table class='table table-bordered'>
 				<thead>
 					<tr>
-						<th colspan="3"> Kategorije kupaca </th>
-						<th> <button class='btn btn-primary' ng-click="addCategory()"> Add </button> </th>
+						<th colspan="2"> Kategorije kupaca </th>
+						<th style='text-align: center;'> <button class='btn btn-primary' data-ng-click="addCategory()"> Add </button> </th>
 					</tr>
 					<tr>
 						<th> ID </th>
@@ -17,11 +17,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="cat in kategorijeKupaca">
+					<tr data-ng-repeat="cat in kategorijeKupaca track by $index">
 						<td> {{cat.categoryCode}} </td>
 						<td> {{cat.name}} </td>
-						<td> <button class='btn btn-primary' ng-click="deleteCategory(cat.categoryCode)">Delete</button> </td>
-						<td> <button class='btn btn-primary' ng-click="modifyCategory(cat)"> Modify </button></td>
+						<!--  <td> <button class='btn btn-primary' ng-click="deleteCategory(cat.categoryCode)">Delete</button> </td>-->
+						<td style='text-align: center;'> <button class='btn btn-primary' data-ng-click="modifyCategory(cat)"> Modify </button></td>
 					</tr>
 				</tbody>
 			</table>
