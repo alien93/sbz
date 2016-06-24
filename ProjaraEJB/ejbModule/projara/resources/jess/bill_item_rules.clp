@@ -21,7 +21,7 @@
     (printout t "10% popusta na vise od 20 artikala " crlf)
     ;(printout t ?objectItem crlf)
     ;(printout t "IZBACI PRAVILA ZA OSNOVNI POPUST" crlf)
-    (bind ?newOb (new BillItemDiscount 10.0 "R" ?billItem.OBJECT))
+    (bind ?newOb (new BillItemDiscount 10.0 "R" ?billItem.OBJECT "Vise od 20 artikala koji ne pripadaju sirokoj potrosnji"))
     (definstance BillItemDiscount ?newOb)
     (assert (used_regular_discount (ID (call ?billItem.OBJECT getItemNo))))
     (modify ?billItem (discountPercentage (+ ?billItem.discountPercentage 10.0)))
@@ -38,7 +38,7 @@
     =>
     (printout t "7% popusta na stavku " crlf)
     ;(printout t ?item.name crlf)
-    (bind ?newOb (new BillItemDiscount 7.0 "R" ?billItem.OBJECT))
+    (bind ?newOb (new BillItemDiscount 7.0 "R" ?billItem.OBJECT "Kategorija siroke potrosnje, preko 5000.00"))
     (definstance BillItemDiscount ?newOb)
     (assert (used_regular_discount (ID (call ?billItem.OBJECT getItemNo))))
     (modify ?billItem (discountPercentage (+ ?billItem.discountPercentage 7.0)))
@@ -55,7 +55,7 @@
     =>
     (printout t "5% popusta na 5 artikala iz kategorije televizori " crlf)
     ;(printout t ?item.name crlf)
-    (bind ?newOb (new BillItemDiscount 5.0 "R" ?billItem.OBJECT))
+    (bind ?newOb (new BillItemDiscount 5.0 "R" ?billItem.OBJECT "Vise od 5 artikala iz kategorije televizori, racunari, laptopovi"))
     (definstance BillItemDiscount ?newOb)
     (assert (used_regular_discount (ID (call ?billItem.OBJECT getItemNo))))
     (modify ?billItem (discountPercentage (+ ?billItem.discountPercentage 5.0)))
@@ -67,7 +67,7 @@
     ?billItem <- (BillItem (item ?item)(customer ?customer &:(call ?customer categoryBoughtInLast 30 ?item)))
     =>
     (printout t "BILL: " ?billItem crlf)
-    (bind ?newOb (new BillItemDiscount 1.0 "A" ?billItem.OBJECT))
+    (bind ?newOb (new BillItemDiscount 1.0 "A" ?billItem.OBJECT "Proizvod kategorije kupljen pre 30 dana"))
     (definstance BillItemDiscount ?newOb)
     (modify ?billItem (discountPercentage (+ ?billItem.discountPercentage 1.0)))
     )
@@ -78,7 +78,7 @@
     ?billItem <- (BillItem (item ?item)(customer ?customer &:(call ?customer itemBoughtInLast 15 ?item)))
     =>
     (printout t "BILL: " ?billItem crlf)
-    (bind ?newOb (new BillItemDiscount 2.0 "A" ?billItem.OBJECT))
+    (bind ?newOb (new BillItemDiscount 2.0 "A" ?billItem.OBJECT "Prozivod kupljen do pre 15 dana"))
     (definstance BillItemDiscount ?newOb)
     (modify ?billItem (discountPercentage (+ ?billItem.discountPercentage 2.0)))
     )
@@ -86,10 +86,10 @@
 (defrule proizvod_na_akciji
     "Podrazumeva se da su samo one akcije koje su trenutno aktuelne pretocene u fakte"
     (declare (salience 16)(no-loop TRUE))
-    ?action <- (ActionEvent (OBJECT ?actionObj))
+    ?action <- (ActionEvent (OBJECT ?actionObj)(name ?actionName))
     ?billItem <- (BillItem (item ?item &:(call ?actionObj isOnAction ?item)))
     =>
-    (bind ?newOb (new BillItemDiscount ?action.discount "A" ?billItem.OBJECT))
+    (bind ?newOb (new BillItemDiscount ?action.discount "A" ?billItem.OBJECT ?actionName))
     (definstance BillItemDiscount ?newOb)
     (modify ?billItem (discountPercentage (+ ?billItem.discountPercentage ?action.discount)))
     )

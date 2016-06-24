@@ -229,23 +229,30 @@ public class BillManagerBean implements BillManagerLocal {
 
 		System.out.println("Before award: " + percentBeforeAward0 + " "
 				+ costBeforeAward0);
+		
+		List<BillCostInfo> listBillCostInfo = new ArrayList<>();
+		
+		if (bill.getSpentPoints() > 0) {
+			engine.updateObject(bill);
+			engine.batch("projara/resources/jess/award_points.clp");
+			engine.run();
 
-		engine.updateObject(bill);
-		engine.batch("projara/resources/jess/award_points.clp");
-		engine.run();
+			short awardAfterP = bill.getAwardPoints();
+			short spentAfterP = bill.getSpentPoints();
+			double percentageAfterP = bill.getDiscountPercentage();
+			double finalCostAfterP = bill.getTotal();
 
-		short awardAfterP = bill.getAwardPoints();
-		short spentAfterP = bill.getSpentPoints();
-		double percentageAfterP = bill.getDiscountPercentage();
-		double finalCostAfterP = bill.getTotal();
+			// ///////////////////////////////////////////////
+			BillCostInfo withSpent = new BillCostInfo(awardAfterP, spentAfterP,
+					percentageAfterP, finalCostAfterP, bill.getId());
+			// ///////////////////////////////////////////////
 
-		// ///////////////////////////////////////////////
-		BillCostInfo withSpent = new BillCostInfo(awardAfterP, spentAfterP,
-				percentageAfterP, finalCostAfterP, bill.getId());
-		// ///////////////////////////////////////////////
-
-		System.out.println("After award+spent_points " + awardAfterP + " "
-				+ spentAfterP + " " + percentageAfterP + " " + finalCostAfterP);
+			System.out.println("After award+spent_points " + awardAfterP + " "
+					+ spentAfterP + " " + percentageAfterP + " "
+					+ finalCostAfterP);
+			
+			listBillCostInfo.add(withSpent);
+		}
 
 		bill.setAwardPoints((short) 0);
 		bill.setSpentPoints((short) 0);
@@ -268,8 +275,8 @@ public class BillManagerBean implements BillManagerLocal {
 				+ " " + bill.getSpentPoints() + " "
 				+ bill.getDiscountPercentage() + " " + bill.getTotal());
 
-		List<BillCostInfo> listBillCostInfo = new ArrayList<>();
-		listBillCostInfo.add(withSpent);
+		
+		
 		listBillCostInfo.add(withoutSpentPoints);
 
 		BillInfo billInfo = makeBillInfo(bill, listBillCostInfo);
@@ -319,7 +326,7 @@ public class BillManagerBean implements BillManagerLocal {
 		// Bill discounts
 		for (BillDiscount bd : bill.getBillDiscounts()) {
 			BillDiscountInfo bdi = new BillDiscountInfo(bd.getId(),
-					bd.getDiscount(), bd.getType());
+					bd.getDiscount(), bd.getType(), bd.getName());
 			billDiscounts.add(bdi);
 		}
 		bi.setBillDiscounts(billDiscounts);
@@ -351,7 +358,7 @@ public class BillManagerBean implements BillManagerLocal {
 				BillItemDiscountInfo bidi = new BillItemDiscountInfo(
 						billItemDiscount.getId(),
 						billItemDiscount.getDiscount(),
-						billItemDiscount.getType());
+						billItemDiscount.getType(), billItemDiscount.getName());
 				discounts.add(bidi);
 			}
 			billitemInfo.setItemDiscounts(discounts);
