@@ -536,6 +536,7 @@ public class Bill implements Serializable {
 	 * Test konstruktor
 	 * @param total
 	 */
+	@Deprecated
 	public Bill(double origTotal) {
 		super();
 		this.items = new HashSet<BillItem>();

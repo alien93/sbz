@@ -44,6 +44,7 @@ import projara.model.users.Manager;
 import projara.model.users.Threshold;
 import projara.model.users.User;
 import projara.model.users.Vendor;
+import projara.session.interfaces.ActionManagerLocal;
 import projara.session.interfaces.BillManagerLocal;
 import projara.session.interfaces.CustomerCategoryManagerLocal;
 import projara.session.interfaces.ItemManagerLocal;
@@ -98,6 +99,9 @@ public class TestRestBean implements TestRest {
 
 	@EJB
 	private ItemManagerLocal itemManager;
+	
+	@EJB
+	private ActionManagerLocal actionManager;
 
 	@Override
 	@GET
@@ -294,10 +298,10 @@ public class TestRestBean implements TestRest {
 		Calendar calA = Calendar.getInstance();
 		calA.set(2016, 6, 1);
 
-		ActionEvent ae = itemManager.createActionEvent("Letnji popust",
+		ActionEvent ae = actionManager.createActionEvent("Letnji popust",
 				calB.getTime(), calA.getTime(), 15.0);
 
-		ae = itemManager.addCategoryToAction(ae, ic3);
+		ae = actionManager.addCategoryToAction(ae, ic3);
 		
 		/*
 		Bill bill1 = billManager.createBill(cust1);

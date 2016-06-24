@@ -48,16 +48,6 @@ public interface ItemManagerLocal {
 			String parentItemCat) throws BadArgumentsException,
 			ItemCategoryException;
 
-	public ActionEvent createActionEvent(String name, Date from, Date until,
-			double dicount) throws BadArgumentsException;
-
-	public ActionEvent addCategoryToAction(ActionEvent actionEvent,
-			ItemCategory itemCategory) throws BadArgumentsException,
-			ItemCategoryException;
-
-	public ActionEvent addCategoryToAction(int actionId, String itemCategoryCode)
-			throws BadArgumentsException, ItemCategoryException;
-
 	public void automaticOrdering() throws ItemException, JessException;
 
 	public List<Item> filterItems(AdvancedSearch advSearch);

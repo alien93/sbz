@@ -34,6 +34,7 @@ import projara.util.interceptors.CheckParametersInterceptor;
 import projara.util.json.create.CreateItemForm;
 import projara.util.json.search.AdvancedSearch;
 import projara.util.json.view.ActionInfo;
+import projara.util.json.view.ActionJson;
 import projara.util.json.view.ItemCategoryInfo;
 import projara.util.json.view.ItemCategoryJson;
 import projara.util.json.view.ItemInfo;
@@ -260,73 +261,7 @@ public class ItemManagerBean implements ItemManagerLocal {
 		return changeParentCategory(thisCat, parent);
 	}
 
-	@Override
-	@Interceptors({CheckParametersInterceptor.class})
-	public ActionEvent createActionEvent(String name, Date from, Date until,
-			double dicount) throws BadArgumentsException {
 
-		if (from.after(until))
-			throw new BadArgumentsException(
-					"date from is greater then date until");
-
-		ActionEvent actionEvent = new ActionEvent(name, from, until, dicount);
-
-		try {
-			actionEvent = actionEventDao.persist(actionEvent);
-		} catch (Exception e) {
-			throw new BadArgumentsException("Cant create action event");
-		}
-
-		return actionEvent;
-	}
-
-	@Override
-	@Interceptors({CheckParametersInterceptor.class})
-	public ActionEvent addCategoryToAction(ActionEvent actionEvent,
-			ItemCategory itemCategory) throws BadArgumentsException,
-			ItemCategoryException {
-
-		try {
-			actionEvent = actionEventDao.merge(actionEvent);
-			itemCategory = itemCategoryDao.merge(itemCategory);
-		} catch (Exception e) {
-			throw new BadArgumentsException(
-					"Action or item category not exists");
-		}
-
-		actionEvent.addCategories(itemCategory);
-
-		try {
-			actionEvent = actionEventDao.persist(actionEvent);
-			itemCategory = itemCategoryDao.persist(itemCategory);
-		} catch (Exception e) {
-			throw new ItemCategoryException(
-					"Error while persisting action event and itemCategoty");
-		}
-
-		return actionEvent;
-	}
-
-	@Override
-	@Interceptors({CheckParametersInterceptor.class})
-	public ActionEvent addCategoryToAction(int actionId, String itemCategoryCode)
-			throws BadArgumentsException, ItemCategoryException {
-
-		ItemCategory ic = null;
-		ActionEvent ae = null;
-
-		try {
-			ic = itemCategoryDao.findById(itemCategoryCode);
-			ae = actionEventDao.findById(actionId);
-		} catch (Exception e) {
-			throw new BadArgumentsException();
-		}
-		if (ae == null || ic == null)
-			throw new BadArgumentsException(
-					"action event and item category are null");
-
-		return addCategoryToAction(ae, ic);
-	}
 
 	@Override
 	public void automaticOrdering() throws ItemException, JessException {
@@ -419,7 +354,7 @@ public class ItemManagerBean implements ItemManagerLocal {
 		ItemInfo ii = new ItemInfo(item.getId(), item.getName(),
 				item.getPrice(), item.getPicture(), item.getInStock(),
 				item.getNeedOrdering(), item.getCreatedOn(),
-				item.getMinQuantity(),item.getRecordState());
+				item.getMinQuantity(), item.getRecordState());
 
 		return ii;
 
@@ -591,29 +526,28 @@ public class ItemManagerBean implements ItemManagerLocal {
 			ItemException.class, ItemCategoryException.class,
 			BadArgumentsException.class})
 	public ItemJson updateItemForm(CreateItemForm itemForm)
-			throws ItemException, ItemCategoryException,BadArgumentsException {
+			throws ItemException, ItemCategoryException, BadArgumentsException {
 
 		Item item = updateItem(itemForm.getId(), itemForm.getName(),
 				itemForm.getCategory(), itemForm.getCost(),
 				itemForm.getMinQuantity());
-		
+
 		if (itemForm.getImage() != null) {
 			// SNIMANJE SLIKE
-			
+
 			String warPath = getClass().getProtectionDomain().getCodeSource()
 					.getLocation().getPath()
 					+ "/../ProjaraWeb.war/images";
 			String image_name = item.getId() + "." + itemForm.getFormat();
-			
-			if(!item.getPicture().startsWith("def")){
-				File file = new File(warPath+"/"+item.getPicture());
-				if(file.exists())
+
+			if (!item.getPicture().startsWith("def")) {
+				File file = new File(warPath + "/" + item.getPicture());
+				if (file.exists())
 					file.delete();
 			}
-			
-			
+
 			File file = new File(warPath);
-			
+
 			try (FileOutputStream fos = new FileOutputStream(new File(warPath
 					+ "/" + image_name))) {
 				byte[] fileBytes = itemForm.getImage();
@@ -627,15 +561,15 @@ public class ItemManagerBean implements ItemManagerLocal {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return transformToJson(item);
 
 	}
 
 	@Override
-	@Transactional(value=TxType.REQUIRES_NEW)
-	public void setActive(int itemId,boolean active) throws ItemException {
-		
+	@Transactional(value = TxType.REQUIRES_NEW)
+	public void setActive(int itemId, boolean active) throws ItemException {
+
 		Item item = null;
 		try {
 			item = itemDao.findById(itemId);
@@ -644,45 +578,48 @@ public class ItemManagerBean implements ItemManagerLocal {
 		}
 		if (item == null)
 			throw new ItemNotExistsException("Item not exists");
-		
+
 		item.setRecordState(active);
-		
+
 	}
-	
+
 	@Override
-	public List<ItemJson> getAllByCategory(String code){
+	public List<ItemJson> getAllByCategory(String code) {
 		List<Item> list = new ArrayList<>();
 		List<ItemJson> listJson = new ArrayList<>();
-		
+
 		ItemCategory ic = null;
-		try{
+		try {
 			ic = itemCategoryDao.findById(code);
-		}catch(Exception e){ return listJson;}
-		if(ic == null)
+		} catch (Exception e) {
 			return listJson;
-		
+		}
+		if (ic == null)
+			return listJson;
+
 		List<ItemCategory> categories = new ArrayList<>();
 		categories.add(ic);
-		while(!categories.isEmpty()){
+		while (!categories.isEmpty()) {
 			ItemCategory current = categories.remove(0);
-			
-			for(Item i:current.getItems()){
+
+			for (Item i : current.getItems()) {
 				i = itemDao.merge(i);
 				list.add(i);
 			}
-			
-			for(ItemCategory subCat:current.getSubCategories()){
+
+			for (ItemCategory subCat : current.getSubCategories()) {
 				subCat = itemCategoryDao.merge(subCat);
 				categories.add(subCat);
 			}
-			
+
 		}
-		
-		
+
 		try {
 			return transformItems(list);
-		} catch (Exception e){
+		} catch (Exception e) {
 			return new ArrayList<>();
 		}
 	}
+
+
 }

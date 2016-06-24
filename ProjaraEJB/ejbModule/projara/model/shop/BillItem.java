@@ -317,10 +317,12 @@ public class BillItem implements Serializable {
 	
 	/**
 	 * TODO: Ukoliko se koristi, setovati id obavezno!
+	 * Ne koristi se, zaboravio da obrisem :D
 	 * @param price
 	 * @param quantity
 	 * @param item
 	 */
+	@Deprecated
 	public BillItem(double price, int quantity, Item item) {
 		this.price = price;
 		this.quantity = quantity;

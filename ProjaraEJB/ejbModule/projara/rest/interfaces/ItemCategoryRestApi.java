@@ -3,6 +3,7 @@ package projara.rest.interfaces;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -14,7 +15,7 @@ import projara.util.json.view.ItemCategoryJson;
 /**
  * 
  * @author Nina
- *
+ * 
  */
 public interface ItemCategoryRestApi {
 
@@ -22,11 +23,12 @@ public interface ItemCategoryRestApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/")
 	public List<ItemCategoryJson> getAllItemCategories() throws UserException;
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{id}")
-	public ItemCategoryJson getItemCategoryById(@PathParam("id") String id) throws UserException;
-	
-	
+	public ItemCategoryJson getItemCategoryById(@PathParam("id") String id)
+			throws UserException;
+
+
 }
