@@ -3,9 +3,9 @@ angular.module('sbzApp')
 	       function($scope, $location){
 			
 			//-------------------------test podaci-------------------
-			var popust1 = {"oznaka":"123","naziv":"Popust1", "opis":"Opis popusta 1"};
-			var popust2 = {"oznaka":"231","naziv":"Popust2", "opis":"Opis popusta 2"};
-			var popust3 = {"oznaka":"312","naziv":"Popust3", "opis":"Opis popusta 3"};
+			var popust1 = {"oznaka":"123","naziv":"Popust1", "opis":"Opis popusta 1", "procenat":5};
+			var popust2 = {"oznaka":"231","naziv":"Popust2", "opis":"Opis popusta 2", "procenat":2};
+			var popust3 = {"oznaka":"312","naziv":"Popust3", "opis":"Opis popusta 3", "procenat":10};
 
 			var artikal1 = {"popust":popust1, "naziv":"Naziv artikla 1"};
 			var artikal2 = {"popust":popust2, "naziv":"Naziv artikla 2"};

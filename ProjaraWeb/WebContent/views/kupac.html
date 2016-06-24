@@ -1,19 +1,19 @@
 <div ng-controller="kupac_Controller">
 	<script type="text/ng-template" id="stablo">
-		<div class="list-group">
+		<accordion-group heading="{{kategorija.info.name}}">
 			<a class="list-group-item" ng-click="catFilter(kategorija.info.code)">{{kategorija.info.name}}</a>
 			<div class="list-group" ng-if="kategorija.subCategories">
 				<a class="list-group-item" ng-click="catFilter(kategorija.info.code)" ng-repeat="kategorija in kategorija.subCategories" ng-include="'stablo'">
 			    	   {{ kategorija.info.name }}
 				</a>
 			</div>
-		</div>
+		</accordion-group>
 	</script>
 
 
 	<div class="col-md-2">
 	  <uib-accordion close-others="oneAtATime">
-	  	<uib-accordion-group heading="Pretraga" is-open="true">
+	  	<uib-accordion-group heading="Pretraga" is-open="false">
 	      <div>Šifra:<input ng-model="advancedSearch.id" type="text" class="form-control"></div>
 	      <div>Naziv:<input ng-model="advancedSearch.name" value=""type="text" class="form-control"></div>
 	      <div>Kategorija:<input ng-model="advancedSearch.category" type="text" class="form-control"></div>
@@ -23,9 +23,10 @@
 	      <div><button class="btn" style="float:left;" ng-click="allItems.reload()">Sve</button></div>
 	    </uib-accordion-group>
 	  </uib-accordion>
-      <div class="list-group list-group-root well">
-			<a class="list-group-item" ng-repeat="kategorija in kategorije" ng-include="'stablo'"></a>
- 	 </div>
+	  
+      <accordion>
+			<accordion-group heading={{kategorija.info.name}} ng-repeat="kategorija in kategorije" ng-include="'stablo'"></accordion-group>
+ 	  </accordion>
 	</div>
   
  	 

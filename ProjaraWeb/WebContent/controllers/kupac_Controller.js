@@ -14,31 +14,17 @@ angular.module('sbzApp')
 	        $(this).parent().children().toggle();
 	        $(this).toggle();
 	});
-			
-				//-------------------------------------------test podaci-------------------------------------
-					
-					var kategorija1 = {"naziv":"Elektronika", "podkategorije":["Televizori", "Racunari"]};
-					var kategorija2 = {"naziv":"Namestaj", "podkategorije":["Kuhinja", "Dnevna soba", "Spavaca soba"]};
-					
-					var artikal1 = {"oznaka":"123", "naziv":"Pegla", "kategorija":"Mali kucni uredjaji", "popust":"", "cena":"500"};
-					var artikal2 = {"oznaka":"123", "naziv":"Flasa", "kategorija":"Posudje", "popust":"", "cena":"1500"};
-					var artikal3 = {"oznaka":"123", "naziv":"Trotinet", "kategorija":"Igracke", "popust":"Novogodisnji", "cena":"300"};
-					var artikal4 = {"oznaka":"123", "naziv":"Krevet", "kategorija":"Spavaca soba", "popust":"", "cena":"5000"};
-					var artikal5 = {"oznaka":"123", "naziv":"Prskalica", "kategorija":"Basta", "popust":"", "cena":"50000"};
-
-					//$scope.kategorije = [kategorija1, kategorija2];
-					//$scope.artikli = [artikal1, artikal2, artikal3, artikal4, artikal5];
-					
-				//-------------------------------------------/test podaci-------------------------------------
+	
 					$scope.artikli = [];
 					$scope.kategorije = [];
 					
 					var populateHelp = function(value){
 						$scope.artikli = [];
+						console.log(value);
 						if(!value)
 							return;
 						for(var i=0; i<value.data.length; i++){
-							if(value.data[i].info.inStock > 0){
+							if(value.data[i].info.inStock > 0 && value.data[i].info.active){
 								var artikal = {
 										"oznaka":value.data[i].info.id,
 										"naziv":value.data[i].info.name,
