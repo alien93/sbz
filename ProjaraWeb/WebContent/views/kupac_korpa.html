@@ -1,5 +1,21 @@
 <div class="col-md-2"></div>
 <div class="col-md-8" ng-controller="kupac_korpaController">
+
+	<!-- Error message -->
+			<div class="row">
+				<div class="col-md-offset-4 col-md-4">
+					<div class="alert alert-danger" role="alert" ng-show="greska">
+		            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		            	{{greska}}
+		        	</div>
+				</div>
+				<div class="col-md-4"> &nbsp; </div>
+			</div>
+
+
+
+	<button class="btn btn-danger" style="float:right;" ng-click="isprazniKorpu()">Isprazni korpu</button>
+
 	<table class="table table-striped">
 		<thead>
 			<tr>
@@ -17,9 +33,9 @@
 			<tr ng-repeat="artikal in artikli">
 				<td>{{artikal.oznaka}}</td>
 				<td>{{artikal.naziv}}</td>
-				<td>{{artikal.cena}}</td>
+				<td>{{artikal.cenaSaPopustom}}</td>
 				<td>{{artikal.kolicina}}</td>
-				<td>{{artikal.originalnaCena}}</td>
+				<td>{{artikal.cena}}</td>
 				<td>{{artikal.popust}}</td>
 				<td>{{artikal.ukupno}}</td>
 				<td>

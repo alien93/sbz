@@ -9,7 +9,27 @@
 			</div>
 		</accordion-group>
 	</script>
-
+		<!-- Error message -->
+			<div class="row">
+				<div class="col-md-offset-4 col-md-4">
+					<div class="alert alert-warning" role="alert" ng-show="greska">
+		            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		            	{{greska}}
+		        	</div>
+				</div>
+				<div class="col-md-4"> &nbsp; </div>
+			</div>
+			
+			<!-- Success message -->
+			<div class="row">
+				<div class="col-md-offset-4 col-md-4">
+					<div class="alert alert-success" role="alert" ng-show="izvestajUspesnosti">
+		            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		            	{{izvestajUspesnosti}}
+		        	</div>
+				</div>
+				<div class="col-md-4"> &nbsp; </div>
+			</div>
 
 	<div class="col-md-2">
 	  <uib-accordion close-others="oneAtATime">
@@ -45,8 +65,8 @@
 				    		<li>{{artikal.naziv}}</li>
 				    		<li><b><font size="5">{{artikal.cenaSaPopustom}} RSD</font></b></li>
 				    		<li>
-				    			<input id="kolicinaArtikla" type="number" min=0 value=0>
-				    			<button type="button" class="btn btn-default btn-sm">
+				    			<input id="kolicinaArtikla" type="number" min=1 ng-model="kolicinaArtikla">
+				    			<button type="button" class="btn btn-default btn-sm" ng-click="dodajUKorpu(kolicinaArtikla, artikal)">
 						          <span class="glyphicon glyphicon-shopping-cart"></span> Dodaj u korpu
 						        </button>
 				    		</li>
