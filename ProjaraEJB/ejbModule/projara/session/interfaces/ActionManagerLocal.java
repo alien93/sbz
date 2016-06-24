@@ -31,7 +31,7 @@ public interface ActionManagerLocal {
 	public ActionEvent addCategoryToAction(int actionId, String itemCategoryCode)
 			throws BadArgumentsException, ItemCategoryException;
 
-	public List<ActionJson> getActionAppliedToSub();
+	public List<ActionJson> getActionAppliedToSub(List<ActionEvent> actions);
 
 	public ActionJson getActionAppliedToSub(int id) throws ActionEventNotExists;
 

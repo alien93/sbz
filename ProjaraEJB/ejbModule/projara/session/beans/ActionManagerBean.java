@@ -205,11 +205,12 @@ public class ActionManagerBean implements ActionManagerLocal {
 	}
 
 	@Override
-	public List<ActionJson> getActionAppliedToSub() {
-
-		List<ActionEvent> allActions = actionEventDao.findAll();
+	public List<ActionJson> getActionAppliedToSub(List<ActionEvent> actions) {
 		List<ActionJson> retVal = new ArrayList<>();
-		for (ActionEvent ae : allActions) {
+		if(actions == null || actions.isEmpty())
+			return retVal;
+		
+		for (ActionEvent ae : actions) {
 			try {
 				retVal.add(getActionAppliedToSub(ae));
 			} catch (ActionEventNotExists e) {
