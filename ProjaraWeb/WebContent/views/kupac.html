@@ -1,9 +1,9 @@
 <div ng-controller="kupac_Controller">
 	<script type="text/ng-template" id="stablo">
 		<div class="list-group">
-			<a class="list-group-item">{{kategorija.info.name}}</a>
+			<a class="list-group-item" ng-click="catFilter(kategorija.info.code)">{{kategorija.info.name}}</a>
 			<div class="list-group" ng-if="kategorija.subCategories">
-				<a class="list-group-item" ng-repeat="kategorija in kategorija.subCategories" ng-include="'stablo'">
+				<a class="list-group-item" ng-click="catFilter(kategorija.info.code)" ng-repeat="kategorija in kategorija.subCategories" ng-include="'stablo'">
 			    	   {{ kategorija.info.name }}
 				</a>
 			</div>
@@ -20,6 +20,7 @@
 	      <div>Opseg cene:<br>Minimum:<input ng-mode="advancedSearch.costRange.minCost" type="text" class="form-control" >Maksimum:<input ng-model="advancedSearch.costRange.maxCost" type="text" class="form-control"></div>
 	      <br>
 	      <div><button class="btn" style="float:right;" ng-click="search()">Pretraži</button></div>
+	      <div><button class="btn" style="float:left;" ng-click="allItems.reload()">Sve</button></div>
 	    </uib-accordion-group>
 	  </uib-accordion>
       <div class="list-group list-group-root well">
