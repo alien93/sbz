@@ -42,4 +42,14 @@ public class ItemCategoryDaoBean extends GenericDaoBean<ItemCategory, String>
 		return q.getResultList();
 	}
 
+	@Override
+	public List<ItemCategory> singleFieldSearch(String text) {
+		
+		Query q = em.createNamedQuery("singleFieldSearch");
+		text = text==null?"":text.trim();
+		q.setParameter("text", "%"+text.toUpperCase()+"%");
+		
+		return q.getResultList();
+	}
+
 }

@@ -149,11 +149,7 @@ public class ItemRestBean implements ItemRestApi {
 				e1.printStackTrace();
 			}
 
-		AdvancedSearch advSearch = new AdvancedSearch("", 0,
-				new ItemCategorySearch(), new ItemCostSearch());
-		advSearch.getCategory().setCode(code);
-
-		return advancedSearch(advSearch);
+		return itemManager.getAllByCategory(code);
 
 	}
 

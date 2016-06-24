@@ -33,7 +33,9 @@ import projara.model.shop.ActionEvent;
 	@NamedQuery(name = "filterByName", query = "SELECT ic FROM ItemCategory ic WHERE "
 			+ "UPPER(ic.name) LIKE :name"),
 	@NamedQuery(name = "getRoots", query="SELECT ic FROM ItemCategory ic WHERE "
-			+ "ic.parentCategory IS NULL")
+			+ "ic.parentCategory IS NULL"),
+	@NamedQuery (name="singleFieldSearch",query="SELECT ic FROM ItemCategory ic WHERE "
+			+ "UPPER(ic.name) LIKE :text OR UPPER(ic.code) LIKE :text")
 })
 public class ItemCategory implements Serializable {
 	/** @pdOid 02aa68bb-53fa-4584-a272-e78dba6eda62 */

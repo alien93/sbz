@@ -14,12 +14,12 @@
 	<div class="col-md-2">
 	  <uib-accordion close-others="oneAtATime">
 	  	<uib-accordion-group heading="Pretraga" is-open="true">
-	      <div>Šifra:<input type="text" class="form-control"></div>
-	      <div>Naziv:<input type="text" class="form-control"></div>
-	      <div>Kategorija:<input type="text" class="form-control"></div>
-	      <div>Opseg cene:<br>Minimum:<input type="text" class="form-control" >Maksimum:<input type="text" class="form-control"></div>
+	      <div>Šifra:<input ng-model="advancedSearch.id" type="text" class="form-control"></div>
+	      <div>Naziv:<input ng-model="advancedSearch.name" value=""type="text" class="form-control"></div>
+	      <div>Kategorija:<input ng-model="advancedSearch.category" type="text" class="form-control"></div>
+	      <div>Opseg cene:<br>Minimum:<input ng-mode="advancedSearch.costRange.minCost" type="text" class="form-control" >Maksimum:<input ng-model="advancedSearch.costRange.maxCost" type="text" class="form-control"></div>
 	      <br>
-	      <div><button class="btn" style="float:right;">Pretraži</button></div>
+	      <div><button class="btn" style="float:right;" ng-click="search()">Pretraži</button></div>
 	    </uib-accordion-group>
 	  </uib-accordion>
       <div class="list-group list-group-root well">

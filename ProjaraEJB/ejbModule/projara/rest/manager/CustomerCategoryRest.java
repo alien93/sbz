@@ -25,8 +25,8 @@ import projara.model.users.Threshold;
 @Local(CustomerCategoryRestLocal.class)
 public class CustomerCategoryRest implements CustomerCategoryRestLocal{
 	
-	private static final String MODIFY = "modify";
-	private static final String ADD = "add";
+	public static final String MODIFY = "modify";
+	public static final String ADD = "add";
 	
 	@EJB
 	private CustomerCategoryDaoLocal customerCategoryDao;

@@ -9,6 +9,8 @@ angular.module('sbzApp')
 				$location.path('/menadzer/kupci');
 			};
 			
+			$scope.kupci();
+			
 			$scope.artikli = function(){
 				$location.path('/menadzer/artikli');
 			};

@@ -4,19 +4,19 @@
 		<b> {{headerMsg}} </b>
 	</div>
 	
-	<form name='f1' ng-submit="ok()">
+	<form name='f1' data-ng-submit="ok()">
 	<div class='modal-body'>
 			<p style='color: red;'> {{errorMsg}} </p>
-				<input type='text' ng-model='customerCategory.categoryCode' class="form-control" placeholder='Id' required/>
+				<input type='text' data-ng-disabled='{{disableId}}' data-ng-model='customerCategory.categoryCode' class="form-control" placeholder='Id' required/>
 			   	<br/>
-			    <input type='text' ng-model='customerCategory.name' class="form-control" placeholder='Name' required/>
+			    <input type='text' data-ng-model='customerCategory.name' class="form-control" placeholder='Name' required/>
 			    <br/>
 			    <table class='table'>
 			    	<tr>
-			    		<td> <input type='number' data-ng-model='newThreshold.from' placeholder='From' class='form-control'/> </td>
-			    		<td> <input type='number' data-ng-model='newThreshold.to' placeholder='To' class='form-control'/> </td>
-			    		<td> <input type='number' data-ng-model='newThreshold.percentage' placeholder='Percentage' class='form-control'/> </td>
-			    		<td> <input type='button' value='+' class='btn btn-primary' ng-click="addThreshold()"/> </td>
+			    		<td> <input type='number' step="0.001" data-ng-model='newThreshold.from' placeholder='From' class='form-control'/> </td>
+			    		<td> <input type='number' step="0.001" data-ng-model='newThreshold.to' placeholder='To' class='form-control'/> </td>
+			    		<td> <input type='number' step="0.001" data-ng-model='newThreshold.percentage' placeholder='Percentage' class='form-control'/> </td>
+			    		<td> <input type='button' value='+' class='btn btn-primary' data-ng-click="addThreshold()"/> </td>
 			    	 </tr> 
 			    	 <tr> <td colspan='4'> &nbsp </td> </tr>
 			    	  <tr>
@@ -25,11 +25,11 @@
 			    	 	<th> Percentage </th>
 			    	 	<th> &nbsp </th>
 			    	 </tr>
-			    	 <tr ng-repeat="t in customerCategory.thresholds">
+			    	 <tr data-ng-repeat="t in customerCategory.thresholds">
 			    	 	<td> {{t.from}} </td>
 			    	 	<td> {{t.to}} </td>
 			    	 	<td> {{t.percentage}} </td>
-			    	 	<td> <input type='button' value='-' class="btn btn-primary" ng-click="deleteThreshold(t)"/> </td>
+			    	 	<td> <input type='button' value='-' class="btn btn-primary" data-ng-click="deleteThreshold(t)"/> </td>
 			    	 </tr>
 			    </table>
 	</div>

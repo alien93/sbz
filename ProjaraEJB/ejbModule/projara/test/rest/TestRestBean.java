@@ -333,7 +333,7 @@ public class TestRestBean implements TestRest {
 
 		// VRACA SVE koji u nazivu imaju tem
 		AdvancedSearch advSearch1 = new AdvancedSearch("tem", 0,
-				new ItemCategorySearch(), new ItemCostSearch());
+				"", new ItemCostSearch());
 		List<Item> q1 = itemManager.filterItems(advSearch1);
 		System.out.println("Svi koji imaju u nazivu 'tem'");
 		printListItem(q1);
@@ -344,16 +344,16 @@ public class TestRestBean implements TestRest {
 		printListItem(itemManager.filterItems(advSearch1));
 
 		advSearch1.setId(-1);
-		advSearch1.getCategory().setName("sirok");
+		advSearch1.setCategory("sirok");
 		System.out.println("Svi kategorije siroke potrosnje");
 		printListItem(itemManager.filterItems(advSearch1));
 
-		advSearch1.getCategory().setName("");
+		advSearch1.setCategory("");
 		advSearch1.getCostRange().setMaxCost(15000);
 		System.out.println("DO 15000");
 		printListItem(itemManager.filterItems(advSearch1));
 
-		advSearch1.getCategory().setName("televiz");
+		advSearch1.setCategory("televiz");
 		advSearch1.getCostRange().setMinCost(100);
 		System.out.println("Televizori od 3000 do 15000");
 		printListItem(itemManager.filterItems(advSearch1));
