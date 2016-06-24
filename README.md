@@ -1,4 +1,4 @@
-#Projektni zadatak iz predmeta Sistemi bazirani na znanju 
+﻿#Projektni zadatak iz predmeta Sistemi bazirani na znanju 
 #2015/2016
 
 Implementirati aplikaciju koja podržava internet prodaju, što obuhvata vođenje evidencije o robi i poručivanje robe. 
@@ -120,6 +120,8 @@ i) Dodatni popust od 1% na ceo račun ukoliko je kupac korisnik sistema više od
 j) Dodatni popust od 1% na ceo račun ukoliko je kupac pripada kategoriji srebrni kupci ili zlatni kupci (nagrađuju kupci sa posebnim privilegijama).
 
 k) Dodatni popust od 3% na ceo račun ukoliko ukupna vrednost naručenih artikala prelazi 50000 dinara i ukoliko u računu postoje barem 10 artikala čija ukupna cena prelazi 50% cene ukupne vrednosti naručenih artikala.
+
+
 NAPOMENA: Proračuni popusta za celu narudžbinu uvažavaju sve prethodne ostvarene popuste za artikle.
 
 l) Određivanje finalnog popusta za račun i izračunavanje konačne cene.

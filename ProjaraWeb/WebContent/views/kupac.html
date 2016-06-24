@@ -1,11 +1,13 @@
 <div ng-controller="kupac_Controller">
 	<script type="text/ng-template" id="stablo">
-		{{ kategorija.info.name }}
-		<ul ng-if="kategorija.subCategories">
-			 <li ng-repeat="kategorija in kategorija.subCategories" ng-include="'stablo'">
-			        {{ kategorija.info.name }}
-			 </li>
-		</ul>
+		<div class="list-group">
+			<a class="list-group-item" ng-click="catFilter(kategorija.info.code)">{{kategorija.info.name}}</a>
+			<div class="list-group" ng-if="kategorija.subCategories">
+				<a class="list-group-item" ng-click="catFilter(kategorija.info.code)" ng-repeat="kategorija in kategorija.subCategories" ng-include="'stablo'">
+			    	   {{ kategorija.info.name }}
+				</a>
+			</div>
+		</div>
 	</script>
 
 
@@ -18,24 +20,16 @@
 	      <div>Opseg cene:<br>Minimum:<input ng-mode="advancedSearch.costRange.minCost" type="text" class="form-control" >Maksimum:<input ng-model="advancedSearch.costRange.maxCost" type="text" class="form-control"></div>
 	      <br>
 	      <div><button class="btn" style="float:right;" ng-click="search()">Pretraži</button></div>
+	      <div><button class="btn" style="float:left;" ng-click="allItems.reload()">Sve</button></div>
 	    </uib-accordion-group>
 	  </uib-accordion>
-      <!--  div id="MainMenu">
-        <div class="list-group panel" ng-repeat="kategorija in kategorije">
-        	<a href  data-target="#{{kategorija.oznaka}}" class="list-group-item list-group-item-info" data-toggle="collapse" data-parent="#{{kategorija.nadkategorija}}">{{kategorija.naziv}}</a>
-          	<div class="colapse" id="{{kategorija.oznaka}}">
-          		<a ng-repeat="podkategorija in kategorija.podkategorije" data-target="#{{podkategorija.oznaka}}" class="list-group-item" data-toggle="collapse" data-parent="#{{kategorija.oznaka}}">info.namegorija.info.name}}</a>
-          	</div>
-        </div>
-      </div-->
-      <ul>
-    		<ul>
-			    <li ng-repeat="kategorija in kategorije" ng-include="'stablo'">
-			    </li>
-			</ul>
-	  </ul>
-	
+      <div class="list-group list-group-root well">
+			<a class="list-group-item" ng-repeat="kategorija in kategorije" ng-include="'stablo'"></a>
  	 </div>
+	</div>
+  
+ 	 
+ 	 
 	 <div class="col-md-1">
 	 </div>
 	 <div class="col-md-9">

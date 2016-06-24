@@ -7,6 +7,8 @@
 package projara.model.shop;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,6 +30,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
+import projara.model.items.Item;
 import projara.model.users.Customer;
 
 /** @pdOid 7a28ee07-5380-4cc5-a0b6-958385abdcac */
@@ -428,6 +431,79 @@ public class Bill implements Serializable {
 		}
 		return true;
 	}
+	
+	/**
+	 * @author Nina
+	 * Ukoliko u računu postoje barem 10 artikala čija ukupna cena prelazi 
+	 * 50% cene ukupne vrednosti naručenih artikala, metoda vraca true
+	 * @return
+	 */
+	public boolean itemsPercentageTest(){
+		boolean retVal = false;
+		if(items.isEmpty() || getNoItems(items)<10){			  //nema 10 artikala, vrati false
+			retVal = false;
+		}
+		else if(getNoItems(items) >= 10 && getNoItems(items)<20){ //ukupna cena sigurno prelazi 50% ukupne vrednosti, vrati true
+			retVal = true;
+		}
+		else{
+			//sortiraj iteme po ceni
+			ArrayList<Double> itemsByPrice = sortItemsByPrice(items);
+			//nadji sumu prvih 10
+			double sum = 0;
+			for(int i=itemsByPrice.size()-1; i>=0; i--){
+				sum+= itemsByPrice.get(i);
+			}
+			//proveri da li je suma veca od 50% ukupne sume
+			if(sum > total/2){
+				retVal = true;
+			}
+			else{
+				retVal = false;
+			}
+		}
+		
+		return retVal;
+	}
+	/**
+	 * @author Nina
+	 * Sortira artikle na racunu po ceni
+	 * @param items
+	 * @return
+	 */
+	private ArrayList<Double> sortItemsByPrice(Set<BillItem> items){
+		ArrayList<Double> itemsByPrice = new ArrayList<>();
+		for(BillItem item: items){
+			itemsByPrice.add(item.getTotal());
+		}
+		Collections.sort(itemsByPrice);
+		System.out.println(itemsByPrice);
+		return itemsByPrice;
+	}
+	
+	/**
+	 * @author Nina
+	 * @return broj artikala na racunu
+	 */
+	private Integer getNoItems(Set<BillItem> items){
+		Integer retVal = 0;
+		for(BillItem item: items){
+			retVal += ((Double)item.getQuantity()).intValue();
+		}
+		return retVal;
+	}
+	
+	/**
+	 * @author Nina
+	 * Racuna sumu na osnovu cena item-a
+	 */
+	private Double getSum(Set<BillItem> items){
+		Double retVal = 0.0;
+		for(BillItem item: items){
+			retVal += ((Double)item.getQuantity()*item.getPrice());
+		}
+		return retVal;
+	}
 
 	public Bill() {
 		super();
@@ -455,7 +531,47 @@ public class Bill implements Serializable {
 		this.state = state;
 		setCustomer(customer);
 	}
-	
+	/**
+	 * @author Nina
+	 * Test konstruktor
+	 * @param total
+	 */
+	@Deprecated
+	public Bill(double origTotal) {
+		super();
+		this.items = new HashSet<BillItem>();
+		
+		//test treba da prodje
+		for(int i=0; i<20; i++){
+			BillItem b = new BillItem(1000, 1, new Item());
+			b.setId(new BillItemPK(i, i+1));
+			b.setTotal(1000);
+			items.add(b);
+		}
+		BillItem b = new BillItem(30001, 1, new Item());
+		b.setId(new BillItemPK(50, 50));
+		b.setTotal(30000);
+		items.add(b);
+		
+		
+		//test ne treba da prodje
+		/*for(int i=0; i<20; i++){
+			BillItem b = new BillItem(1, 1, new Item());
+			b.setId(new BillItemPK(i, i+1));
+			this.setTotal(1);
+			this.items.add(b);
+		}*/
+		
+		//test treba da prodje
+		/*BillItem bi = new BillItem(10000.0, 10, new Item());
+		this.items.add(bi);*/
+		
+		//test ne treba da prodje
+		/*BillItem bi = new BillItem(100.0, 9, new Item());
+		this.items.add(bi);*/
+		this.originalTotal = getSum(items);
+	}
+
 	@PreRemove
 	public void preRemoveBill(){
 		removeAllBillDiscounts();

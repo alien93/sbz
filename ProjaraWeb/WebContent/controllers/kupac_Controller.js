@@ -33,11 +33,10 @@ angular.module('sbzApp')
 					$scope.artikli = [];
 					$scope.kategorije = [];
 					
-					//dobavljanje artikala
-					$http({
-						method: "GET", 
-						url : "http://localhost:8080/ProjaraWeb/rest/items",
-					}).then(function(value) {
+					var populateHelp = function(value){
+						$scope.artikli = [];
+						if(!value)
+							return;
 						for(var i=0; i<value.data.length; i++){
 							if(value.data[i].info.inStock > 0){
 								var artikal = {
@@ -53,7 +52,26 @@ angular.module('sbzApp')
 								$scope.artikli.push(artikal);
 							}
 						}
-					});
+							
+					}
+					
+					//dobavljanje artikala
+					$scope.allItems = (function(){
+						var reloadHelp = function(){
+							$http({
+							method: "GET", 
+							url : "http://localhost:8080/ProjaraWeb/rest/items",
+						}).then(function(value) {
+							populateHelp(value);
+						});
+						};
+						reloadHelp();
+						return{
+							"reload":function(){reloadHelp();}
+						}
+					}());
+					//loadAll();
+					
 					
 					//dobavljanje kategorija artikla
 					$http({
@@ -101,7 +119,8 @@ angular.module('sbzApp')
 							data:$scope.advancedSearch,
 							headers: {'Content-Type': 'application/json'}
 						}).then(function(value){
-							$scope.artikli = [];
+							populateHelp(value);
+							/*$scope.artikli = [];
 							for(var i=0; i<value.data.length; i++){
 							if(value.data[i].info.inStock > 0){
 								var artikal = {
@@ -116,9 +135,21 @@ angular.module('sbzApp')
 								}
 								$scope.artikli.push(artikal);
 							}
-						}
+							}*/
 						})
 					}
+					$scope.catFilter = function(catCode){
+						$http({
+							method:"GET",
+							url:"http://localhost:8080/ProjaraWeb/rest/items/category/"+catCode
+						}).then(function(value){
+							$scope.artikli = [];
+							populateHelp(value);
+		
+						})
+					}
+					
+
 					
 	}])
 	
