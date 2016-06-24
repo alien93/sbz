@@ -22,11 +22,11 @@
 				</thead>
 				<tbody>
 					<tr data-ng-repeat="a in akcije">
-						<td> {{a.id}} </td>
-						<td> {{a.name}} </td>
-						<td> {{filterDate(a.from)}} </td>
-						<td> {{filterDate(a.until)}} </td>
-						<td> {{a.discount}}% </td>
+						<td> {{a.info.id}} </td>
+						<td> {{a.info.name}} </td>
+						<td> {{filterDate(a.info.from)}} </td>
+						<td> {{filterDate(a.info.until)}} </td>
+						<td> {{a.info.dicount}}% </td>
 						<td> 
 							<span data-ng-repeat="cat in a.categories track by $index">
 								{{$index + 1}} - {{cat.name}} <br/>
