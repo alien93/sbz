@@ -36,7 +36,9 @@ public class BillItemDiscount implements Serializable {
 	/** @pdOid 1613481f-9e5e-4931-b2cd-eb1fbf07c2ea */
 	@Column(name = "BITD_TYPE", nullable = false, unique = false, columnDefinition = "char(1) default 'R'")
 	private String type;
-
+	@Column(name = "BITD_NAME", nullable = false, unique = false, columnDefinition = "varchar(255)")
+	private String name;
+	
 	/** @pdRoleInfo migr=no name=BillItem assc=itemHasDiscounts mult=1..1 side=A */
 	@ManyToOne
 	@JoinColumns(value = {
@@ -147,10 +149,11 @@ public class BillItemDiscount implements Serializable {
 		return true;
 	}
 
-	public BillItemDiscount(double discount, String type, BillItem billItem) {
+	public BillItemDiscount(double discount, String type, BillItem billItem,String name) {
 		super();
 		this.discount = discount;
 		this.type = type;
+		this.name = name;
 		setBillItem(billItem);
 	}
 	
@@ -160,5 +163,15 @@ public class BillItemDiscount implements Serializable {
 			billItem.removeDiscounts(this);
 
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 
 }

@@ -66,3 +66,8 @@ button#profilIzmene{
 .list-group.list-group-root > .list-group > .list-group > .list-group-item {
   padding-left: 45px;
 }
+
+th, td{
+    width: 100px;
+    word-wrap: break-word;
+}

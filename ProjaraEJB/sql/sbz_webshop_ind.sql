@@ -67,6 +67,7 @@ create table BILL_DISCOUNT
    BILL_ID              int not null,
    BID_DISCOUNT         numeric(5,2),
    BID_TYPE             char(1) not null default 'R',
+   BID_NAME				varchar(255) not null,
    primary key (BID_ID)
 );
 
@@ -96,6 +97,7 @@ create table BILL_ITEM_DISCOUNT
    BILLIT_NO            smallint not null,
    BITD_DISCOUNT        numeric(5,2) default 0,
    BITD_TYPE            char(1) not null default 'R',
+   BITD_NAME			varchar(255) not null,
    primary key (BITD_ID)
 );
 

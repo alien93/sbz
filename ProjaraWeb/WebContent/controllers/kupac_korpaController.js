@@ -1,7 +1,31 @@
 angular.module('sbzApp')
-	.controller('kupac_korpaController', ['$scope', '$location',
-	        function($scope, $location){
+	.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$timeout',
+	        function($scope, $location, $cookies, $timeout){
 		
+				$scope.artikli = [];
+				$scope.zaUplatu = 0;
+				var korpa = $cookies.getObject("korpa");
+				
+				
+				//potvrda sadrzaja korpe
+				$scope.potvrdaKorpe = function(){
+					var korpa = $cookies.getObject("korpa");
+					if(korpa == undefined || korpa.artikli.length == 0){
+						$scope.greska = "Korpa je prazna. Molimo dodajte artikle u korpu preko \"Prodavnica\" stranice.";
+						$timeout(function() {
+						      $scope.greska = "";
+						 }, 1500);
+					}
+					else{
+						$location.path("/kupac/korpa/popusti");
+					}
+				}
+				
+				
+				if(korpa == undefined){
+					return;
+				}
+
 				//bodovi
 				$scope.bodovi = 0;
 				$scope.tekst = "bodova.";
@@ -16,41 +40,15 @@ angular.module('sbzApp')
 						$scope.tekst = "bodova.";
 					}
 				}
-		
-				//-----------------------------------test podaci------------------------------------
-				var artikal1={
-						"oznaka":"12345",
-						"naziv":"Pegla",
-						"cena":"1500",
-						"kolicina":"2",
-						"originalnaCena":"2000",
-						"popust":"10",
-						"ukupno":"1000"
-				};
-				var artikal2={
-						"oznaka":"12345",
-						"naziv":"Pegla",
-						"cena":"1500",
-						"kolicina":"2",
-						"originalnaCena":"2000",
-						"popust":"10",
-						"ukupno":"1000"
-				};
-				var artikal3={
-						"oznaka":"12345",
-						"naziv":"Pegla",
-						"cena":"1500",
-						"kolicina":"2",
-						"originalnaCena":"2000",
-						"popust":"10",
-						"ukupno":"1000"
-				};
-		
-		
-				$scope.artikli = [artikal1, artikal2, artikal3];
-				$scope.zaUplatu = 0;
+
+				//racunaj sumu za artikle
+				var racunajUkupno = (function(){
+					for(var i=0; i<korpa.artikli.length; i++){
+						korpa.artikli[i].ukupno = korpa.artikli[i].cenaSaPopustom * korpa.artikli[i].kolicina;
+						$scope.artikli.push(korpa.artikli[i]);
+					}
+				})();
 				
-				//-----------------------------------/test podaci------------------------------------
 
 				//za uplatu
 				var izracunajZaUplatu = function(){
@@ -61,12 +59,30 @@ angular.module('sbzApp')
 				};
 				izracunajZaUplatu();
 				
+				var brisiIzKorpeCookie = function(oznakaArtikla){
+					var korpa = $cookies.getObject("korpa");
+					var novaKorpa = {artikli:[]};
+					for(var i=0; i<korpa.artikli.length; i++){
+						if(korpa.artikli[i].oznaka !== oznakaArtikla){
+							novaKorpa.artikli.push(korpa.artikli[i]);
+						}
+					}
+					$cookies.remove("korpa");
+					$cookies.putObject("korpa", novaKorpa);
+				}
+
+				//brisanje artikla iz korpe
 				$scope.obrisiIzKorpe = function(indeks, oznakaArtikla){
+					brisiIzKorpeCookie(oznakaArtikla);
 					$scope.artikli.splice(indeks, 1);
 					izracunajZaUplatu();
 				}
 				
-				$scope.potvrdaKorpe = function(){
-					$location.path("/kupac/korpa/popusti");
+				//brisanje sadrzaja korpe
+				$scope.isprazniKorpu = function(){
+					$cookies.remove("korpa");
+					$location.path("/kupac");
 				}
+				
+				
 	}])

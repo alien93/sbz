@@ -5,21 +5,48 @@
 
 	<br><br><br>
 	<h4>Lista primenjenih popusta na stavke računa</h4>
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>Oznaka</th>
-				<th>Naziv</th>
-				<th>Opis</th>
-				<th>Artikal</th>
-			</tr>
-		</thead>
+	<table class="table table-striped myTable">
+	
 		<tbody>
-			<tr ng-repeat="artikal in artikli">
-				<td>{{artikal.popust.oznaka}}</td>
-				<td>{{artikal.popust.naziv}}</td>
-				<td>{{artikal.popust.opis}}</td>
-				<td>{{artikal.naziv}}</td>
+			<tr>
+				<table ng-repeat="artikal in artikli" class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Oznaka</th>
+							<th>Naziv</th>
+							<th>Opis</th>
+							<th>Procenat</th>
+							<th>Artikal</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{artikal.popust.oznaka}}</td>
+							<td>{{artikal.popust.naziv}}</td>
+							<td>{{artikal.popust.opis}}</td>
+							<td>{{artikal.popust.procenat}}%</td>
+							<td>{{artikal.naziv}}</td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>Jedinična cena:</th>
+							<td></td>
+							<th>Ukupan popust:</th>
+							<td></td>
+							<th>Cena bez popusta:</th>
+							<td></td>
+						</tr>
+						<tr>
+							<th>Količina:</th>
+							<td></td>
+							<th>Ostvaren popust:</th>
+							<td></td>
+							<th>Cena sa popustom:</th>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
 			</tr>
 		</tbody>
 	</table>

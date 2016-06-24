@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('kupac_Controller', ['$scope', '$uibModal', '$http',
-			function($scope, $uibModal, $http){
+	.controller('kupac_Controller', ['$scope', '$uibModal', '$http', '$timeout', '$cookies',
+			function($scope, $uibModal, $http, $timeout, $cookies){
 		
 	    $(".collapse").click(function () {
 
@@ -14,31 +14,18 @@ angular.module('sbzApp')
 	        $(this).parent().children().toggle();
 	        $(this).toggle();
 	});
-			
-				//-------------------------------------------test podaci-------------------------------------
-					
-					var kategorija1 = {"naziv":"Elektronika", "podkategorije":["Televizori", "Racunari"]};
-					var kategorija2 = {"naziv":"Namestaj", "podkategorije":["Kuhinja", "Dnevna soba", "Spavaca soba"]};
-					
-					var artikal1 = {"oznaka":"123", "naziv":"Pegla", "kategorija":"Mali kucni uredjaji", "popust":"", "cena":"500"};
-					var artikal2 = {"oznaka":"123", "naziv":"Flasa", "kategorija":"Posudje", "popust":"", "cena":"1500"};
-					var artikal3 = {"oznaka":"123", "naziv":"Trotinet", "kategorija":"Igracke", "popust":"Novogodisnji", "cena":"300"};
-					var artikal4 = {"oznaka":"123", "naziv":"Krevet", "kategorija":"Spavaca soba", "popust":"", "cena":"5000"};
-					var artikal5 = {"oznaka":"123", "naziv":"Prskalica", "kategorija":"Basta", "popust":"", "cena":"50000"};
-
-					//$scope.kategorije = [kategorija1, kategorija2];
-					//$scope.artikli = [artikal1, artikal2, artikal3, artikal4, artikal5];
-					
-				//-------------------------------------------/test podaci-------------------------------------
+	
 					$scope.artikli = [];
 					$scope.kategorije = [];
+					$scope.kolicinaArtikla = 1;
 					
 					var populateHelp = function(value){
 						$scope.artikli = [];
+						console.log(value);
 						if(!value)
 							return;
 						for(var i=0; i<value.data.length; i++){
-							if(value.data[i].info.inStock > 0){
+							if(value.data[i].info.inStock > 0 && value.data[i].info.active){
 								var artikal = {
 										"oznaka":value.data[i].info.id,
 										"naziv":value.data[i].info.name,
@@ -52,7 +39,6 @@ angular.module('sbzApp')
 								$scope.artikli.push(artikal);
 							}
 						}
-							
 					}
 					
 					//dobavljanje artikala
@@ -82,7 +68,50 @@ angular.module('sbzApp')
 						$scope.kategorije = value.data;
 					});
 					
+					//dodaje artikal u cookie
+					var dodajArtikal = function(korpa, artikal){
+						for(var i=0; i<korpa.artikli.length; i++){
+							if(korpa.artikli[i].oznaka === artikal.oznaka){
+								korpa.artikli[i].kolicina += artikal.kolicina;
+								return;
+							}
+						}
+						korpa.artikli.push(artikal);
+					}
 					
+					//dodavanje u korpu
+					$scope.dodajUKorpu = function(kolicinaArtikla, artikal){
+						if(kolicinaArtikla == undefined || kolicinaArtikla<1){
+							//upozorenje
+							$scope.greska = "Količina artikala nije definisana ili je manja od 1. Artikal nije dodat u korpu.";
+							 $timeout(function() {
+							      $scope.greska = "";
+							 }, 1500);
+						}
+						else{
+							//ukoliko korpa ne postoji, kreiraj korpu
+							if($cookies.get("korpa") == undefined){	
+								var korpa = {artikli:[]};
+								artikal.kolicina = kolicinaArtikla;
+								korpa.artikli.push(artikal);
+								$cookies.putObject("korpa", korpa);
+							}
+							else{
+								var korpa = $cookies.getObject("korpa");
+								artikal.kolicina = kolicinaArtikla;
+								dodajArtikal(korpa, artikal);
+								$cookies.remove("korpa");
+								$cookies.putObject("korpa", korpa);
+							}
+							//status uspesnosti
+							$scope.izvestajUspesnosti = "Artikal je dodat u korpu.";
+							 $timeout(function() {
+							      $scope.izvestajUspesnosti = "";
+							 }, 1000);
+						}
+					}
+					
+					//vise informacija o artiklu - modal
 					$scope.viseInformacija = function(oznakaArtikla){
 						var modalInstance = $uibModal.open({
 							animation: true,
@@ -112,6 +141,7 @@ angular.module('sbzApp')
 								maxCost:null,
 							}
 					}
+					
 					$scope.search = function(){
 						$http({
 							method:"POST",
@@ -120,24 +150,9 @@ angular.module('sbzApp')
 							headers: {'Content-Type': 'application/json'}
 						}).then(function(value){
 							populateHelp(value);
-							/*$scope.artikli = [];
-							for(var i=0; i<value.data.length; i++){
-							if(value.data[i].info.inStock > 0){
-								var artikal = {
-										"oznaka":value.data[i].info.id,
-										"naziv":value.data[i].info.name,
-										"kategorija":value.data[i].category.name,
-										"popust":value.data[i].discountPerc,
-										"cena":value.data[i].info.cost,
-										"cenaSaPopustom":value.data[i].costWithDiscount,
-										"akcije":value.data[i].actions,
-										"slika":"images/"+value.data[i].info.picture
-								}
-								$scope.artikli.push(artikal);
-							}
-							}*/
 						})
 					}
+					
 					$scope.catFilter = function(catCode){
 						$http({
 							method:"GET",

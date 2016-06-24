@@ -7,6 +7,7 @@ public class BillDiscountInfo implements Serializable {
 	private int id;
 	private double percentage;
 	private String type;
+	private String name;
 	
 	public BillDiscountInfo() {
 		// TODO Auto-generated constructor stub
@@ -28,11 +29,12 @@ public class BillDiscountInfo implements Serializable {
 		this.percentage = percentage;
 	}
 
-	public BillDiscountInfo(int id, double percentage, String type) {
+	public BillDiscountInfo(int id, double percentage, String type,String name) {
 		super();
 		this.id = id;
 		this.percentage = percentage;
 		this.type = type;
+		this.name = name;
 	}
 
 	public String getType() {
@@ -41,6 +43,14 @@ public class BillDiscountInfo implements Serializable {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	

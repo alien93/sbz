@@ -77,10 +77,11 @@ public class BillRestBean implements BillRestApi {
 			BadArgumentsException, BillException, ItemException {
 
 		authorization.checkRole("C", request.getSession());
+		
+		webShopCart.setCustomerId((int) request.getSession().getAttribute("userID"));
 
-		webShopCart.setCustomerId((int) request.getSession().getAttribute(
-				"userID"));
-
+		
+		
 		return billManager.populateBill(webShopCart);
 
 	}
