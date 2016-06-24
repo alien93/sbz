@@ -315,6 +315,12 @@ public class BillItem implements Serializable {
 		setBill(bill);
 	}
 	
+	/**
+	 * TODO: Ukoliko se koristi, setovati id obavezno!
+	 * @param price
+	 * @param quantity
+	 * @param item
+	 */
 	public BillItem(double price, int quantity, Item item) {
 		this.price = price;
 		this.quantity = quantity;
