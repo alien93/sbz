@@ -20,7 +20,7 @@
     (declare (salience 9)(no-loop TRUE))
     ?bill <- (Bill (customer ?cust &:(<= 2 (call ?cust getYears))))
     =>
-    (bind ?newOb (new BillDiscount 1.0 "R" ?bill.OBJECT "Verni kupci (preko 2 godine)"))
+    (bind ?newOb (new BillDiscount 1.0 "A" ?bill.OBJECT "Verni kupci (preko 2 godine)"))
     (definstance BillDiscount ?newOb)
     (modify ?bill(discountPercentage (+ ?bill.discountPercentage 1.0)))
     (printout t "Stari kupac" crlf)
@@ -33,7 +33,7 @@
     ?customer <- (Customer (OBJECT ?custObj)(id ?idCust)(category ?categ &:(call ?categ equals ?custCatObj)))
     ?bill <- (Bill (customer ?cust &:(call ?cust equals ?custObj)))
     =>
-    (bind ?newOb (new BillDiscount 1.0 "R" ?bill.OBJECT "Zlatni ili srebrni kupci"))
+    (bind ?newOb (new BillDiscount 1.0 "A" ?bill.OBJECT "Zlatni ili srebrni kupci"))
     (definstance BillDiscount ?newOb)
     (modify ?bill(discountPercentage (+ ?bill.discountPercentage 1.0)))
     (printout t "Privilegovani kupac" crlf)

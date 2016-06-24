@@ -17,7 +17,7 @@
    	?bill <- (Bill (originalTotal ?origTotal &:(> ?origTotal 50000))(OBJECT ?objectBill &:(eq TRUE (call ?objectBill itemsPercentageTest))))
     =>
     (printout t "prosao: " ?bill.originalTotal crlf)
-    (definstance BillDiscount (new BillDiscount 3.0 "R" ?bill.OBJECT "K pravilo"))
+    (definstance BillDiscount (new BillDiscount 3.0 "A" ?bill.OBJECT "K pravilo"))
     (modify ?bill(discountPercentage (+ ?bill.discountPercentage 3.0)))
 )
 
