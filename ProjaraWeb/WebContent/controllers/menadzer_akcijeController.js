@@ -1,6 +1,8 @@
 angular.module('sbzApp')
-	.controller('menadzer_akcijeController', ['$scope', '$http', '$uibModal', '$filter',
-	        function($scope, $http, $uibModal, $filter){
+	.controller('menadzer_akcijeController', ['$rootScope', '$scope', '$http', '$uibModal', '$filter',
+	        function($rootScope, $scope, $http, $uibModal, $filter){
+		
+		
 		$scope.akcije = [{id:1, name:"Novogodisnja akcija", from:new Date(), until:new Date(), discount:20, 
 						categories: [{code:"code1", name:"name1", maxDiscount:20, parentCategory:null},
 									 {code:"code2", name:"name2", maxDiscount:30, parentCategory:"code1"}]},

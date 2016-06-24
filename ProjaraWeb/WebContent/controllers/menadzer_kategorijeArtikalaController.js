@@ -1,6 +1,7 @@
 angular.module('sbzApp')
-	.controller('menadzer_kategorijeArtikalaController', ['$scope', '$uibModal', '$http',
-	      function($scope, $uibModal, $http){
+	.controller('menadzer_kategorijeArtikalaController', ['$rootScope', '$scope', '$uibModal', '$http',
+	      function($rootScope, $scope, $uibModal, $http){
+		
 		$scope.kategorijeArtikala = [];/*[{code:"code1", name:"name1", maxDiscount:20, parentCategory:null},
 									 {code:"code2", name:"name2", maxDiscount:30, parentCategory:"code1"}];*/
 		
