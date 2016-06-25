@@ -28,7 +28,6 @@ angular.module('sbzApp')
 
 	var populateHelp = function(value){
 		$scope.artikli = [];
-		console.log(value);
 		if(!value)
 			return;
 		for(var i=0; i<value.data.length; i++){
@@ -71,7 +70,6 @@ angular.module('sbzApp')
 		method: "GET", 
 		url : "http://localhost:8080/ProjaraWeb/rest/itemCategories",
 	}).then(function(value) {
-		console.log(value);
 		$scope.kategorije = value.data;
 	});
 

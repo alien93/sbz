@@ -4,46 +4,45 @@
 	<button class="btn btn-danger" style="float:right;" ng-click="otkaziKupovinu()">Otkaži kupovinu</button>
 
 	<br><br><br>
-	<h4>Lista primenjenih popusta na stavke računa</h4>
+	<h3>Lista primenjenih popusta na stavke računa</h3>
 	<table class="table table-striped myTable">
 	
 		<tbody>
 			<tr>
-				<table ng-repeat="artikal in artikli" class="table table-bordered">
+				<table ng-repeat="artikal in artikli track by $index" class="table table-bordered">
 					<thead>
 						<tr>
-							<th>Oznaka</th>
-							<th>Naziv</th>
-							<th>Opis</th>
+							<th colspan="6"><h3>{{artikal.item.name}}</h3></th>
+						</tr>
+						<tr ng-show="artikal.itemDiscounts.length > 0">
+							<th>Oznaka popusta</th>
+							<th colspan="2">Naziv</th>
+							<th colspan="2">Opis</th>
 							<th>Procenat</th>
-							<th>Artikal</th>
-							<th>&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>{{artikal.popust.oznaka}}</td>
-							<td>{{artikal.popust.naziv}}</td>
-							<td>{{artikal.popust.opis}}</td>
-							<td>{{artikal.popust.procenat}}%</td>
-							<td>{{artikal.naziv}}</td>
-							<td></td>
+						<tr ng-repeat="popust in artikal.itemDiscounts">
+							<td>{{popust.id}}</td>
+							<td colspan="2">{{popust.name}}</td>
+							<td colspan="2">{{popust.type == "A" | iif : "Dodatni popust" : "Osnovni popust"}}</td>
+							<td>{{popust.percentage}}%</td>
 						</tr>
 						<tr>
 							<th>Jedinična cena:</th>
-							<td></td>
+							<td>{{artikal.item.cost}} RSD</td>
 							<th>Ukupan popust:</th>
-							<td></td>
+							<td>{{ukupanPopust[$index]}}%</td>
 							<th>Cena bez popusta:</th>
-							<td></td>
+							<td>{{artikal.originalCost}}</td>
 						</tr>
 						<tr>
 							<th>Količina:</th>
-							<td></td>
+							<td>{{artikal.quantity}}</td>
 							<th>Ostvaren popust:</th>
-							<td></td>
+							<td>{{artikal.discountPercentage}}%</td>
 							<th>Cena sa popustom:</th>
-							<td></td>
+							<td>{{artikal.totalCost}}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -51,25 +50,27 @@
 		</tbody>
 	</table>
 	<br><br>
-	<h4>Lista primenjenih popusta na ceo račun</h4>
+	<h3>Lista primenjenih popusta na ceo račun</h3>
 	<table class="table table-striped">
 		<thead>
 			<tr>
 				<th>Oznaka</th>
+				<th>Naziv</th>
 				<th>Popust</th>
 				<th>Opis</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="popust in popusti">
-				<td>{{popust.oznaka}}</td>
-				<td>{{popust.naziv}}</td>
-				<td>{{popust.opis}}</td>
+				<td>{{popust.id}}</td>
+				<td>{{popust.name}}</td>
+				<td>{{popust.percentage}}%</td>
+				<td>{{popust.type == "A" | iif : "Dodatni popust" : "Osnovni popust"}}</td>
 			</tr>
 		</tbody>
 	</table>
 	<br><br>
-	<h4>Bodovi i iznos računa</h4>
+	<h3>Bodovi i iznos računa</h3>
 	<div class="col-md-6">
 		<table class="table table-striped table-bordered">
 			<thead>
@@ -79,23 +80,23 @@
 			</thead>
 				<tr>
 					<td>Ukupna cena računa:</th>
-					<td>{{racun.ukupnaCena}}</td>
+					<td>{{izvestaj.originalTotal}}</td>
 				</tr>
 				<tr>
 					<td>Procenat umanjenja:</th>
-					<td>{{racun.procenatUmanjenja}}%</td>
+					<td>{{izvestaj.costInfos[0].discount}}%</td>
 				</tr>
 				<tr>
 					<td>Plaćena cena:</th>
-					<td>{{racun.placenaCena}}</td>
+					<td>{{izvestaj.costInfos[0].total}}</td>
 				</tr>
 				<tr>
 					<td>Broj potrošenih nagradnih bodova:</th>
-					<td>{{racun.brPotrosenihBodova}}</td>
+					<td>{{izvestaj.costInfos[0].spentPoints}}</td>
 				</tr>
 				<tr>
 					<td>Broj ostvarenih nagradnih bodova:</th>
-					<td>{{racun.brOstvarenihBodova}}</td>
+					<td>{{izvestaj.costInfos[0].awardPoints}}</td>
 				</tr>
 				<tr>
 					<td colspan="2"><button class="btn btn-success" style="float:right;" ng-click="potvrdiRacun(1)">Koristi ovaj račun</button></td>
@@ -113,23 +114,23 @@
 			</thead>
 				<tr>
 					<td>Ukupna cena računa:</th>
-					<td>{{racun.ukupnaCena}}</td>
+					<td>{{izvestaj.originalTotal}}</td>
 				</tr>
 				<tr>
 					<td>Procenat umanjenja:</th>
-					<td>{{racun.procenatUmanjenja}}%</td>
+					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].discount : izvestaj.costInfos[1].discount}}%</td>
 				</tr>
 				<tr>
 					<td>Plaćena cena:</th>
-					<td>{{racun.placenaCena}}</td>
+					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].total : izvestaj.costInfos[1].total}}</td>
 				</tr>
 				<tr>
 					<td>Broj potrošenih nagradnih bodova:</th>
-					<td>{{racun.brPotrosenihBodova}}</td>
+					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].spentPoints : izvestaj.costInfos[1].spentPoints}}</td>
 				</tr>
 				<tr>
 					<td>Broj ostvarenih nagradnih bodova:</th>
-					<td>{{racun.brOstvarenihBodova}}</td>
+					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].awardPoints : izvestaj.costInfos[1].awardPoints}}</td>
 				</tr>
 				<tr>
 					<td colspan="2"><button class="btn btn-success" style="float:right;" ng-click="potvrdiRacun(2)">Koristi ovaj račun</button></td>

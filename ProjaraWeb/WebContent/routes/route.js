@@ -1,5 +1,12 @@
 var sbzApp = angular.module('sbzApp', ['ngCookies', 'ngRoute','ngResource', 'ui.bootstrap', 'ngMaterial', 'ngMessages', 'material.svgAssetsCache']);
 
+sbzApp.filter('iif', function () {
+	   return function(input, trueValue, falseValue) {
+	        return input ? trueValue : falseValue;
+	   };
+	});
+
+
 sbzApp.config(function($routeProvider){
 				
 				$routeProvider	

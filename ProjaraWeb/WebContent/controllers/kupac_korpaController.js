@@ -51,8 +51,14 @@ angular.module('sbzApp')
 					data : racun,
 					headers: {'Content-Type': 'application/json'}
 				}).then(function(value) {
-					console.log(value);
-					$scope.kategorije = value.data;
+					if(value.statusText == "OK"){
+						$cookies.putObject("izvestajRacuna", value);
+					}
+					else{
+						$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+					}
+				},function(reason){
+					$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
 				});
 			}());
 			//pokupi zeljeni broj bodova
