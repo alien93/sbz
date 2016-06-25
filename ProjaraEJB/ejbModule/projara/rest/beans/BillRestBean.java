@@ -81,7 +81,6 @@ public class BillRestBean implements BillRestApi {
 		webShopCart.setCustomerId((int) request.getSession().getAttribute("userID"));
 
 		return billManager.populateBill(webShopCart);
-
 	}
 
 	@Override

@@ -32,9 +32,6 @@ angular.module('sbzApp')
 		var korpa = $cookies.getObject("korpa");
 		if(korpa == undefined || korpa.artikli.length == 0){
 			$scope.greska = "Korpa je prazna. Molimo dodajte artikle u korpu preko \"Prodavnica\" stranice.";
-			$timeout(function() {
-				$scope.greska = "";
-			}, 1500);
 		}
 		else{
 			//generisi racun
@@ -51,8 +48,14 @@ angular.module('sbzApp')
 					data : racun,
 					headers: {'Content-Type': 'application/json'}
 				}).then(function(value) {
-					console.log(value);
-					$scope.kategorije = value.data;
+					if(value.statusText == "OK"){
+						$cookies.putObject("izvestajRacuna", value);
+					}
+					else{
+						$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+					}
+				},function(reason){
+					$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
 				});
 			}());
 			//pokupi zeljeni broj bodova

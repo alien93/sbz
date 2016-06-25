@@ -1,7 +1,8 @@
 angular.module('sbzApp')
-.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies',
-                                                 function($scope, $location, $cookies){
+.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies', '$http',
+                                                 function($scope, $location, $cookies, $http){
 
+	//proveri da li je korisnik vec prijavljen
 	if($cookies.get("korisnikID") == undefined){
 		$location.path('/prijava');
 	}
@@ -9,37 +10,31 @@ angular.module('sbzApp')
 		$scope.korisnikID = $cookies.get("korisnikID");
 	}
 
+	//dobavi izvestaj racuna
+	var izvestaj = $cookies.getObject("izvestajRacuna");
+	console.log("izvestaj");
+	console.log(izvestaj);
+	$scope.izvestaj = izvestaj.data;
+	
+	$scope.artikli = izvestaj.data.billItems;
+	console.log("artikli");
+	console.log($scope.artikli);
+	
+	$scope.popusti = izvestaj.data.billDiscounts;
+	
+	$scope.ukupanPopust = [];
 
-
-	//-------------------------test podaci-------------------
-	var popust1 = {"oznaka":"123","naziv":"Popust1", "opis":"Opis popusta 1", "procenat":5};
-	var popust2 = {"oznaka":"231","naziv":"Popust2", "opis":"Opis popusta 2", "procenat":2};
-	var popust3 = {"oznaka":"312","naziv":"Popust3", "opis":"Opis popusta 3", "procenat":10};
-
-	var artikal1 = {"popust":popust1, "naziv":"Naziv artikla 1"};
-	var artikal2 = {"popust":popust2, "naziv":"Naziv artikla 2"};
-	var artikal3 = {"popust":popust3, "naziv":"Naziv artikla 3"};
-	var artikal4 = {"popust":popust2, "naziv":"Naziv artikla 4"};
-
-	$scope.artikli = [artikal1, artikal2, artikal3, artikal4];
-
-	var popustncr1 = {"oznaka":"123","naziv":"Popust na ceo racun 1", "opis":"Opis popusta 1"};
-	var popustncr2 = {"oznaka":"231","naziv":"Popust na ceo racun 2", "opis":"Opis popusta 2"};
-	var popustncr3 = {"oznaka":"312","naziv":"Popust na ceo racun 3", "opis":"Opis popusta 3"};
-
-
-
-	$scope.popusti = [popustncr1, popustncr2, popustncr3];
-
-	$scope.racun = {
-			"ukupnaCena":"5000",
-			"procenatUmanjenja":"50",
-			"placenaCena":"2500",
-			"brPotrosenihBodova":"2",
-			"brOstvarenihBodova":"100"
-	};
-
-	//-------------------------/test podaci-------------------
+	
+	//racunaj ukupan popust
+	(function(){
+		for(var i=0; i<$scope.artikli.length; i++){
+			var popust = 0;
+			for(var j=0; j<$scope.artikli[i].itemDiscounts.length; j++){
+				popust += $scope.artikli[i].itemDiscounts[j].percentage;
+			}
+			$scope.ukupanPopust[i]=popust;
+		}
+	}());
 
 	console.log($cookies.getObject("korpa"));
 	console.log($cookies.get("bodovi"));
@@ -48,9 +43,40 @@ angular.module('sbzApp')
 		$location.path("/kupac");
 	}
 	$scope.potvrdiRacun = function(oznaka){
+		console.log($scope.izvestaj.costInfos);
 		switch(oznaka){
-		case(1): console.log(1); break;
-		case(2): console.log(2); break;
+		case(1): 
+			$http({
+				method: "POST", 
+				url : "http://localhost:8080/ProjaraWeb/rest/bills/confirm",
+				data : $scope.izvestaj.costInfos[0],
+				headers: {'Content-Type': 'application/json'}
+			}).then(function(value) {
+				if(value.statusText == "OK"){
+				}
+				else{
+					$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+				}
+			},function(reason){
+				$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+			});
+			break;
+		case(2): 
+			$http({
+				method: "POST", 
+				url : "http://localhost:8080/ProjaraWeb/rest/bills/confirm",
+				data : $scope.izvestaj.costInfos[1]==null?$scope.izvestaj.costInfos[0]:$scope.izvestaj.costInfos[1],
+				headers: {'Content-Type': 'application/json'}
+			}).then(function(value) {
+				if(value.statusText == "OK"){
+				}
+				else{
+					$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+				}
+			},function(reason){
+				$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+			});
+			break;
 		}
 		$location.path("/kupac");
 	}

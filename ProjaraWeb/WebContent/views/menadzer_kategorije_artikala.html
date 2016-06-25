@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <div data-ng-controller="menadzer_kategorijeArtikalaController">
 	
-	<div style='margin-left: 20%;margin-right: 20%;margin-bottom: 10%'>
+	<div style='margin-left: 10%;margin-right: 10%;margin-bottom: 10%'>
 		<div class='table-responsive'>
 			<table class='table table-bordered'>
 				<thead>
@@ -21,7 +21,7 @@
 				<tbody>
 					<tr data-ng-repeat="cat in kategorijeArtikala">
 						<td> {{cat.info.code}} </td>
-						<td> {{cat.parentCode}} </td>
+						<td> {{cat.parentCode}} - {{cat.parentName}} </td>
 						<td> {{cat.info.name}} </td>
 						<td> {{cat.info.maxDiscount}}% </td>
 						<!--  <td> <button class='btn btn-primary' data-ng-click="deleteCategory(cat.info.code)">Delete</button> </td>-->
