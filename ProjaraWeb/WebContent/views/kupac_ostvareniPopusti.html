@@ -1,8 +1,23 @@
 <div class="col-md-2"></div>
 <div class="col-md-8" ng-controller="kupac_ostvareniPopustiController">
 	<h2>Izveštaj</h2>
-	<button class="btn btn-danger" style="float:right;" ng-click="otkaziKupovinu()">Otkaži kupovinu</button>
-
+	<!-- Error message -->
+			<div class="row">
+				<div class="col-md-offset-4 col-md-4">
+					<div class="alert alert-danger" role="alert" ng-show="greska">
+		            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		            	{{greska}}
+		        	</div>
+				</div>
+				<div class="col-md-4"> &nbsp; </div>
+			</div>
+	
+	
+	<div class="row">
+		<button class="btn btn-danger" style="float:right;" ng-click="otkaziKupovinu()">Otkaži kupovinu</button> &nbsp;&nbsp;&nbsp;&nbsp;
+		<button class="btn btn-success" style="float:right;" ng-click="povratakNaKorpu()">Vrati se na korpu</button> &nbsp;&nbsp;&nbsp;&nbsp;	
+	</div>
+	
 	<br><br><br>
 	<h3>Lista primenjenih popusta na stavke računa</h3>
 	<table class="table table-striped myTable">
