@@ -159,9 +159,19 @@ angular.module('sbzApp')
 		 	$scope.prikaziOdgRacune = function() {
 		 		// Postavljanje promjenljive po kojoj se vrsi filtriranje po txt sadrzaju
 		 		if ($scope.izabranoStanje == $scope.stanjaRacuna[0]) {
-		 			$scope.prikaziOdgovarajuce = "";
-		 		} else {
-		 			$scope.prikaziOdgovarajuce = $scope.izabranoStanje;
+		 			//$scope.prikaziOdgovarajuce = "";
+		 			$scope.getAllBills();
+		 		} else { 
+		 			//$scope.prikaziOdgovarajuce = $scope.izabranoStanje;
+		 			var izStanje = "";
+					if ($scope.izabranoStanje == "NARUČENO") 
+						izStanje = "O";
+					else if ($scope.izabranoStanje == "OTKAZANO") 
+						izStanje = "C";
+					else if ($scope.izabranoStanje == "USPEŠNO REALIZOVANO") 
+						izStanje = "S";
+					
+		 			$scope.getByState(izStanje);
 		 		}	
 		 	};
 		 	
@@ -172,7 +182,7 @@ angular.module('sbzApp')
 					url : "http://localhost:8080/ProjaraWeb/rest/bills/approve/" + billId,
 				}).then(function(value) {
 					console.log("potvrda racuna");
-					$scope.getAllBills();
+					$scope.racuni[ind].stanje = "USPEŠNO REALIZOVANO";
 				});	 
 		 	};
 		 	
@@ -183,7 +193,7 @@ angular.module('sbzApp')
 					url : "http://localhost:8080/ProjaraWeb/rest/bills/cancel/" + billId,
 				}).then(function(value) {
 					console.log("otkazivanje racuna");
-					$scope.getAllBills();
+					$scope.racuni[ind].stanje = "OTKAZANO";
 				});			 		
 		 	};
 		 	
@@ -204,6 +214,76 @@ angular.module('sbzApp')
 			});
 		 		
 		 	};
+		 	
+		 	
+		 	$scope.getByState = function(izStanje) {	 	
+		 		$scope.racuni = [];
+		 		$http({
+		 			method: "GET", 
+		 			url : "http://localhost:8080/ProjaraWeb/rest/bills/" + izStanje,
+		 		}).then(function(value) {
+				
+		 			for (var i = 0; i < value.data.length; i++) {
+		 				console.log(value.data[i]);
+					
+		 				var stanje = "";
+		 				if (value.data[i].state == "O") 
+		 					stanje = "NARUČENO";
+		 				else if (value.data[i].state == "C") 
+		 					stanje = "OTKAZANO";
+		 				else if (value.data[i].state == "S") 
+		 					stanje = "USPEŠNO REALIZOVANO";
+					
+		 				//Lista artikala
+		 				var artikli = [];
+		 				for (var j = 0; j < value.data[i].billItems.length; j++) {
+		 					var artiklIzJsona = value.data[i].billItems[j];
+		 					var artikl = {
+		 							"oznaka" : artiklIzJsona.item.id,
+		 							"naziv" : artiklIzJsona.item.name,
+		 							"kolicina" : artiklIzJsona.quantity,
+		 							"cena" : "?",
+		 							"originalnaCena" : artiklIzJsona.originalCost,
+		 							"popust" : artiklIzJsona.discountPercentage,
+		 							"ukupno" : artiklIzJsona.totalCost
+		 					};
+						
+		 					artikli.push(artikl);
+		 				};
+					
+		 				//Lista popusta
+		 				var popusti = [];
+		 				for (var j = 0; j < value.data[i].billDiscounts.length; j++) {
+		 					var popustiZaItem = value.data[i].billDiscounts[j];
+		 					var popust = {
+		 							"oznaka" : popustiZaItem.id,
+		 							"naziv" : popustiZaItem.name,
+		 							"procenat" : popustiZaItem.percentage,
+		 							"tip" : popustiZaItem.type
+		 					};
+						
+		 					popusti.push(popust);
+		 				};
+					
+		 				var racun = {
+		 						"oznaka" : value.data[i].billId,
+		 						"oznakaKupca" : value.data[i].customer.id,
+		 						"stanje" : stanje,
+		 						"datum" : value.data[i].date,
+		 						"ukupanIznos" : value.data[i].originalTotal,
+		 						"popusti" : popusti,
+		 						"artikli" : artikli,
+		 						"suma" : "?",
+		 						"popust" : value.data[i].costInfos.discount,
+		 						"ukupnaSuma" : value.data[i].costInfos[0].total,
+		 						"iskorisceniBodovi": value.data[i].costInfos[0].spentPoints,
+		 						"steceniBodovi": value.data[i].costInfos[0].awardPoints	
+		 				};
+					
+		 				$scope.racuni.push(racun);
+		 			}
+		 		});	
+		 		};
 
 		}
 	]);
