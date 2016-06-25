@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies',
-                                                 function($scope, $location, $cookies){
+.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies', '$http',
+                                                 function($scope, $location, $cookies, $http){
 
 	//proveri da li je korisnik vec prijavljen
 	if($cookies.get("korisnikID") == undefined){
@@ -36,18 +36,6 @@ angular.module('sbzApp')
 		}
 	}());
 
-	//-------------------------test podaci-------------------
-	
-	$scope.racun = {
-			"ukupnaCena":"5000",
-			"procenatUmanjenja":"50",
-			"placenaCena":"2500",
-			"brPotrosenihBodova":"2",
-			"brOstvarenihBodova":"100"
-	};
-
-	//-------------------------/test podaci-------------------
-
 	console.log($cookies.getObject("korpa"));
 	console.log($cookies.get("bodovi"));
 
@@ -55,9 +43,40 @@ angular.module('sbzApp')
 		$location.path("/kupac");
 	}
 	$scope.potvrdiRacun = function(oznaka){
+		console.log($scope.izvestaj.costInfos);
 		switch(oznaka){
-		case(1): console.log(1); break;
-		case(2): console.log(2); break;
+		case(1): 
+			$http({
+				method: "POST", 
+				url : "http://localhost:8080/ProjaraWeb/rest/bills/confirm",
+				data : $scope.izvestaj.costInfos[0],
+				headers: {'Content-Type': 'application/json'}
+			}).then(function(value) {
+				if(value.statusText == "OK"){
+				}
+				else{
+					$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+				}
+			},function(reason){
+				$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+			});
+			break;
+		case(2): 
+			$http({
+				method: "POST", 
+				url : "http://localhost:8080/ProjaraWeb/rest/bills/confirm",
+				data : $scope.izvestaj.costInfos[1]==null?$scope.izvestaj.costInfos[0]:$scope.izvestaj.costInfos[1],
+				headers: {'Content-Type': 'application/json'}
+			}).then(function(value) {
+				if(value.statusText == "OK"){
+				}
+				else{
+					$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+				}
+			},function(reason){
+				$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+			});
+			break;
 		}
 		$location.path("/kupac");
 	}

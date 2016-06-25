@@ -34,7 +34,8 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="racun in racuni | filter : prikaziOdgovarajuce">
+						<tr ng-repeat="racun in racuni | filter : prikaziOdgovarajuce"> 
+						<!--<tr ng-repeat="racun in racuni"> -->
 							<td>{{racun.oznaka}}</td>
 							<td>{{racun.oznakaKupca}}</td>
 							<td>{{racun.stanje}}</td>
@@ -45,10 +46,11 @@
 							</td>
 							<td>  
 								<input type="button" value="Potvrdi" class="btn btn-primary" 
-									   ng-if="racun.stanje == 'NARUČENO'">
+									   ng-if="racun.stanje == 'NARUČENO'" ng-click="potvrdiRacun($index)">
 							
 								<input type="button" value="Otkaži" class="btn btn-danger"
-									   ng-if="racun.stanje == 'NARUČENO'">
+									   ng-if="racun.stanje == 'NARUČENO'" ng-click="otkaziRacun($index)">
+									   
 							    <label ng-if="racun.stanje != 'NARUČENO'"> 
 							    	&nbsp;&nbsp;&nbsp;&nbsp; 
 							    	&nbsp;&nbsp;&nbsp;&nbsp; 
