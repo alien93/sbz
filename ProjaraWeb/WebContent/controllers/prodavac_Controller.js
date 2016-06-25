@@ -84,9 +84,9 @@ angular.module('sbzApp')
 //	
 //		 	$scope.racuni = [racun1, racun2, racun3];  
 		 	
-		 	$scope.racuni = [];
-		 	$scope.getAllBills = function() {	 	
 		 	
+		 	$scope.getAllBills = function() {	 	
+		 		$scope.racuni = [];
 		 	$http({
 				method: "GET", 
 				url : "http://localhost:8080/ProjaraWeb/rest/bills",
@@ -177,7 +177,14 @@ angular.module('sbzApp')
 		 	};
 		 	
 		 	$scope.otkaziRacun = function(ind) {
-		 		
+		 		var billId = $scope.racuni[ind].oznaka;
+		 		$http({
+					method: "POST", 
+					url : "http://localhost:8080/ProjaraWeb/rest/bills/cancel/" + billId,
+				}).then(function(value) {
+					console.log("otkazivanje racuna");
+					$scope.getAllBills();
+				});			 		
 		 	};
 		 	
 		 	$scope.showDetails = function(index) {
