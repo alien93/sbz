@@ -11,4 +11,6 @@ public interface CustomerCategoryRestLocal {
 	public String deleteCategory(String categoryCode);
 	public List<UserProfileInfoJson> getAllCustomers(); 
 	public RestMsg addCustomerToCat(String categoryId, int customerId);
+	public UserProfileInfoJson getUser(String username, String password, 
+			String firstName, String lastName, boolean save);
 }

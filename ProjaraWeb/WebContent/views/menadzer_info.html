@@ -1,0 +1,23 @@
+<meta charset="UTF-8">
+<div>
+	<div class="modal-header">
+		<b> {{headerMsg}} </b>
+	</div>
+	
+	<form name='f1' data-ng-submit="sacuvaj()">
+		<div class='modal-body'>
+			Korisničko ime: <br/> 
+			<input type='text' data-ng-disabled="true" class='form-control' data-ng-model='user.username'/>
+			Lozinka: <br/>
+			<input type='text' class='form-control' data-ng-model='user.password' required/>
+			Ime: <br/>
+			<input type='text' class='form-control' data-ng-model='user.firstName' required/>
+			Prezime: <br/>
+			<input type='text' class='form-control' data-ng-model='user.lastName' required/>
+		</div>
+		
+		<div class="modal-footer">
+			<input class='btn btn-primary' type='submit' value='Sačuvaj'/>
+		</div>
+	</form>
+</div>
