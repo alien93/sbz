@@ -18,6 +18,9 @@ angular.module('sbzApp')
 	$scope.artikli = izvestaj.data.billItems;
 	console.log("artikli");
 	console.log($scope.artikli);
+	
+	$scope.popusti = izvestaj.data.billDiscounts;
+	
 	$scope.ukupanPopust = [];
 
 	
@@ -34,14 +37,6 @@ angular.module('sbzApp')
 
 	//-------------------------test podaci-------------------
 	
-	var popustncr1 = {"oznaka":"123","naziv":"Popust na ceo racun 1", "opis":"Opis popusta 1"};
-	var popustncr2 = {"oznaka":"231","naziv":"Popust na ceo racun 2", "opis":"Opis popusta 2"};
-	var popustncr3 = {"oznaka":"312","naziv":"Popust na ceo racun 3", "opis":"Opis popusta 3"};
-
-
-
-	$scope.popusti = [popustncr1, popustncr2, popustncr3];
-
 	$scope.racun = {
 			"ukupnaCena":"5000",
 			"procenatUmanjenja":"50",

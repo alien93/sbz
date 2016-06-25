@@ -4,7 +4,7 @@
 	<button class="btn btn-danger" style="float:right;" ng-click="otkaziKupovinu()">Otkaži kupovinu</button>
 
 	<br><br><br>
-	<h4>Lista primenjenih popusta na stavke računa</h4>
+	<h3>Lista primenjenih popusta na stavke računa</h3>
 	<table class="table table-striped myTable">
 	
 		<tbody>
@@ -50,20 +50,22 @@
 		</tbody>
 	</table>
 	<br><br>
-	<h4>Lista primenjenih popusta na ceo račun</h4>
+	<h3>Lista primenjenih popusta na ceo račun</h3>
 	<table class="table table-striped">
 		<thead>
 			<tr>
 				<th>Oznaka</th>
+				<th>Naziv</th>
 				<th>Popust</th>
 				<th>Opis</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="popust in popusti">
-				<td>{{popust.oznaka}}</td>
-				<td>{{popust.naziv}}</td>
-				<td>{{popust.opis}}</td>
+				<td>{{popust.id}}</td>
+				<td>{{popust.name}}</td>
+				<td>{{popust.percentage}}%</td>
+				<td>{{popust.type == "A" | iif : "Dodatni popust" : "Osnovni popust"}}</td>
 			</tr>
 		</tbody>
 	</table>
