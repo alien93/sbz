@@ -81,8 +81,9 @@ angular.module('sbzApp')
 				if(value.statusText == "OK"){
 					$cookies.remove("korpa");
 					$cookies.remove("izvestajRacuna");
+					$scope.uspesno = "Uspešno ste naručili artikle. Stanje Vašeg računa možete pratiti u istoriji kupovina.";
 					$timeout(function() {
-						$scope.uspesno = "Uspešno ste naručili artikle. Stanje Vašeg računa možete pratiti u istoriji kupovina.";
+						$scope.uspesno = "";
 					}, 1500);
 				}
 				else{
