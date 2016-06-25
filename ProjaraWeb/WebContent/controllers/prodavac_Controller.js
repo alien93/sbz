@@ -111,7 +111,7 @@ angular.module('sbzApp')
 							"oznaka" : artiklIzJsona.item.id,
 							"naziv" : artiklIzJsona.item.name,
 							"kolicina" : artiklIzJsona.quantity,
-							"cena" : "?",
+							"cena" :  artiklIzJsona.item.cost * artiklIzJsona.quantity,
 							"originalnaCena" : artiklIzJsona.originalCost,
 							"popust" : artiklIzJsona.discountPercentage,
 							"ukupno" : artiklIzJsona.totalCost
@@ -135,19 +135,19 @@ angular.module('sbzApp')
 					};
 					
 					var racun = {
-						"oznaka" : value.data[i].billId,
-						"oznakaKupca" : value.data[i].customer.id,
-						"stanje" : stanje,
-						"datum" : value.data[i].date,
-						"ukupanIznos" : value.data[i].originalTotal,
-						"popusti" : popusti,
-						"artikli" : artikli,
- 						"suma" : "?",
-			 			"popust" : value.data[i].costInfos.discount,
-			 			"ukupnaSuma" : value.data[i].costInfos[0].total,
-			 			"iskorisceniBodovi": value.data[i].costInfos[0].spentPoints,
-			 			"steceniBodovi": value.data[i].costInfos[0].awardPoints	
-					};
+	 						"oznaka" : value.data[i].billId,
+	 						"oznakaKupca" : value.data[i].customer.id,
+	 						"stanje" : stanje,
+	 						"datum" : value.data[i].date,
+	 						"ukupanIznos" : value.data[i].originalTotal,
+	 						"popusti" : popusti,
+	 						"artikli" : artikli,
+	 						"suma" : value.data[i].originalTotal,
+	 						"popust" : value.data[i].costInfos[0].discount,
+	 						"ukupnaSuma" : value.data[i].costInfos[0].total,
+	 						"iskorisceniBodovi": value.data[i].costInfos[0].spentPoints,
+	 						"steceniBodovi": value.data[i].costInfos[0].awardPoints	
+	 				};
 					
 					$scope.racuni.push(racun);
 				}
@@ -239,14 +239,14 @@ angular.module('sbzApp')
 		 				for (var j = 0; j < value.data[i].billItems.length; j++) {
 		 					var artiklIzJsona = value.data[i].billItems[j];
 		 					var artikl = {
-		 							"oznaka" : artiklIzJsona.item.id,
-		 							"naziv" : artiklIzJsona.item.name,
-		 							"kolicina" : artiklIzJsona.quantity,
-		 							"cena" : "?",
-		 							"originalnaCena" : artiklIzJsona.originalCost,
-		 							"popust" : artiklIzJsona.discountPercentage,
-		 							"ukupno" : artiklIzJsona.totalCost
-		 					};
+									"oznaka" : artiklIzJsona.item.id,
+									"naziv" : artiklIzJsona.item.name,
+									"kolicina" : artiklIzJsona.quantity,
+									"cena" :  artiklIzJsona.item.cost * artiklIzJsona.quantity,
+									"originalnaCena" : artiklIzJsona.originalCost,
+									"popust" : artiklIzJsona.discountPercentage,
+									"ukupno" : artiklIzJsona.totalCost
+								};
 						
 		 					artikli.push(artikl);
 		 				};
@@ -273,8 +273,8 @@ angular.module('sbzApp')
 		 						"ukupanIznos" : value.data[i].originalTotal,
 		 						"popusti" : popusti,
 		 						"artikli" : artikli,
-		 						"suma" : "?",
-		 						"popust" : value.data[i].costInfos.discount,
+		 						"suma" : value.data[i].originalTotal,
+		 						"popust" : value.data[i].costInfos[0].discount,
 		 						"ukupnaSuma" : value.data[i].costInfos[0].total,
 		 						"iskorisceniBodovi": value.data[i].costInfos[0].spentPoints,
 		 						"steceniBodovi": value.data[i].costInfos[0].awardPoints	
