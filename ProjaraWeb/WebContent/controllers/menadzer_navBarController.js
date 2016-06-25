@@ -30,7 +30,6 @@ angular.module('sbzApp')
 			
 			$scope.logout = function(){
 				$cookies.remove("menadzerID");
-				$cookies.remove("korisnik");
 				$location.path('/prijava');
 			};
 	}]);

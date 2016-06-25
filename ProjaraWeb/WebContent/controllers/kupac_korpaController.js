@@ -8,6 +8,8 @@ angular.module('sbzApp')
 	else{
 		$scope.korisnikID = $cookies.get("korisnikID");
 	}
+	
+	var user = $cookies.getObject("korisnik");
 
 	$scope.artikli = [];
 	$scope.zaUplatu = 0;
@@ -39,7 +41,7 @@ angular.module('sbzApp')
 			var generisiRacun = (function(){
 				var artikli = dobaviArtikle();
 				var racun = {
-						customerId: "1",
+						customerId: user.id,
 						items: artikli,
 						points: $scope.bodovi
 				};
@@ -47,7 +49,7 @@ angular.module('sbzApp')
 					method: "POST", 
 					url : "http://localhost:8080/ProjaraWeb/rest/bills/create",
 					data : racun,
-					header: "application/json"
+					headers: {'Content-Type': 'application/json'}
 				}).then(function(value) {
 					console.log(value);
 					$scope.kategorije = value.data;

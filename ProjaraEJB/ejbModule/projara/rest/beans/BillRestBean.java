@@ -75,7 +75,7 @@ public class BillRestBean implements BillRestApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public BillInfo makeBill(WebShopCartJson webShopCart) throws UserException,
 			BadArgumentsException, BillException, ItemException {
-
+		
 		authorization.checkRole("C", request.getSession());
 		
 		webShopCart.setCustomerId((int) request.getSession().getAttribute("userID"));
