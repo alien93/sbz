@@ -9,41 +9,40 @@
 	
 		<tbody>
 			<tr>
-				<table ng-repeat="artikal in artikli" class="table table-bordered">
+				<table ng-repeat="artikal in artikli track by $index" class="table table-bordered">
 					<thead>
 						<tr>
-							<th>Oznaka</th>
-							<th>Naziv</th>
-							<th>Opis</th>
+							<th colspan="6"><h3>{{artikal.item.name}}</h3></th>
+						</tr>
+						<tr ng-show="artikal.itemDiscounts.length > 0">
+							<th>Oznaka popusta</th>
+							<th colspan="2">Naziv</th>
+							<th colspan="2">Opis</th>
 							<th>Procenat</th>
-							<th>Artikal</th>
-							<th>&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>{{artikal.popust.oznaka}}</td>
-							<td>{{artikal.popust.naziv}}</td>
-							<td>{{artikal.popust.opis}}</td>
-							<td>{{artikal.popust.procenat}}%</td>
-							<td>{{artikal.naziv}}</td>
-							<td></td>
+						<tr ng-repeat="popust in artikal.itemDiscounts">
+							<td>{{popust.id}}</td>
+							<td colspan="2">{{popust.name}}</td>
+							<td colspan="2">{{popust.type == "A" | iif : "Dodatni popust" : "Osnovni popust"}}</td>
+							<td>{{popust.percentage}}%</td>
 						</tr>
 						<tr>
 							<th>Jedinična cena:</th>
-							<td></td>
+							<td>{{artikal.item.cost}} RSD</td>
 							<th>Ukupan popust:</th>
-							<td></td>
+							<td>{{ukupanPopust[$index]}}%</td>
 							<th>Cena bez popusta:</th>
-							<td></td>
+							<td>{{artikal.originalCost}}</td>
 						</tr>
 						<tr>
 							<th>Količina:</th>
-							<td></td>
+							<td>{{artikal.quantity}}</td>
 							<th>Ostvaren popust:</th>
-							<td></td>
+							<td>{{artikal.discountPercentage}}%</td>
 							<th>Cena sa popustom:</th>
-							<td></td>
+							<td>{{artikal.totalCost}}</td>
 						</tr>
 					</tbody>
 				</table>
