@@ -59,10 +59,16 @@ angular.module('sbzApp')
 					var role = $scope.user.role;
 					var roleCopy = role;
 					
+					console.log($scope.roles[0]);
+					console.log($scope.roles[1]);
+					console.log($scope.roles[2]);
+					console.log(role);
+
+					
 					switch(role){
 					case ($scope.roles[0]): role="C"; break;
-					case ($scope.roles[1]) : role="M"; break;
-					case ($scope.roles[2]) : role="V"; break;
+					case ($scope.roles[1]) : role="V"; break;
+					case ($scope.roles[2]) : role="M"; break;
 					default: role="C";
 					}
 					
@@ -71,6 +77,7 @@ angular.module('sbzApp')
 							"password":password,
 							"role": role
 					};
+					console.log(user);
 					$http({
 						method: "POST", 
 						url : "http://localhost:8080/ProjaraWeb/rest/user/login",
@@ -98,7 +105,7 @@ angular.module('sbzApp')
 								}
 								else{
 									$cookies.remove("korisnik");
-									$cookies.put("korisnik", value.data);
+									$cookies.putObject("korisnik", value.data);
 								}
 								$scope.prikaziKupacMeni();
 							}

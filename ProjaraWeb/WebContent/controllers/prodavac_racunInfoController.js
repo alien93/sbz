@@ -10,7 +10,7 @@ angular.module('sbzApp')
 				$scope.user.username = $cookies.get("prodavacID");
 			};
 		
-			if ($rootScope.user.role != "PRODAVAC") {
+			if ($rootScope.user.role != "V") {
 				$location.path('/prijava');
 			};	
 		
