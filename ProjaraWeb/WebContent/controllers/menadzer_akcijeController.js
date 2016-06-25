@@ -2,7 +2,7 @@ angular.module('sbzApp')
 	.controller('menadzer_akcijeController', ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$filter',
 	        function($location, $rootScope, $scope, $http, $uibModal, $filter){
 		
-		if ($rootScope.user.role != "MENADZER") {
+		if ($rootScope.user.role != "M") {
 			$location.path('/prijava');
 		};	
 		

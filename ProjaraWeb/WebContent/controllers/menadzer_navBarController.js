@@ -29,7 +29,8 @@ angular.module('sbzApp')
 			};
 			
 			$scope.logout = function(){
-				$rootScope.user = null;
-				$location.path("/prijava");
+				$cookies.remove("menadzerID");
+				$cookies.remove("korisnik");
+				$location.path('/prijava');
 			};
 	}]);
