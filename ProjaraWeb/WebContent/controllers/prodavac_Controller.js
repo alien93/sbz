@@ -1,6 +1,13 @@
 angular.module('sbzApp')
-	.controller('prodavac_Controller', ['$rootScope', '$scope', '$location', '$http', '$uibModal', 
-		function($rootScope, $scope, $location, $http, $uibModal){
+	.controller('prodavac_Controller', ['$rootScope', '$scope', '$location', '$http', '$uibModal', '$cookies', 
+		function($rootScope, $scope, $location, $http, $uibModal, $cookies){
+		
+			if($cookies.get("prodavacID") == undefined){
+				$location.path('/prijava');
+			}
+			else{
+				$scope.user.username = $cookies.get("prodavacID");
+			};
 		
 			if ($rootScope.user.role != "PRODAVAC") {
 				$location.path('/prijava');
