@@ -67,6 +67,29 @@ angular.module('sbzApp')
 			      }
 			});
 		};
+		
+		$scope.addCustomers = function(cat){
+			$http({
+				url : "http://localhost:8080/ProjaraWeb/rest/customerCategory/allCustomers",
+				method : "get"
+			}).then(function(result){
+				$uibModal.open({
+					  animation: false,
+					  templateUrl : "views/menadzer_addCatCustomer.html",
+					  controller: 'menadzer_addCustomerController',
+				      resolve: {
+				    	  customers : function(){
+				    		  return result.data;
+				    	  },
+				    	  cat : function(){
+				    		  return cat;
+				    	  }
+				      }
+				});
+			}, function(err){
+				console.log(JSON.stringify(err));
+			});
+		};
 	}])
 	
 	.controller('menadzer_newCustomerController', ['$scope', '$uibModalInstance', 'modify', 'cat', 'parentScope', '$http',
@@ -137,4 +160,58 @@ angular.module('sbzApp')
 				alert(JSON.stringify(err));
 			});
 		};
+	}])
+	
+	.controller('menadzer_addCustomerController', ['$scope', 'customers', '$uibModalInstance', 'cat', '$http',
+	        function($scope, customers, $uibModalInstance, cat, $http){
+		
+		$scope.customers = customers;
+		$scope.category = cat;
+		$scope.pom = {};
+		
+		for(var i = 0; i < $scope.customers.length; i++){
+			var assignCategory = false;
+			if(($scope.customers[i].category)){
+				assignCategory = ($scope.customers[i].category.code == $scope.category.categoryCode);
+			}
+			$scope.pom[$scope.customers[i].username] = {"oldCat":$scope.customers[i].category, "newCat":null, 
+														"assignCat":assignCategory};
+		}
+		
+		$scope.changeCat = function(cat){
+			if($scope.pom[cat.username].assignCat){
+				$scope.pom[cat.username].newCat = $scope.category;
+				cat.category = $scope.pom[cat.username].newCat;
+			}else{
+				$scope.pom[cat.username].newCat = null;
+				cat.category = $scope.pom[cat.username].oldCat;
+				if(cat.category.code == $scope.category.categoryCode){
+					cat.category = {"code":"_", "name":""};
+				}
+			}
+			
+			//alert(JSON.stringify($scope.pom[cat.username]));
+		};
+		
+		$scope.ok = function(){
+			for(var i = 0; i < $scope.customers.length; i++){
+				
+				var catCode = !$scope.customers[i].category ? "_" : (!$scope.customers[i].category.categoryCode ? $scope.customers[i].category.code : $scope.customers[i].category.categoryCode);
+				$http({
+					url : "http://localhost:8080/ProjaraWeb/rest/customerCategory/setCustomerCategory/" + 
+					catCode + "/" + $scope.customers[i].id,
+					method : "get"
+				}).then(function(result){
+					console.log(result.data.msg);
+				}, function(err){
+					console.log(JSON.stringify(err));
+				});
+			}
+			$uibModalInstance.close();
+		};
+		
+		$scope.cancel = function(){
+			$uibModalInstance.close();
+		};
+		
 	}]);

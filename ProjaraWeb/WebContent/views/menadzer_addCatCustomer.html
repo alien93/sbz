@@ -1,0 +1,31 @@
+<meta charset="UTF-8">
+<div>
+	<div class="modal-header">
+		<b> Dodeljivanje kategorije kupcima </b>
+	</div>
+	
+	<div class='modal-body'>
+		<table class='table table-bordered'>
+			<tr> 
+				<th> Korisničko ime </th>
+				<th> Ime </th>
+				<th> Prezime </th>
+				<th> Trenutna kategorija </th>
+				<th> Dodeli kategoriju </th>
+			</tr>
+			<tr data-ng-repeat="c in customers">
+				<td> {{c.username}}</td>
+				<td> {{c.firstName}}</td>
+				<td> {{c.lastName}}</td>
+				<td> {{c.category.name}}</td>
+				<td> <input type='checkbox' data-ng-model='pom[c.username].assignCat'  
+				data-ng-click='changeCat(c)' class='form-control'/> </td>
+			</tr>
+		</table>
+	</div>
+	
+	<div class="modal-footer">
+		<button class='btn btn-primary' data-ng-click="ok()"> Potvrda </button>
+		<button class='btn btn-warning' data-ng-click="cancel()">Odustani</button>
+	</div>
+</div>

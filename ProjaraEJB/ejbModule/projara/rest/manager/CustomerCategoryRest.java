@@ -17,8 +17,17 @@ import javax.ws.rs.core.MediaType;
 
 import projara.model.dao.interfaces.CustomerCategoryDaoLocal;
 import projara.model.dao.interfaces.ThresholdDaoLocal;
+import projara.model.dao.interfaces.UserDaoLocal;
+import projara.model.users.Customer;
 import projara.model.users.CustomerCategory;
 import projara.model.users.Threshold;
+import projara.model.users.User;
+import projara.session.interfaces.UserManagerLocal;
+import projara.util.exception.BadArgumentsException;
+import projara.util.exception.CustomerCategoryException;
+import projara.util.exception.UserException;
+import projara.util.json.view.CustomerCategoryBasicInfo;
+import projara.util.json.view.UserProfileInfoJson;
 
 @Path("/customerCategory")
 @Stateless
@@ -33,6 +42,12 @@ public class CustomerCategoryRest implements CustomerCategoryRestLocal{
 	
 	@EJB
 	private ThresholdDaoLocal thresholdDao;
+	
+	@EJB
+	private UserDaoLocal userDao;
+	
+	@EJB
+	private UserManagerLocal userManager;
 	
 	@POST
 	@Path("/add/{type}")
@@ -122,5 +137,47 @@ public class CustomerCategoryRest implements CustomerCategoryRestLocal{
 		}
 		CustomerCategoryJson newCat = new CustomerCategoryJson(c.getCategoryCode(), c.getName(), thresholds);
 		return newCat;
+	}
+	
+	@GET
+	@Path("/allCustomers")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public List<UserProfileInfoJson> getAllCustomers() {
+		List<UserProfileInfoJson> ret = new ArrayList<>();
+		List<User> users = userDao.getCustomers();
+		
+		for(User u : users){
+			Customer c = (Customer)u;
+			UserProfileInfoJson cJson = new UserProfileInfoJson(c.getUsername(), c.getPassword(), c.getAddress(), c.getId(),
+					c.getFirstName(), c.getLastName(), c.getRole(), c.getRegisteredOn(), c.getPoints());
+			if(c.getCategory() != null)
+				cJson.setCategory(new CustomerCategoryBasicInfo(
+						c.getCategory().getCategoryCode(), c.getCategory().getName()));
+			ret.add(cJson);
+		}
+		return ret;
+	}
+	
+	@GET
+	@Path("/setCustomerCategory/{cat}/{cust}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public RestMsg addCustomerToCat(@PathParam("cat") String categoryId, 
+			@PathParam("cust") int customerId) {
+		try {
+			Customer c = (Customer)userDao.findById(customerId);
+			if("_".equals(categoryId)){
+				c.setCategoryNull();
+				userDao.merge(c);
+			}else{
+				CustomerCategory cat = customerCategoryDao.findById(categoryId);
+				c.setCategory(cat);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RestMsg("Greska na serveru", null);
+		}
+		return new RestMsg("OK", null);
 	}
 }

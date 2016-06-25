@@ -1,5 +1,5 @@
 <!--<div data-ng-include="'views/menadzer_navBar.html'"></div>-->
-
+<meta charset="UTF-8">
 <div data-ng-controller="menadzer_kategorijeKupacaController">
 	
 	<div style='margin-left: 20%;margin-right: 20%;margin-bottom: 10%'>
@@ -7,19 +7,37 @@
 			<table class='table table-bordered'>
 				<thead>
 					<tr>
-						<th colspan="2"> Kategorije kupaca </th>
+						<th colspan="4"> Kategorije kupaca </th>
 						<th style='text-align: center;'> <button class='btn btn-primary' data-ng-click="addCategory()"> Kreiraj novu </button> </th>
 					</tr>
 					<tr>
 						<th> Oznaka </th>
 						<th> Naziv </th>
-						<th colspan='2'> </th>
+						<th> Pragovi potrošnje </th> 
+						<th> </th>
+						<th> </th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr data-ng-repeat="cat in kategorijeKupaca track by $index">
 						<td> {{cat.categoryCode}} </td>
 						<td> {{cat.name}} </td>
+						<td>
+							<table class='table'>
+								<tr>
+									<th> Od </th>
+									<th> Do </th>
+									<th> Procenat </th>
+								</tr>
+								<tr data-ng-repeat="p in cat.thresholds track by $index">
+								<td> {{p.from}} </td>
+								<td> {{p.to}} </td>
+								<td> {{p.percentage}} </td>
+								</tr>
+							</span>
+							</table>
+						</td>
+						<td style='text-align: center;'> <button class='btn btn-primary' data-ng-click="addCustomers(cat)"> Dodaj kupce </button></td>
 						<!--  <td> <button class='btn btn-primary' ng-click="deleteCategory(cat.categoryCode)">Delete</button> </td>-->
 						<td style='text-align: center;'> <button class='btn btn-primary' data-ng-click="modifyCategory(cat)"> Izmena </button></td>
 					</tr>

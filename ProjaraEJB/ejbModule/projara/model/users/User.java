@@ -31,6 +31,8 @@ import projara.model.items.ItemCategory;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "USR_ROLE")
 @NamedQueries({
+		@NamedQuery(name = "findCustomers", query = "SELECT u FROM User u WHERE"
+			+ " u.role LIKE :role"),
 		@NamedQuery(name = "findByUsername", query = "SELECT u FROM User u WHERE"
 				+ " u.username LIKE :username"),
 		@NamedQuery(name = "findByUsernameAndPassword", query = "SELECT u FROM User u WHERE"

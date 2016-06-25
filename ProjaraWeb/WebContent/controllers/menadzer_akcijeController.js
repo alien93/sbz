@@ -97,7 +97,7 @@ angular.module('sbzApp')
 	.controller('menadzer_newActionController', ['$scope', '$uibModalInstance', '$http', 'parentScope', 'action', 'modify', 'categories',
 	        function($scope, $uibModalInstance, $http, parentScope, action, modify, categories){
 		
-		$scope.headerMsg = modify ? "Izmena akcije: " + action.name : "Dodavanje nove akcije";
+		$scope.headerMsg = modify ? "Izmena akcije: " + action.info.name : "Dodavanje nove akcije";
 		$scope.errorMsg = "";
 		
 		$scope.selectedCategory = {};
