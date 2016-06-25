@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies', '$http',
-                                                 function($scope, $location, $cookies, $http){
+.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies', '$http', '$timeout',
+                                                 function($scope, $location, $cookies, $http, $timeout){
 
 	//proveri da li je korisnik vec prijavljen
 	if($cookies.get("korisnikID") == undefined){
@@ -9,9 +9,14 @@ angular.module('sbzApp')
 	else{
 		$scope.korisnikID = $cookies.get("korisnikID");
 	}
+	
+	$scope.uspesno = "";
 
 	//dobavi izvestaj racuna
-	var izvestaj = $cookies.getObject("izvestajRacuna");
+	if($cookies.getObject("izvestajRacuna") != undefined)
+		var izvestaj = $cookies.getObject("izvestajRacuna");
+	else
+		$location.path("/kupac/korpa");
 	console.log("izvestaj");
 	console.log(izvestaj);
 	$scope.izvestaj = izvestaj.data;
@@ -53,6 +58,11 @@ angular.module('sbzApp')
 				headers: {'Content-Type': 'application/json'}
 			}).then(function(value) {
 				if(value.statusText == "OK"){
+					$cookies.remove("korpa");
+					$cookies.remove("izvestajRacuna");
+					$timeout(function() {
+						$scope.uspesno = "Uspešno ste naručili artikle. Stanje Vašeg računa možete pratiti u istoriji kupovina.";
+					}, 1500);
 				}
 				else{
 					$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
@@ -69,6 +79,11 @@ angular.module('sbzApp')
 				headers: {'Content-Type': 'application/json'}
 			}).then(function(value) {
 				if(value.statusText == "OK"){
+					$cookies.remove("korpa");
+					$cookies.remove("izvestajRacuna");
+					$timeout(function() {
+						$scope.uspesno = "Uspešno ste naručili artikle. Stanje Vašeg računa možete pratiti u istoriji kupovina.";
+					}, 1500);
 				}
 				else{
 					$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
@@ -77,8 +92,35 @@ angular.module('sbzApp')
 				$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
 			});
 			break;
-		}
-		$location.path("/kupac");
+		} 
+		$timeout(function() {
+			$location.path("/kupac");
+	     }, 1500);
 	}
 
+	$scope.povratakNaKorpu = function(){
+		$location.path("/kupac/korpa");
+	}
+	
+	$scope.otkaziKupovinu = function(){
+		$cookies.remove("korpa");
+		$cookies.remove("izvestajRacuna");
+		
+		//ukloni podatke o zapocetom racunu
+		$http({
+			method: "POST", 
+			url : "http://localhost:8080/ProjaraWeb/rest/bills/reject/" + $scope.izvestaj.billId,
+		}).then(function(value) {
+			if(value.statusText == "OK"){
+			}
+			else{
+				$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+			}
+		},function(reason){
+			$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+		});
+		
+		$location.path("/kupac");
+	}
+	
 }]);

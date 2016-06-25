@@ -11,6 +11,17 @@
 				</div>
 				<div class="col-md-4"> &nbsp; </div>
 			</div>
+			
+			<!-- Success message -->
+			<div class="row">
+				<div class="col-md-offset-4 col-md-4">
+					<div class="alert alert-success" role="alert" ng-show="uspesno">
+		            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		            	{{uspesno}}
+		        	</div>
+				</div>
+				<div class="col-md-4"> &nbsp; </div>
+			</div>
 	
 	
 	<div class="row">
@@ -49,7 +60,7 @@
 							<th>Ukupan popust:</th>
 							<td>{{ukupanPopust[$index]}}%</td>
 							<th>Cena bez popusta:</th>
-							<td>{{artikal.originalCost}}</td>
+							<td>{{artikal.originalCost}} RSD</td>
 						</tr>
 						<tr>
 							<th>Količina:</th>
@@ -57,7 +68,7 @@
 							<th>Ostvaren popust:</th>
 							<td>{{artikal.discountPercentage}}%</td>
 							<th>Cena sa popustom:</th>
-							<td>{{artikal.totalCost}}</td>
+							<td>{{artikal.totalCost}} RSD</td>
 						</tr>
 					</tbody>
 				</table>
@@ -95,7 +106,7 @@
 			</thead>
 				<tr>
 					<td>Ukupna cena računa:</th>
-					<td>{{izvestaj.originalTotal}}</td>
+					<td>{{izvestaj.originalTotal}} RSD</td>
 				</tr>
 				<tr>
 					<td>Procenat umanjenja:</th>
@@ -103,7 +114,7 @@
 				</tr>
 				<tr>
 					<td>Plaćena cena:</th>
-					<td>{{izvestaj.costInfos[0].total}}</td>
+					<td>{{izvestaj.costInfos[0].total}} RSD</td>
 				</tr>
 				<tr>
 					<td>Broj potrošenih nagradnih bodova:</th>
@@ -129,7 +140,7 @@
 			</thead>
 				<tr>
 					<td>Ukupna cena računa:</th>
-					<td>{{izvestaj.originalTotal}}</td>
+					<td>{{izvestaj.originalTotal}} RSD</td>
 				</tr>
 				<tr>
 					<td>Procenat umanjenja:</th>
@@ -137,7 +148,7 @@
 				</tr>
 				<tr>
 					<td>Plaćena cena:</th>
-					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].total : izvestaj.costInfos[1].total}}</td>
+					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].total : izvestaj.costInfos[1].total}} RSD</td>
 				</tr>
 				<tr>
 					<td>Broj potrošenih nagradnih bodova:</th>

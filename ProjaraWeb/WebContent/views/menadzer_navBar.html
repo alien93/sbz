@@ -11,7 +11,10 @@
                 <li><a href ng-click="artikli()" >Kategorije artikala</a></li>
                 <li><a href ng-click="akcije()" >Akcije</a></li>
             </ul>
-            <p class="navbar-text navbar-right"><a href ng-click="logout()">Odjavi se</a></p>
+            <ul class="nav navbar-nav navbar-right">
+            	<li> <a href ng-click="menadzerInfo()">{{menadzerID}}</a> </li>
+            	<li> <a href ng-click="logout()">Odjavi se</a> </li>
+            </ul>
         </div>
     </div>
 </nav>

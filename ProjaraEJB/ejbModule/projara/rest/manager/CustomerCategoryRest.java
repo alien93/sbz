@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.persistence.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -179,5 +180,31 @@ public class CustomerCategoryRest implements CustomerCategoryRestLocal{
 			return new RestMsg("Greska na serveru", null);
 		}
 		return new RestMsg("OK", null);
+	}
+
+	@GET	
+	@Path("/getUser/{username}/{password}/{firstName}/{lastName}/{save}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public UserProfileInfoJson getUser(@PathParam("username") String username, 
+									   @PathParam("password") String password,
+									   @PathParam("firstName") String firstName, 
+									   @PathParam("lastName") String lastName, 
+									   @PathParam("save") boolean save) {
+		UserProfileInfoJson retUser = null;
+		try {
+			User user = userDao.findByUsername(username);
+			if(save){ 
+				user.setFirstName(firstName);
+				user.setPassword(password);
+				user.setLastName(lastName);
+				user = userDao.merge(user);
+			}
+			retUser = userManager.transformToJson(user);
+		} catch (BadArgumentsException | UserException e) {
+			e.printStackTrace();
+		}
+		
+		return retUser;
 	}
 }

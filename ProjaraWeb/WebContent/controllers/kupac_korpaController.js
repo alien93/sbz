@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$timeout', '$http', '$cookies',
-                                      function($scope, $location, $cookies, $timeout, $http, $cookies){
+.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$http', '$cookies',
+                                      function($scope, $location, $cookies, $http, $cookies){
 
 	if($cookies.get("korisnikID") == undefined){
 		$location.path('/prijava');
@@ -49,7 +49,12 @@ angular.module('sbzApp')
 					headers: {'Content-Type': 'application/json'}
 				}).then(function(value) {
 					if(value.statusText == "OK"){
+						console.log("setujem izvestaj racuna...");
 						$cookies.putObject("izvestajRacuna", value);
+						console.log($cookies.getObject("izvestajRacuna"));
+						//pokupi zeljeni broj bodova
+						$cookies.put("bodovi", $scope.bodovi);
+						$location.path("/kupac/korpa/popusti");
 					}
 					else{
 						$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
@@ -58,9 +63,6 @@ angular.module('sbzApp')
 					$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
 				});
 			}());
-			//pokupi zeljeni broj bodova
-			$cookies.put("bodovi", $scope.bodovi);
-			$location.path("/kupac/korpa/popusti");
 		}
 	}
 
