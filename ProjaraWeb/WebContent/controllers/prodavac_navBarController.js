@@ -21,6 +21,8 @@ angular.module('sbzApp')
 			};	
 		
 			$scope.odjava = function(){
+				$cookies.remove("prodavacID");
+				$cookies.remove("prodavac");
 				$location.path('/prijava');
 			};				
 		}
