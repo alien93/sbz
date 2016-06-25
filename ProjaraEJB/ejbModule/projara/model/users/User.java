@@ -34,7 +34,7 @@ import projara.model.items.ItemCategory;
 		@NamedQuery(name = "findByUsername", query = "SELECT u FROM User u WHERE"
 				+ " u.username LIKE :username"),
 		@NamedQuery(name = "findByUsernameAndPassword", query = "SELECT u FROM User u WHERE"
-				+ " u.username LIKE :username AND u.password LIKE :password"),
+				+ " u.username LIKE :username AND u.password LIKE :password AND u.role LIKE :role"),
 		@NamedQuery(name = "singleFieldQuery", query = "SELECT u FROM User u WHERE "
 				+ "(UPPER(u.username) LIKE :text OR UPPER(u.firstName) LIKE :text OR UPPER(u.lastName) LIKE :text) "
 				+ "AND UPPER(u.role) LIKE :role")

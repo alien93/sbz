@@ -233,11 +233,11 @@ public class TestRestBean implements TestRest {
 	@Path("/test/login")
 	@POST
 	public Response testLogin(@FormParam("username") String username,
-			@FormParam("password") String password) {
-		System.out.println("Username :" + username + " Password :" + password);
+			@FormParam("password") String password, @FormParam("role") String role) {
+		System.out.println("Username :" + username + " Password :" + password + "Role: " + role);
 		User u = null;
 		try {
-			u = userManager.login(username, password);
+			u = userManager.login(username, password, role);
 		} catch (Exception e) {
 			return Response.status(400).entity(e.getMessage()).build();
 		}
@@ -449,6 +449,12 @@ public class TestRestBean implements TestRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ItemCategoryJson> getAllCategories(){
 		return itemManager.getTree();
+	}
+
+	@Override
+	public Response testLogin(String username, String password) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

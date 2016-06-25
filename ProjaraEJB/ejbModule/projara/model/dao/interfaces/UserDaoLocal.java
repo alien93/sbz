@@ -8,6 +8,6 @@ import projara.util.exception.BadArgumentsException;
 public interface UserDaoLocal extends GenericDaoLocal<User, Integer> {
 	
 	public User findByUsername(String username) throws  BadArgumentsException;
-	public User findByUsernameAndPassword(String username,String password) throws BadArgumentsException;
+	public User findByUsernameAndPassword(String username,String password, String role) throws BadArgumentsException;
 	public List<User> singleFieldQuery(String text,String role);
 }

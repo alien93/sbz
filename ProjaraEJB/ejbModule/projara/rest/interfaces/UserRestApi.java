@@ -19,7 +19,7 @@ public interface UserRestApi {
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserProfileInfoJson login(@FormParam("username") String username,
-			@FormParam("password") String password) throws UserException, BadArgumentsException;
+			@FormParam("password") String password, @FormParam("role")String role) throws UserException, BadArgumentsException;
 
 	@POST
 	@Path("/register")
