@@ -1,7 +1,10 @@
 angular.module('sbzApp')
-	.controller('menadzer_akcijeController', ['$rootScope', '$scope', '$http', '$uibModal', '$filter',
-	        function($rootScope, $scope, $http, $uibModal, $filter){
+	.controller('menadzer_akcijeController', ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$filter',
+	        function($location, $rootScope, $scope, $http, $uibModal, $filter){
 		
+		if ($rootScope.user.role != "MENADZER") {
+			$location.path('/prijava');
+		};	
 		
 		$scope.akcije = [];/*{id:1, name:"Novogodisnja akcija", from:new Date(), until:new Date(), discount:20, 
 						categories: [{code:"code1", name:"name1", maxDiscount:20, parentCategory:null},
@@ -95,6 +98,8 @@ angular.module('sbzApp')
 	        function($scope, $uibModalInstance, $http, parentScope, action, modify, categories){
 		
 		$scope.headerMsg = modify ? "Izmena akcije: " + action.name : "Dodavanje nove akcije";
+		$scope.errorMsg = "";
+		
 		$scope.selectedCategory = {};
 		$scope.categories = categories;
 		
@@ -161,6 +166,13 @@ angular.module('sbzApp')
 		};
 		
 		$scope.ok = function(){
+			if($scope.newAction.info.until <= $scope.newAction.info.from){
+				$scope.errorMsg = "Neispravan datum za zavrsetak akcije.";
+				return;
+			}else if($scope.newAction.info.dicount < 0 || $scope.newAction.info.dicount > 100){
+				$scope.errorMsg = "Neispravna vrednost za popust.";
+				return;
+			}
 			$http({
 				url : "http://localhost:8080/ProjaraWeb/rest/actionEvent/add/" + (modify ? "modify" : "add"),
 				method : "post", 

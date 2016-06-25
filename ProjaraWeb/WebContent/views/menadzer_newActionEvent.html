@@ -6,19 +6,20 @@
 	
 	<form name='f1' data-ng-submit="ok()">
 	<div class='modal-body'>
-			 <input type='text' class='form-control' data-ng-model='newAction.info.name'  placeholder='Name' required/>
+			<p style='color: red;'> {{errorMsg}} </p>
+			 <input type='text' class='form-control' data-ng-model='newAction.info.name'  placeholder='Naziv' required/>
 			 <br/>
-			 From: <br/> 
+			 <b> Traje od: </b> <br/> 
 			 <input type='date' min="{{parentScope.filterDate(minDate)}}" class='form-control' data-ng-model='newAction.info.from' required/>
 			 <br/>
-			 To: <br/> 
+			 <b> Traje do: </b> <br/> 
 			 <input type='date' min="{{parentScope.filterDate(minDate)}}" class='form-control' data-ng-model='newAction.info.until' required/>
 			 <br/>
-			 <input type='number' min=0 class='form-control' data-ng-model='newAction.info.dicount'  placeholder='Discount' required/>
+			 <input type='number' min=0 class='form-control' data-ng-model='newAction.info.dicount'  placeholder='Popust' required/>
 			 <br/>
 			 <table class='table'>
 			 	<tr>
-			 		<td> <input type='text' data-ng-disabled='true' data-ng-model='selectedCategory' class='form-control' placeholder='Id'/> </td>
+			 		<td> <input type='text' data-ng-disabled='true' data-ng-model='selectedCategory' class='form-control' placeholder='Oznaka'/> </td>
 			 		<td colspan='2'>
 			 			<select class='form-control' data-ng-model='selectedCategory'>
 			 				<option data-ng-repeat='cat in categories' value='{{cat.code}}'>
@@ -29,8 +30,8 @@
 			 		<td> <input data-ng-click='addCat()' type='button' value='+' class='btn btn-primary'/> </td>
 			 	</tr>
 			 	<tr>
-			 		<th> Id </th>
-			 		<th colspan='3'> Name </th>
+			 		<th> Oznaka </th>
+			 		<th colspan='3'> Naziv </th>
 			 	</tr>
 			 	<tr data-ng-repeat="cat in newAction.categories">
 			 		<td> {{cat.code}} </td>
@@ -41,8 +42,8 @@
 	</div>
 	
 	<div class="modal-footer">
-		<input type='submit' value='Ok' class='btn btn-primary'/>
-		<button class='btn btn-warning' data-ng-click="cancel()">Cancel</button>
+		<input type='submit' value='Potvrda' class='btn btn-primary'/>
+		<button class='btn btn-warning' data-ng-click="cancel()">Odustani</button>
 	</div>
 	</form>
 </div>

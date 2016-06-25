@@ -2,17 +2,17 @@
 
 <div data-ng-controller="menadzer_kategorijeKupacaController">
 	
-	<div style='margin-left: 20%;margin-right: 20%'>
+	<div style='margin-left: 20%;margin-right: 20%;margin-bottom: 10%'>
 		<div class='table-responsive'>
 			<table class='table table-bordered'>
 				<thead>
 					<tr>
 						<th colspan="2"> Kategorije kupaca </th>
-						<th style='text-align: center;'> <button class='btn btn-primary' data-ng-click="addCategory()"> Add </button> </th>
+						<th style='text-align: center;'> <button class='btn btn-primary' data-ng-click="addCategory()"> Kreiraj novu </button> </th>
 					</tr>
 					<tr>
-						<th> ID </th>
-						<th> Name </th>
+						<th> Oznaka </th>
+						<th> Naziv </th>
 						<th colspan='2'> </th>
 					</tr>
 				</thead>
@@ -21,7 +21,7 @@
 						<td> {{cat.categoryCode}} </td>
 						<td> {{cat.name}} </td>
 						<!--  <td> <button class='btn btn-primary' ng-click="deleteCategory(cat.categoryCode)">Delete</button> </td>-->
-						<td style='text-align: center;'> <button class='btn btn-primary' data-ng-click="modifyCategory(cat)"> Modify </button></td>
+						<td style='text-align: center;'> <button class='btn btn-primary' data-ng-click="modifyCategory(cat)"> Izmena </button></td>
 					</tr>
 				</tbody>
 			</table>

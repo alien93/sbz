@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('menadzer_kategorijeKupacaController', ['$rootScope', '$scope', '$uibModal', '$http',
-			function($rootScope, $scope, $uibModal, $http){
+	.controller('menadzer_kategorijeKupacaController', ['$location', '$rootScope', '$scope', '$uibModal', '$http',
+			function($location, $rootScope, $scope, $uibModal, $http){
 		
 		if ($rootScope.user.role != "MENADZER") {
 			$location.path('/prijava');

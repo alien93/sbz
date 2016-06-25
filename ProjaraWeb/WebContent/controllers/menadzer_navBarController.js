@@ -2,8 +2,8 @@
  * 
  */
 angular.module('sbzApp')
-	.controller('menadzer_navBarController', ['$scope', '$location',
-			function($scope, $location){
+	.controller('menadzer_navBarController', ['$rootScope', '$scope', '$location',
+			function($rootScope, $scope, $location){
 			
 			$scope.kupci = function(){
 				$location.path('/menadzer/kupci');
@@ -17,5 +17,10 @@ angular.module('sbzApp')
 			
 			$scope.akcije = function(){
 				$location.path('/menadzer/akcije');
+			};
+			
+			$scope.logout = function(){
+				$rootScope.user = null;
+				$location.path("/prijava");
 			};
 	}]);

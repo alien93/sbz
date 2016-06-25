@@ -1,6 +1,10 @@
 angular.module('sbzApp')
-	.controller('menadzer_kategorijeArtikalaController', ['$rootScope', '$scope', '$uibModal', '$http',
-	      function($rootScope, $scope, $uibModal, $http){
+	.controller('menadzer_kategorijeArtikalaController', ['$location', '$rootScope', '$scope', '$uibModal', '$http',
+	      function($location, $rootScope, $scope, $uibModal, $http){
+		
+		if ($rootScope.user.role != "MENADZER") {
+			$location.path('/prijava');
+		};	
 		
 		$scope.kategorijeArtikala = [];/*[{code:"code1", name:"name1", maxDiscount:20, parentCategory:null},
 									 {code:"code2", name:"name2", maxDiscount:30, parentCategory:"code1"}];*/

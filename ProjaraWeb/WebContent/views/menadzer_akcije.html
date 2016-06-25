@@ -2,21 +2,21 @@
 
 <div data-ng-controller="menadzer_akcijeController">
 	
-	<div style='margin-left: 20%;margin-right: 20%'>
+	<div style='margin-left: 20%;margin-right: 20%;margin-bottom: 10%'>
 		<div class='table-responsive'>
 			<table class='table table-bordered'>
 				<thead>
 					<tr>
 						<th colspan="6"> Akcije </th>
-						<th> <button class='btn btn-primary' data-ng-click="addAction()"> Add </button> </th>
+						<th style='text-align: center;'> <button class='btn btn-primary' data-ng-click="addAction()"> Kreiraj novu </button> </th>
 					</tr>
 					<tr>
-						<th> ID </th>
-						<th> Name </th>
-						<th> From </th>
-						<th> To </th>
-						<th> Discount </th>
-						<th> Categories</th>
+						<th> Oznaka </th>
+						<th> Naziv </th>
+						<th> Traje od </th>
+						<th> Traje do </th>
+						<th> Popust </th>
+						<th> Kategorije na popustu</th>
 						<th colspan='2'> </th>
 					</tr>
 				</thead>
@@ -33,7 +33,7 @@
 							</span>
 						</td>
 						<!--  <td> <button class='btn btn-primary' data-ng-click="deleteAction(a.code)">Delete</button> </td>-->
-						<td> <button class='btn btn-primary' data-ng-click="modifyAction(a)"> Modify </button></td>
+						<td style='text-align: center;'> <button class='btn btn-primary' data-ng-click="modifyAction(a)"> Izmena </button></td>
 					</tr>
 				</tbody>
 			</table>
