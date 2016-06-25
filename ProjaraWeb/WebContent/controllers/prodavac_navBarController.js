@@ -2,10 +2,16 @@
  * 
  */
 angular.module('sbzApp')
-	.controller('prodavac_navBarController', ['$rootScope', '$scope', '$location',
-		function($rootScope, $scope, $location){
-		   $scope.user.username = $rootScope.user.username;
-			
+	.controller('prodavac_navBarController', ['$rootScope', '$scope', '$location', '$cookies',
+		function($rootScope, $scope, $location, $cookies){
+		
+			if($cookies.get("prodavacID") == undefined){
+				$location.path('/prijava');
+			}
+			else{
+				$scope.user.username = $cookies.get("prodavacID");
+			}
+					
 		   	$scope.racuni = function(){
 				$location.path('/prodavac');
 			};
@@ -15,6 +21,7 @@ angular.module('sbzApp')
 			};	
 		
 			$scope.odjava = function(){
+				$cookies.remove("prodavacID");
 				$location.path('/prijava');
 			};				
 		}

@@ -38,11 +38,12 @@ public class UserDaoBean extends GenericDaoBean<User, Integer>
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public User findByUsernameAndPassword(String username, String password)
+	public User findByUsernameAndPassword(String username, String password, String role)
 			throws  BadArgumentsException {
 		Query q = em.createNamedQuery("findByUsernameAndPassword");
 		q.setParameter("username", username);
 		q.setParameter("password", password);
+		q.setParameter("role", role);
 		
 		User result = null;
 		

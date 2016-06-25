@@ -1,8 +1,15 @@
 angular.module('sbzApp')
-	.controller('prodavac_narudzbeController', ['$rootScope', '$scope', '$location', '$http',
-		function($rootScope, $scope, $location, $http){
+	.controller('prodavac_narudzbeController', ['$rootScope', '$scope', '$location', '$http', '$cookies',
+		function($rootScope, $scope, $location, $http, $cookies){
+			
+			if($cookies.get("prodavacID") == undefined){
+				$location.path('/prijava');
+			}
+			else{
+				$scope.user.username = $cookies.get("prodavacID");
+			};
 		
-			if ($rootScope.user.role != "PRODAVAC") {
+			if ($rootScope.user.role != "V") {
 				$location.path('/prijava');
 			};	
 		 	

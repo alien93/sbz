@@ -99,6 +99,8 @@ public class ItemManagerBean implements ItemManagerLocal {
 					+ " not exists");
 
 		item.setInStock(item.getInStock() + orderQuantity);
+		if(item.getInStock() > item.getMinQuantity())
+			item.setNeedOrdering(false);
 
 		try {
 			item = itemDao.persist(item);

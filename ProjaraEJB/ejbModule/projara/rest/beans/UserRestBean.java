@@ -42,7 +42,7 @@ public class UserRestBean implements UserRestApi {
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserProfileInfoJson login(@FormParam("username") String username,
-			@FormParam("password") String password) throws UserException,
+			@FormParam("password") String password, @FormParam("role")String role) throws UserException,
 			BadArgumentsException {
 
 		try {
@@ -51,7 +51,7 @@ public class UserRestBean implements UserRestApi {
 		} catch (UserException e1) {
 		}
 
-		User u = userManager.login(username, password);
+		User u = userManager.login(username, password, role);
 
 		request.getSession().setAttribute("userID", u.getId());
 

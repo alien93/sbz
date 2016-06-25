@@ -57,10 +57,10 @@ public class UserManagerBean implements UserManagerLocal {
 
 	@Override
 	@Interceptors({CheckParametersInterceptor.class})
-	public User login(String username, String password) throws UserException,
+	public User login(String username, String password, String role) throws UserException,
 			BadArgumentsException {
 
-		User u = userDao.findByUsernameAndPassword(username, password);
+		User u = userDao.findByUsernameAndPassword(username, password, role);
 
 		if (u == null)
 			throw new UserNotExistsException("Invalid username and password");

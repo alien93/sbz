@@ -1,17 +1,17 @@
 <div>
 	<div class="col-md-4">
-		Korisničko ime: <input type="text" class="form-control" disabled>
-		Lozinka: <input type="password" class="form-control">
-		Datum registracije: <input type="date" class="form-control" disabled>
+		Korisničko ime: <input type="text" class="form-control" ng-model="kupac.username" disabled>
+		Lozinka: <input type="password" class="form-control" ng-model="kupac.password">
+		Datum registracije: <input type="text" class="form-control" ng-model="registeredOn" disabled>
 	</div>
 	<div class="col-md-4">
-		Ime: <input type="text" class="form-control">
-		Prezime: <input type="text" class="form-control">
-		Adresa: <br><textarea rows="4" class="form-control" style="resize:none"></textarea>
+		Ime: <input type="text" class="form-control" ng-model="kupac.firstName">
+		Prezime: <input type="text" class="form-control" ng-model="kupac.lastName">
+		Adresa: <br><textarea rows="4" class="form-control" style="resize:none" ng-model="kupac.address"></textarea>
 	</div>
 	<div class="col-md-4">
-		Kategorija kupca: <input type="text" class="form-control" disabled>
-		Nagradni bodovi: <input type="number" class="form-control" disabled>
+		Kategorija kupca: <input type="text" class="form-control" ng-init="kupac.category.name= kupac.category.name || 'Nije definisana'" ng-model="kupac.category.name" disabled>
+		Nagradni bodovi: <input type="number" class="form-control" ng-model="kupac.points" disabled>
 	</div>
 	<button id="profilIzmene" class="btn btn-primary" ng-click="cuvajIzmene()">Sačuvaj izmene</button>
 </div>
