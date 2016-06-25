@@ -143,12 +143,14 @@ public class ActionManagerBean implements ActionManagerLocal {
 
 		ActionEvent actionEvent = new ActionEvent(name, from, until, dicount);
 
+		/*
 		try {
 			actionEvent = actionEventDao.persist(actionEvent);
 		} catch (Exception e) {
 			throw new BadArgumentsException("Cant create action event");
 		}
-
+		*/
+		
 		return actionEvent;
 	}
 
@@ -172,7 +174,7 @@ public class ActionManagerBean implements ActionManagerLocal {
 
 		try {
 			actionEvent = actionEventDao.persist(actionEvent);
-			itemCategory = itemCategoryDao.persist(itemCategory);
+			//itemCategory = itemCategoryDao.persist(itemCategory);
 		} catch (Exception e) {
 			throw new ItemCategoryException(
 					"Error while persisting action event and itemCategoty");
