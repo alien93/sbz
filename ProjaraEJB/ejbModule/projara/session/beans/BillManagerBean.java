@@ -163,7 +163,7 @@ public class BillManagerBean implements BillManagerLocal {
 		engine.definstance(cc.getClass().getSimpleName(), cc, false);
 		// THRESHOLDS/////
 		for (Threshold t : cc.getThresholds()) {
-			t = thresholdDao.merge(t);
+			//t = thresholdDao.merge(t);
 			engine.definstance(t.getClass().getSimpleName(), t, false);
 		}
 		// ///ITEMS///////////
