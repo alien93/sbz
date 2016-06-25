@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('menadzer_akcijeController', ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$filter',
-	        function($location, $rootScope, $scope, $http, $uibModal, $filter){
+	.controller('menadzer_akcijeController', ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$filter', '$cookies',
+	        function($location, $rootScope, $scope, $http, $uibModal, $filter, $cookies){
 		
 		//pokupi oznaku ulogovanog menadzera
 		if($cookies.get("menadzerID") == undefined){
