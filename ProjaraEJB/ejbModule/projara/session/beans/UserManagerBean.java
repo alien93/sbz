@@ -228,7 +228,7 @@ public class UserManagerBean implements UserManagerLocal {
 
 		String address = userProfile.getAddress().trim();
 
-		if (!address.isEmpty() && !address.equals(userProfile.getAddress())) {
+		if (!address.isEmpty()) {
 			c.setAddress(address);
 
 			try {

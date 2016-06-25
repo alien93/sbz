@@ -1,7 +1,7 @@
 
 angular.module('sbzApp')
-.controller('kupac_infoController', ['$scope', '$uibModal', '$location', '$cookies',
-                                     function($scope, $uibModal, $location, $cookies){
+.controller('kupac_infoController', ['$scope', '$uibModal', '$location', '$cookies', '$timeout', '$http',
+                                     function($scope, $uibModal, $location, $cookies, $timeout, $http){
 
 	//proveri je li je ulogovan
 	if($cookies.get("korisnikID") == undefined){
@@ -97,7 +97,7 @@ angular.module('sbzApp')
 
 
 	//----------------------------------/test podaci------------------------------------------
-
+	
 	$scope.pogledajRacun = function(oznaka){
 		var modalInstance = $uibModal.open({
 			animation: true,
@@ -115,7 +115,26 @@ angular.module('sbzApp')
 	}
 
 	$scope.cuvajIzmene = function(){
-		$location.path('/kupac');
+		console.log("kupac");
+		console.log($scope.kupac);
+		$http({
+			method: "POST", 
+			url : "http://localhost:8080/ProjaraWeb/rest/user/update",
+			data : $scope.kupac,
+			headers: {'Content-Type': 'application/json'}
+		}).then(function(value) {
+			if(value.statusText == "OK"){
+				$scope.uspesno = "Promene su sačuvane";
+				$timeout(function() {
+					$scope.uspesno = "";
+				}, 1500);
+			}
+			else{
+				$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+			}
+		},function(reason){
+			$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
+		});
 	}
 }])
 
