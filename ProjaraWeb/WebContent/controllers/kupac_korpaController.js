@@ -1,11 +1,22 @@
 angular.module('sbzApp')
-	.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$timeout',
-	        function($scope, $location, $cookies, $timeout){
+	.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$timeout', '$http',
+	        function($scope, $location, $cookies, $timeout, $http){
 		
 				$scope.artikli = [];
 				$scope.zaUplatu = 0;
 				var korpa = $cookies.getObject("korpa");
 				
+				var dobaviArtikle = function(){
+					var retVal = [];
+					for(var i=0; i<korpa.artikli.length; i++){
+						var elem = {
+								itemId: korpa.artikli[i].oznaka,
+								quantity: korpa.artikli[i].kolicina
+						}
+						retVal.push(elem);
+					}
+					return retVal;
+				}
 				
 				//potvrda sadrzaja korpe
 				$scope.potvrdaKorpe = function(){
@@ -17,6 +28,26 @@ angular.module('sbzApp')
 						 }, 1500);
 					}
 					else{
+						//generisi racun
+						var generisiRacun = (function(){
+							var artikli = dobaviArtikle();
+							var racun = {
+									customerId: "1",
+									items: artikli,
+									points: $scope.bodovi
+							};
+							$http({
+								method: "POST", 
+								url : "http://localhost:8080/ProjaraWeb/rest/bills/create",
+								data : racun,
+								header: "application/json"
+							}).then(function(value) {
+								console.log(value);
+								$scope.kategorije = value.data;
+							});
+						}());
+						//pokupi zeljeni broj bodova
+						$cookies.put("bodovi", $scope.bodovi);
 						$location.path("/kupac/korpa/popusti");
 					}
 				}

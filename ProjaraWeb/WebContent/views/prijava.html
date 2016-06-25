@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" data-ng-controller="prijava_Controller">
 	<div class="row">
 		<div class="col-md-12"> &nbsp; </div>
 	</div>
@@ -27,20 +27,20 @@
 	<!-- Error message -->
 	<div class="row">
 		<div class="col-md-offset-4 col-md-4">
-			<div class="alert alert-danger" role="alert" ng-show="error">
+			<div class="alert alert-danger" role="alert" ng-show="greska">
             	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            	{{errorMessage}}
+            	{{greska}}
         	</div>
 		</div>
 		<div class="col-md-4"> &nbsp; </div>
 	</div>
 	
+	
 	<div class="row">
 		<div class="col-md-4"> &nbsp; </div>
 		<div class="col-md-4">
-			<form role="form" name="loginForma" accept-charset="UTF-8"
-				  data-ng-controller="prijava_Controller" ng-submit="login()">
-				  
+			<form role="form" name="loginForma" accept-charset="UTF-8"  ng-submit="login()">
+				 
 				<div class="form-group">
 					<label for="idUsername">
 						 Korisničko ime 
@@ -67,7 +67,7 @@
 				</div>
 				
 				<input type="submit" value="Uloguj se" class="btn btn-primary btn-block">
-				<input type="button" value="Registruj se" ng-click="registrujSe()" class="btn btn-primary btn-block">
+				<input type="button" value="Registruj se" ng-click="registrujSe()" class="btn btn-danger btn-block">
 			</form>
 		</div>
 		

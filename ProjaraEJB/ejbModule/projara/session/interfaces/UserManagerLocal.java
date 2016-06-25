@@ -14,7 +14,7 @@ public interface UserManagerLocal {
 			String firstName, String lastName) throws UserException,
 			BadArgumentsException;
 
-	public User login(String username, String password) throws UserException,
+	public User login(String username, String password, String role) throws UserException,
 			BadArgumentsException;
 
 	public Customer setCustomerCategory(Customer customer,

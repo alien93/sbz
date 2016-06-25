@@ -4,16 +4,16 @@ angular.module('sbzApp')
 			
 				// Neuspjesno logovanje
 				$scope.error = false;
-				$scope.errorMessage = "";
-				
+				$scope.greska = "";
+
 				// Promjenljive za ukljucivanje odg. menija
 				$rootScope.ulogaKupac = false;
 				$rootScope.ulogaProdavac = false;
 				$rootScope.ulogaMenadzer = false;
 		
-				$scope.roles = ["KUPAC", "PRODAVAC", "MENADZER"];
-				$rootScope.user = { username: "pera", 
-									password: "pera", 
+				$scope.roles = ["KUPAC", "PRODAVAC", "MENADŽER"];
+				$rootScope.user = { username: "", 
+									password: "", 
 									role: $scope.roles[0]
 							  	  };
 				$scope.user = $rootScope.user;
@@ -24,38 +24,58 @@ angular.module('sbzApp')
 					var username = $scope.user.username;
 					var password = $scope.user.password;
 					var role = $scope.user.role;
+					var roleCopy = role;
 					
-					/*
+					switch(role){
+					case ($scope.roles[0]): role="C"; break;
+					case ($scope.roles[1]) : role="M"; break;
+					case ($scope.roles[2]) : role="V"; break;
+					default: role="C";
+					}
+					
+					var user = {
+							"username":username,
+							"password":password,
+							"role": role
+					};
+					console.log(user);
 					$http({
 						method: "POST", 
 						url : "http://localhost:8080/ProjaraWeb/rest/user/login",
-						data : JSON.stringify($scope.user)
+						data : $.param(user),
+						headers : {
+					        'Content-Type' : 'application/x-www-form-urlencoded'
+					    }
 					}).then(function(value) {
-						if(value.data == "OK"){  */
+						console.log(value);
+						if(value.statusText == "OK"){  
 							$rootScope.user.username = username;
 							$rootScope.user.password = password;
-							
-							if (role == "KUPAC") {	
-								$rootScope.user.role = role;
+							$rootScope.user.role = role;
+
+							if (role == "C") {	
 								$scope.prikaziKupacMeni();
 							}
-							else if (role == "PRODAVAC") {
-								$rootScope.user.role = role;
+							else if (role == "V") {
 								$scope.prikaziProdavacMeni();
 							}
-							else if (role == "MENADZER") {
-								$rootScope.user.role = role;
+							else if (role == "M") {
 								$scope.prikaziMenadzerMeni();
 							} 
-					/*	}else{
+						}else{
 					        //Logovanje neuspjesno
-							$scope.errorMessage = value.data;
-							$scope.errorMessage = value.data;
-							$scope.error = true;
+							$scope.greska = "Ne postoji registrovan " + roleCopy + " sa tim korisničkim imenom ili lozinkom. Molimo proverite podatke.";
 						}
 					}, function(reason) {
-						console.log(JSON.stringify(reason));
-					}); */
+						console.log(reason);
+						console.log(reason.data.name);
+						if(reason.data.name === "UserNotExistsException"){
+							$scope.greska = "Ne postoji registrovan " + roleCopy + " sa tim korisničkim imenom ili lozinkom. Molimo proverite podatke.";
+						}
+						else{
+							$scope.greska = "Podaci nisu ispravno popunjeni.";
+						}
+					}); 
 					
 				};
 				

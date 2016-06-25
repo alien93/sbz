@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('kupac_ostvareniPopustiController', ['$scope', '$location',
-	       function($scope, $location){
+	.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies',
+	       function($scope, $location, $cookies){
 			
 			//-------------------------test podaci-------------------
 			var popust1 = {"oznaka":"123","naziv":"Popust1", "opis":"Opis popusta 1", "procenat":5};
@@ -32,6 +32,9 @@ angular.module('sbzApp')
 			
 			//-------------------------/test podaci-------------------
 
+			console.log($cookies.getObject("korpa"));
+			console.log($cookies.get("bodovi"));
+			
 			$scope.otkaziKupovinu = function(){
 				$location.path("/kupac");
 			}
