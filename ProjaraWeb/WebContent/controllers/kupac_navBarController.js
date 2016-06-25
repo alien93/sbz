@@ -22,6 +22,7 @@ angular.module('sbzApp')
 
 	$scope.odjava = function(){
 		$cookies.remove("korisnikID");
+		$cookies.remove("korisnik");
 		$location.path('/prijava');
 	}
 }])

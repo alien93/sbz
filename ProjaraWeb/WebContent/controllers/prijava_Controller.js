@@ -79,6 +79,7 @@ angular.module('sbzApp')
 					        'Content-Type' : 'application/x-www-form-urlencoded'
 					    }
 					}).then(function(value) {
+						console.log(value);
 						if(value.statusText == "OK"){  
 							$rootScope.user.username = username;
 							$rootScope.user.password = password;
@@ -92,7 +93,13 @@ angular.module('sbzApp')
 									$cookies.remove("korisnikID");
 									$cookies.put("korisnikID", username);
 								}
-
+								if($cookies.getObject("korisnik") == undefined){
+									$cookies.putObject("korisnik", value.data);
+								}
+								else{
+									$cookies.remove("korisnik");
+									$cookies.put("korisnik", value.data);
+								}
 								$scope.prikaziKupacMeni();
 							}
 							else if (role == "V") {
