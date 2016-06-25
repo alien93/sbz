@@ -2,9 +2,13 @@ angular.module('sbzApp')
 	.controller('menadzer_kategorijeKupacaController', ['$location', '$rootScope', '$scope', '$uibModal', '$http',
 			function($location, $rootScope, $scope, $uibModal, $http){
 		
-		if ($rootScope.user.role != "M") {
+		//pokupi oznaku ulogovanog menadzera
+		if($cookies.get("menadzerID") == undefined){
 			$location.path('/prijava');
-		};	
+		}
+		else{
+			$scope.menadzerID = $cookies.get("menadzerID");
+		}
 		
 		$scope.refreshCat = function(){
 			$http({

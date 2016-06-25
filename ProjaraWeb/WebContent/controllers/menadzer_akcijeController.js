@@ -2,9 +2,13 @@ angular.module('sbzApp')
 	.controller('menadzer_akcijeController', ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$filter',
 	        function($location, $rootScope, $scope, $http, $uibModal, $filter){
 		
-		if ($rootScope.user.role != "M") {
+		//pokupi oznaku ulogovanog menadzera
+		if($cookies.get("menadzerID") == undefined){
 			$location.path('/prijava');
-		};	
+		}
+		else{
+			$scope.menadzerID = $cookies.get("menadzerID");
+		}
 		
 		$scope.akcije = [];/*{id:1, name:"Novogodisnja akcija", from:new Date(), until:new Date(), discount:20, 
 						categories: [{code:"code1", name:"name1", maxDiscount:20, parentCategory:null},

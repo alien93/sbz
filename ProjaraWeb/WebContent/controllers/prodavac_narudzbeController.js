@@ -8,10 +8,6 @@ angular.module('sbzApp')
 			else{
 				$scope.user.username = $cookies.get("prodavacID");
 			};
-		
-			if ($rootScope.user.role != "V") {
-				$location.path('/prijava');
-			};	
 		 	
 		 	//------------------ Test data --------------------------------------------------
 			var aa1 = {"oznaka":"010", "naziv":"Pegla", "razlog":"Nestalo", "kolicina": "50"};
