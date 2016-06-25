@@ -2,9 +2,18 @@
  * 
  */
 angular.module('sbzApp')
-	.controller('menadzer_navBarController', ['$rootScope', '$scope', '$location',
-			function($rootScope, $scope, $location){
-			
+	.controller('menadzer_navBarController', ['$rootScope', '$scope', '$location', '$cookies',
+			function($rootScope, $scope, $location, $cookies){
+		
+			//pokupi oznaku ulogovanog menadzera
+			if($cookies.get("menadzerID") == undefined){
+				$location.path('/prijava');
+			}
+			else{
+				$scope.menadzerID = $cookies.get("menadzerID");
+			}
+		
+		
 			$scope.kupci = function(){
 				$location.path('/menadzer/kupci');
 			};
