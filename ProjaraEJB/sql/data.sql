@@ -42,8 +42,8 @@ INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCA
 INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('DDB', 'D', 'Laptopovi', '30.0');
 INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('DAA', 'DDA', 'Racunarske komponente', '25.0');
 INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('E', 'Alkoholna pica', '10.0');
-INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('EEE', 'E', 'Domaca alkoholna pica', '15.0');
-INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('EEA', 'E', 'Strana alkoholna pica', '5.0');
+INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('EEA', 'E', 'Domaca alkoholna pica', '15.0');
+INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('EEE', 'E', 'Strana alkoholna pica', '5.0');
 
 /*action events*/
 INSERT INTO `webshop_sbz`.`action_event` (`AE_NAME`, `AE_FROM`, `AE_UNTIL`, `AE_DISCOUNT`) VALUES ('Nova Godina 2015', '2014-12-15', '2015-01-05', '8.0');
@@ -60,7 +60,7 @@ INSERT INTO `webshop_sbz`.`on_discount` (`AE_ID`, `ITCAT_CODE`) VALUES ('2', 'C'
 INSERT INTO `webshop_sbz`.`on_discount` (`AE_ID`, `ITCAT_CODE`) VALUES ('3', 'AAA');
 INSERT INTO `webshop_sbz`.`on_discount` (`AE_ID`, `ITCAT_CODE`) VALUES ('3', 'C');
 INSERT INTO `webshop_sbz`.`on_discount` (`AE_ID`, `ITCAT_CODE`) VALUES ('3', 'EEE');
-INSERT INTO `webshop_sbz`.`on_discount` (`AE_ID`, `ITCAT_CODE`) VALUES ('4', 'DDA');
+INSERT INTO `webshop_sbz`.`on_discount` (`AE_ID`, `ITCAT_CODE`) VALUES ('4', 'D');
 
 /*items*/
 INSERT INTO `webshop_sbz`.`item` (`ITCAT_CODE`, `IT_NAME`, `IT_PRICE`, `IT_INSTOCK`, `IT_CREATEDON`, `IT_ISLOW`, `IT_RECSTATE`, `IT_MINQUANT`, `IT_PIC`) VALUES ('AAA', 'Pasteta (haha)', '200.00', '50', '2011-03-05', '0', '1', '10', 'pasteta.jpg');
