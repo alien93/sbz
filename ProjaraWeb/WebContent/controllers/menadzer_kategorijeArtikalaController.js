@@ -119,6 +119,7 @@ angular.module('sbzApp')
 		$scope.disableId = modify;
 		
 		$scope.categories = [null];
+		
 		for(var i = 0; i < categories.length; i++){
 			$scope.categories.push({"name":categories[i].info.name, "code":categories[i].info.code});
 		}

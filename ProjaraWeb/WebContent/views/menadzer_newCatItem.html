@@ -16,8 +16,8 @@
 			   	Nadkategorija:
 			   	<br/> <br/>
 			   	<select class="form-control" data-ng-model='itemCategory.parentCode'>
-			   		<option data-ng-repeat="cat in categories" value='{{cat.code}}'>
-			   			{{cat.code}}
+			   		<option data-ng-repeat="cat in categories" data-ng-selected="{{cat.code==itemCategory.parentCode}}" value='{{cat.code}}'>
+			   			{{cat.code}} - {{cat.name}}
 			   		</option>
 			   	</select>
 	</div>
