@@ -14,6 +14,7 @@ angular.module('sbzApp')
 	var izvestaj = $cookies.getObject("izvestajRacuna");
 	console.log("izvestaj");
 	console.log(izvestaj);
+	$scope.izvestaj = izvestaj.data;
 	
 	$scope.artikli = izvestaj.data.billItems;
 	console.log("artikli");

@@ -70,7 +70,7 @@
 		</tbody>
 	</table>
 	<br><br>
-	<h4>Bodovi i iznos računa</h4>
+	<h3>Bodovi i iznos računa</h3>
 	<div class="col-md-6">
 		<table class="table table-striped table-bordered">
 			<thead>
@@ -80,23 +80,23 @@
 			</thead>
 				<tr>
 					<td>Ukupna cena računa:</th>
-					<td>{{racun.ukupnaCena}}</td>
+					<td>{{izvestaj.originalTotal}}</td>
 				</tr>
 				<tr>
 					<td>Procenat umanjenja:</th>
-					<td>{{racun.procenatUmanjenja}}%</td>
+					<td>{{izvestaj.costInfos[0].discount}}%</td>
 				</tr>
 				<tr>
 					<td>Plaćena cena:</th>
-					<td>{{racun.placenaCena}}</td>
+					<td>{{izvestaj.costInfos[0].total}}</td>
 				</tr>
 				<tr>
 					<td>Broj potrošenih nagradnih bodova:</th>
-					<td>{{racun.brPotrosenihBodova}}</td>
+					<td>{{izvestaj.costInfos[0].spentPoints}}</td>
 				</tr>
 				<tr>
 					<td>Broj ostvarenih nagradnih bodova:</th>
-					<td>{{racun.brOstvarenihBodova}}</td>
+					<td>{{izvestaj.costInfos[0].awardPoints}}</td>
 				</tr>
 				<tr>
 					<td colspan="2"><button class="btn btn-success" style="float:right;" ng-click="potvrdiRacun(1)">Koristi ovaj račun</button></td>
@@ -114,23 +114,23 @@
 			</thead>
 				<tr>
 					<td>Ukupna cena računa:</th>
-					<td>{{racun.ukupnaCena}}</td>
+					<td>{{izvestaj.originalTotal}}</td>
 				</tr>
 				<tr>
 					<td>Procenat umanjenja:</th>
-					<td>{{racun.procenatUmanjenja}}%</td>
+					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].discount : izvestaj.costInfos[1].discount}}%</td>
 				</tr>
 				<tr>
 					<td>Plaćena cena:</th>
-					<td>{{racun.placenaCena}}</td>
+					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].total : izvestaj.costInfos[1].total}}</td>
 				</tr>
 				<tr>
 					<td>Broj potrošenih nagradnih bodova:</th>
-					<td>{{racun.brPotrosenihBodova}}</td>
+					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].spentPoints : izvestaj.costInfos[1].spentPoints}}</td>
 				</tr>
 				<tr>
 					<td>Broj ostvarenih nagradnih bodova:</th>
-					<td>{{racun.brOstvarenihBodova}}</td>
+					<td>{{izvestaj.costInfos[1] == null | iif : izvestaj.costInfos[0].awardPoints : izvestaj.costInfos[1].awardPoints}}</td>
 				</tr>
 				<tr>
 					<td colspan="2"><button class="btn btn-success" style="float:right;" ng-click="potvrdiRacun(2)">Koristi ovaj račun</button></td>
