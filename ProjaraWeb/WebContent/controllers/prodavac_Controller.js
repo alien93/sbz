@@ -85,6 +85,8 @@ angular.module('sbzApp')
 //		 	$scope.racuni = [racun1, racun2, racun3];  
 		 	
 		 	$scope.racuni = [];
+		 	$scope.getAllBills = function() {	 	
+		 	
 		 	$http({
 				method: "GET", 
 				url : "http://localhost:8080/ProjaraWeb/rest/bills",
@@ -149,7 +151,10 @@ angular.module('sbzApp')
 					
 					$scope.racuni.push(racun);
 				}
-			});	 	
+			});	
+		 	};
+		 	
+		 	$scope.getAllBills();
 		 			 	
 		 	$scope.prikaziOdgRacune = function() {
 		 		// Postavljanje promjenljive po kojoj se vrsi filtriranje po txt sadrzaju
@@ -158,6 +163,21 @@ angular.module('sbzApp')
 		 		} else {
 		 			$scope.prikaziOdgovarajuce = $scope.izabranoStanje;
 		 		}	
+		 	};
+		 	
+		 	$scope.potvrdiRacun = function(ind) {
+		 		var billId = $scope.racuni[ind].oznaka;
+		 		$http({
+					method: "GET", 
+					url : "http://localhost:8080/ProjaraWeb/rest/bills/approve/" + billId,
+				}).then(function(value) {
+					console.log("potvrda racuna");
+					$scope.getAllBills();
+				});	 
+		 	};
+		 	
+		 	$scope.otkaziRacun = function(ind) {
+		 		
 		 	};
 		 	
 		 	$scope.showDetails = function(index) {
