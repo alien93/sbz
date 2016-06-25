@@ -3,13 +3,19 @@ angular.module('sbzApp')
 .controller('kupac_infoController', ['$scope', '$uibModal', '$location', '$cookies',
                                      function($scope, $uibModal, $location, $cookies){
 
+	//proveri je li je ulogovan
 	if($cookies.get("korisnikID") == undefined){
 		$location.path('/prijava');
 	}
 	else{
 		$scope.korisnikID = $cookies.get("korisnikID");
 	}
-
+	
+	//dobavi info o kupcu
+	$scope.kupac = $cookies.getObject("korisnik");
+	var d = new Date($scope.kupac.registeredOn);
+	$scope.registeredOn = d.getDate() + "." + d.getMonth()+1 + "." + d.getFullYear() + ".";
+	
 	//----------------------------------test podaci------------------------------------------
 
 	var artikal1 = {
