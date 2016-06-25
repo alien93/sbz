@@ -69,7 +69,11 @@ public class Customer extends User implements Serializable {
 			}
 		}
 	}
-
+	
+	public void setCategoryNull(){
+		category = null;
+	}
+	
 	public int getPoints() {
 		return points;
 	}

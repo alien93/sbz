@@ -68,4 +68,12 @@ public class UserDaoBean extends GenericDaoBean<User, Integer>
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getCustomers() {
+		Query q = em.createNamedQuery("findCustomers");
+		q.setParameter("role", "C");
+		return (List<User>)q.getResultList();
+	}
+
 }
