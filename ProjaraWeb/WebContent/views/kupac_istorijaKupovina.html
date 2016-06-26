@@ -4,14 +4,16 @@
 			<tr>
 				<th>Oznaka računa</th>
 				<th>Datum kupovine</th>
-				<th>Ukupan iznos</th>
+				<th>Ukupan iznos</th>			
+				<th>Status</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="racun in racuni" style='cursor: pointer;'  ng-click="pogledajRacun(racun.oznaka)">
-				<td>{{racun.oznaka}}</td>
-				<td>{{racun.datum}}</td>
-				<td>{{racun.ukupanIznos}}</td>
+			<tr ng-repeat="racun in racuni track by $index" style='cursor: pointer;'  ng-click="pogledajRacun(racun.billId)">
+				<td>{{racun.billId}}</td>
+				<td>{{racun.date}}</td>
+				<td>{{racun.costInfos[0].total}}</td>
+				<td>{{statusRacuna[$index]}}</td>
 			</tr>
 		</tbody>
 	</table>
