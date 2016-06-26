@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('prodavac_artiklUnosIzmenaController', ['$rootScope', '$scope', '$location', 'items', '$uibModalInstance', '$http', '$cookies',
-		function($rootScope, $scope, $location, items, $uibModalInstance,  $http, $cookies){
+	.controller('prodavac_artiklUnosIzmenaController', ['$rootScope', '$scope', '$location', 'items', 'index', '$uibModalInstance', '$http', 'parentScope', '$cookies',
+		function($rootScope, $scope, $location, items, index, $uibModalInstance, $http, parentScope, $cookies){
 		
 			if($cookies.get("prodavacID") == undefined){
 				$location.path('/prijava');
@@ -16,16 +16,6 @@ angular.module('sbzApp')
 			$scope.image = "";
 			$scope.format = "";
 			
-			/*
-			$scope.ucitajSliku = function() {
- 		    	var output = document.getElementById('output');
- 		    	var txt = '.\/images\/' + $scope.artikl.info.picture;
- 		    	console.log(txt);
- 		    	output.src = txt;
- 		    	console.log("OUTPUT")
- 		    	console.log(output);
- 		    };
-			*/
 			
 			if ($scope.artikl.info.id == "") {
 				$scope.naslovnaPoruka = "Unos novog artikla";
@@ -35,10 +25,8 @@ angular.module('sbzApp')
 				console.log($scope.artikl);
 				$scope.naslovnaPoruka = "Izmena artikla";
 				$scope.izmena = true;
-				//$scope.ucitajSliku();
 			}
 				
-			console.log("Izmena " + $scope.izmena);
 			$scope.sveKategorije = [];
 			$http({
 				method: "GET", 
@@ -58,9 +46,7 @@ angular.module('sbzApp')
 			});	
 			
 			
-			$scope.potvrdi = function(){
-				// TODO : rest poziv za update ili add	
-				
+			$scope.potvrdi = function(){				
 				var fd = new FormData();
 		  		
 		  		fd.append("image", $scope.imageBin);
@@ -79,6 +65,7 @@ angular.module('sbzApp')
 			  		 })
 			  		    .success(function(response, status, headers, config) {
 			  		           console.log(response);
+			  		           parentScope.ucitajPonovo();
 
 			  		 })
 			  		    .error(function(error, status, headers, config) {
@@ -95,30 +82,23 @@ angular.module('sbzApp')
 			  		 })
 			  		    .success(function(response, status, headers, config) {
 			  		           console.log(response);
+			  		     parentScope.refreshReda(index, $scope.artikl);
 
 			  		 })
 			  		    .error(function(error, status, headers, config) {
 			  		           console.log(error);
 
 			  		  });
+					
 				}
-				
-				console.log("Adresa " + "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikl.info.id);
-				//Azuriranje reda u tabeli artikala
-	 			$http({
-					method: "GET", 
-					url : "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikl.info.id,
-				}).then(function(value) {
-					console.log(value.data);
-					$scope.original = value.data;
-				}, function(reason){
-					console.log(JSON.stringify(reason));
-				});
+
+	 			
 				$uibModalInstance.close();
 				
 			};
 			
 			$scope.zatvori = function(){
+				parentScope.ukloniRed(index);
 				$uibModalInstance.close();
 			};
 			

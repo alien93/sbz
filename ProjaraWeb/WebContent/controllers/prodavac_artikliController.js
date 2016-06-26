@@ -9,16 +9,18 @@ angular.module('sbzApp')
 				$scope.user.username = $cookies.get("prodavacID");
 			};
 			
-			$scope.artikli = [];
-			$http({
-				method: "GET", 
-				url : "http://localhost:8080/ProjaraWeb/rest/items/",
-			}).then(function(value) {
-				console.log("svi artikli");
-				for (var i = 0; i<value.data.length; i++)
-					$scope.artikli.push(value.data[i]);	
-
-			});	
+			$scope.ucitajSveArtikle = function() {
+				$scope.artikli = [];
+				$http({
+					method: "GET", 
+					url : "http://localhost:8080/ProjaraWeb/rest/items/",
+				}).then(function(value) {
+					for (var i = 0; i<value.data.length; i++)
+						$scope.artikli.push(value.data[i]);	
+				});	
+			};
+			
+			$scope.ucitajSveArtikle();
 			
 			$scope.moguceBrisanje = function(index) {
 				return !$scope.artikli[index].info.active;
@@ -51,7 +53,13 @@ angular.module('sbzApp')
 					resolve: {
 						items: function(){
 								return $scope.artikli[index];
-							}
+							},
+							index: function(){
+								return index;
+							},
+							parentScope : function(){
+					    		  return $scope;
+					    	}
 						}
 		 		});
 		 		
@@ -75,6 +83,30 @@ angular.module('sbzApp')
 		 		}, function(error) {
 		 			console.log(error);
 		 		});
+		 	};
+		 	
+		 	$scope.refreshReda = function(index, artikl) {
+		 		$http({
+					method: "GET", 
+					url : "http://localhost:8080/ProjaraWeb/rest/items/" + artikl.info.id,
+				}).then(function(value) {
+					console.log(value.data);
+
+			 		$scope.artikli.splice(index, 1);
+			 		$scope.artikli.push(value.data);
+					
+				}, function(reason){
+					console.log(JSON.stringify(reason));
+				});
+		 	};
+		 	
+		 	$scope.ukloniRed = function(index) {
+		 		$scope.artikli.splice(index, 1);		
+		 	};
+		 	
+		 	$scope.ucitajPonovo = function() {
+		 		$scope.artikli.splice(0, $scope.artikli.length);
+		 		$scope.ucitajSveArtikle();
 		 	};
 
 
