@@ -71,3 +71,12 @@ th, td{
     width: 100px;
     word-wrap: break-word;
 }
+
+.my-dialog .modal-body {
+    position: relative;
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: auto;
+    max-widht: 100%;
+    width: auto;
+}
