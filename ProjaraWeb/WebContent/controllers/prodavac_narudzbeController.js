@@ -68,7 +68,8 @@ angular.module('sbzApp')
 		 	$scope.poruciArtikle = function() {
 		 		//Provjera stanja checkbox-ova, ispis u labeli ispod buttona
 		 		$scope.ispis = "";
-		 		for (var i = 0; i < $scope.narudzbe.length; i++) {
+		 		var i = $scope.narudzbe.length - 1;
+		 		while(i >= 0) {
 //		 			$scope.ispis += $scope.zaPoruciti[i];
 //		 			$scope.ispis += ' ';
 		 			
@@ -88,11 +89,17 @@ angular.module('sbzApp')
 		 				}).then(function(value) {
 		 						$scope.uspesno =  "Naručivanje uspešno.";
 		 						
+//		 						console.log(i);
+//		 						console.log("artikl " + i + " se brise");
+		 						$scope.narudzbe.splice(i, 1);
+		 						$scope.zaPoruciti.splice(i, 1);
+		 						
 		 				}, function(err){
 								$scope.greska =  "Naručivanje neuspešno.";
 						});
 		 			};
 		 			
+		 			i--;
 		 		};
 		 	};
 
