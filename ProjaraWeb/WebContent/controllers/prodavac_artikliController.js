@@ -50,6 +50,8 @@ angular.module('sbzApp')
 					animation: false,
 					templateUrl: 'views/prodavac_artiklUnosIzmena_m.html',
 					controller: 'prodavac_artiklUnosIzmenaController',
+					backdrop  : 'static',
+					keyboard  : false,
 					resolve: {
 						items: function(){
 								return $scope.artikli[index];
