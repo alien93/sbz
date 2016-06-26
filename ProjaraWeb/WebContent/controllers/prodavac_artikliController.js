@@ -21,8 +21,9 @@ angular.module('sbzApp')
 			
 			$scope.artiklModal = function(index) {
 				console.log('Novi unos/izmjena');
+				$scope.noviArtikl = {};
 				if (index == 'na') {
-					var artikl = {
+					$scope.noviArtikl = {
 						"info.id" : "",
 						"info.picture" : "",
 						"info.name" : "",
@@ -31,8 +32,18 @@ angular.module('sbzApp')
 						"info.inStock" : 0,
 						"info.minQuantity" : 0
 					};
-					$scope.artikli.push(artikl);
+					$scope.artikli.push($scope.noviArtikl);
 					index = $scope.artikli.length - 1;
+				} else {
+					$scope.noviArtikl = {
+							"info.id" :  $scope.artikli[index].info.id,
+							"info.picture" : $scope.artikli[index].info.picture,
+							"info.name" : $scope.artikli[index].info.name,
+							"category.name" : $scope.artikli[index].category.name,
+							"info.cost" : $scope.artikli[index].info.cost,
+							"info.inStock" : $scope.artikli[index].info.inStock,
+							"info.minQuantity" : $scope.artikli[index].info.minQuantity	
+					};
 				}
 					
 		 		var modalInstance = $uibModal.open({

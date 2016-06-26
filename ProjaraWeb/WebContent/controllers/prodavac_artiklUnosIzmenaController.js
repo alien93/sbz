@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-	.controller('prodavac_artiklUnosIzmenaController', ['$rootScope', '$scope', '$location', 'items', '$uibModalInstance', '$cookies',
-		function($rootScope, $scope, $location, items, $uibModalInstance, $cookies){
+	.controller('prodavac_artiklUnosIzmenaController', ['$rootScope', '$scope', '$location', 'items', '$uibModalInstance', '$http', '$cookies',
+		function($rootScope, $scope, $location, items, $uibModalInstance,  $http, $cookies){
 		
 			if($cookies.get("prodavacID") == undefined){
 				$location.path('/prijava');
@@ -16,7 +16,17 @@ angular.module('sbzApp')
 				$scope.naslovnaPoruka = "Izmena artikla";
 				
 			
+			$scope.sveKategorije = [];
+			$http({
+				method: "GET", 
+				url : "http://localhost:8080/ProjaraWeb/rest/itemCategories/",
+			}).then(function(value) {
+				console.log("sve kategorije");
+				$scope.sveKategorije = value.data;				
+			});	
 			
+//			if ($scope.artikl.category.name == "")
+//				$scope.artikl.category.name = $scope.sveKategorije[0].info.name;
 			
 			$scope.potvrdi = function(){
 				$uibModalInstance.close();
