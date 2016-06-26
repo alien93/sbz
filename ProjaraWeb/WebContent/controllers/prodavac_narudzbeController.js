@@ -31,7 +31,8 @@ angular.module('sbzApp')
 						var narudzba = {
 							"oznaka": value.data[i].info.id,	
 							"naziv": value.data[i].info.name,
-							"razlog": value.data[i].info.minQuantity
+							"razlog": "Bla bla",
+							"kolicinaZaNaruciti" : 10
 						};
 						$scope.narudzbe.push(narudzba);
 					}
@@ -66,12 +67,23 @@ angular.module('sbzApp')
 //		 			$scope.ispis += ' ';
 		 			
 		 			if ($scope.zaPoruciti[i] == true) {
+	 				//	console.log($scope.narudzbe[i].oznaka + " " + $scope.narudzbe[i].kolicinaZaNaruciti);
+	 					
 		 				$http({
 		 					method: "POST", 
 							url : "http://localhost:8080/ProjaraWeb/rest/items/orderItems",
+							data : $.param({
+						        'id' : $scope.narudzbe[i].oznaka,
+						        'quantity' : $scope.narudzbe[i].kolicinaZaNaruciti,
+						    }),
+							headers : {
+						        'Content-Type' : 'application/x-www-form-urlencoded'
+							}
 		 				}).then(function(value) {
 							console.log("Narucivanje artikla " + $scope.narudzbe[i].oznaka + " uspjesno.");
-										
+							$scope.uspesno =  "Naručivanje uspešno.";
+		 				}, function(err){
+								$scope.greska =  "Naručivanje neuspešno.";
 						});
 		 			};
 		 			// TODO : Obrisati iz liste ove narucene
