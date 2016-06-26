@@ -65,9 +65,9 @@
 				    		<li>{{artikal.naziv}}</li>
 				    		<li><b><font size="5">{{artikal.cenaSaPopustom}} RSD</font></b></li>
 				    		<li>
-				    			<input id="kolicinaArtikla" type="number" min=1 ng-model="kolicinaArtikla">
+				    			<input id="kolicinaArtikla" type="number" min=1 max="{{artikal.maksimum}}" ng-model="kolicinaArtikla">
 				    			<button type="button" class="btn btn-default btn-sm" ng-click="dodajUKorpu(kolicinaArtikla, artikal)">
-						          <span class="glyphicon glyphicon-shopping-cart"></span> Dodaj u korpu
+						         <span class="glyphicon glyphicon-shopping-cart"></span> Dodaj u korpu
 						        </button>
 				    		</li>
 				    	</ul>
