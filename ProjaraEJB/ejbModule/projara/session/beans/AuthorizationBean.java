@@ -16,7 +16,7 @@ import projara.util.exception.UserRoleException;
 @Local(AuthorizationLocal.class)
 public class AuthorizationBean implements AuthorizationLocal {
 
-	public static final boolean TURN_OFF = true;
+	public static final boolean TURN_OFF = false;
 	
 	@EJB
 	private UserDaoLocal userDao;

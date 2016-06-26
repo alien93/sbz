@@ -2,16 +2,14 @@ package projara.session.beans;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionManagementType;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
-
-import org.jboss.security.config.parser.UsersConfigParser;
 
 import jess.JessException;
 import jess.Rete;
@@ -32,7 +30,6 @@ import projara.model.shop.Bill;
 import projara.model.shop.BillDiscount;
 import projara.model.shop.BillItem;
 import projara.model.shop.BillItemDiscount;
-import projara.model.shop.BillItemPK;
 import projara.model.users.Customer;
 import projara.model.users.CustomerCategory;
 import projara.model.users.Threshold;
@@ -644,23 +641,13 @@ public class BillManagerBean implements BillManagerLocal {
 		if (bill == null)
 			throw new BillNotExistsException("Can not delete not existing bill");
 
-		// rejectOrder(bill);
-		for (BillItem bi : bill.getBillItems()) {
-			for (BillItemDiscount bid : bi.getDiscounts()) {
-				billItemDiscountDao.remove(bid);
-			}
-			bi.removeAllDiscounts();
-			billItemDao.remove(bi);
-		}
-
-		for (BillDiscount bd : bill.getBillDiscounts()) {
-			billDiscountDao.remove(bd);
-		}
+		Customer customer = bill.getCustomer();
+		customer.removeBills(bill);
+		
 		bill.removeAllBillDiscounts();
-		bill.removeAllBillItems();
-		bill.getCustomer().removeBills(bill);
-
-		billDao.remove(bill);
+		try{
+			bill = billDao.persist(bill);
+		}catch(Exception e){e.printStackTrace();}
 
 	}
 

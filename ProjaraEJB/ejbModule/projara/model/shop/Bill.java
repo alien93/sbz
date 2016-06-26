@@ -88,13 +88,13 @@ public class Bill implements Serializable {
 	 * @pdRoleInfo migr=no name=BillItem assc=hasItems coll=Set impl=HashSet
 	 *             mult=0..* type=Composition
 	 */
-	@OneToMany(mappedBy = "bill", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "bill", cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	private Set<BillItem> items = new HashSet<>();
 	/**
 	 * @pdRoleInfo migr=no name=BillDiscount assc=hasDiscount coll=Set
 	 *             impl=HashSet mult=0..*
 	 */
-	@OneToMany(mappedBy = "bill", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "bill", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval=true)
 	private Set<BillDiscount> billDiscounts = new HashSet<>();
 
 	/** @pdGenerated default getter */
@@ -572,11 +572,13 @@ public class Bill implements Serializable {
 		this.originalTotal = getSum(items);
 	}
 
+	/*
 	@PreRemove
 	public void preRemoveBill(){
 		removeAllBillDiscounts();
 		removeAllBillItems();
 		getCustomer().removeBills(this);
 	}
+	*/
 
 }
