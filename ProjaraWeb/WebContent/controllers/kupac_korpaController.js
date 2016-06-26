@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$http', '$cookies',
-                                      function($scope, $location, $cookies, $http, $cookies){
+.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$http', '$cookies', '$timeout',
+                                      function($scope, $location, $cookies, $http, $cookies, $timeout){
 
 	if($cookies.get("korisnikID") == undefined){
 		$location.path('/prijava');
@@ -13,6 +13,8 @@ angular.module('sbzApp')
 
 	$scope.artikli = [];
 	$scope.zaUplatu = 0;
+	$scope.maxBodovi = user.points;
+	
 	var korpa = $cookies.getObject("korpa");
 
 	var dobaviArtikle = function(){
@@ -32,6 +34,12 @@ angular.module('sbzApp')
 		var korpa = $cookies.getObject("korpa");
 		if(korpa == undefined || korpa.artikli.length == 0){
 			$scope.greska = "Korpa je prazna. Molimo dodajte artikle u korpu preko \"Prodavnica\" stranice.";
+		}
+		else if($scope.bodovi < 0 || $scope.bodovi > $scope.maxBodovi ||$scope.bodovi == undefined ){
+			$scope.greska = "Možete iskroistiti najmanje 0, a najviše " + $scope.maxBodovi + " bodova. Molimo izmenite broj bodova.";
+			$timeout(function() {
+				$scope.greska = "";
+			}, 2500);
 		}
 		else{
 			//generisi racun
