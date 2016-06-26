@@ -39,7 +39,8 @@
     				<tbody>	
     				<tr ng-repeat="artikl in artikli">
       					<td> {{artikl.info.id}} </td>
-      					<td> <img src='./images/{{artikl.info.picture}}' height='60px' width='80px' alt='Bez slike'> </td>
+      					<!--<td> <img src='./images/{{artikl.info.picture}}' height='60px' width='80px' alt='Bez slike'> </td>-->
+      					<td> <img ng-src="./images/{{artikl.info.picture}}" height='60px' width='80px' alt='Bez slike'>
       					<td> {{artikl.info.name}} </td>
       					<td> {{artikl.category.name}} </td>
       					<td> {{artikl.info.cost}} </td>

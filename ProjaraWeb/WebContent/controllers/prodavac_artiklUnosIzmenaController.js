@@ -16,21 +16,26 @@ angular.module('sbzApp')
 			$scope.image = "";
 			$scope.format = "";
 			
+			/*
 			$scope.ucitajSliku = function() {
  		    	var output = document.getElementById('output');
  		    	var txt = '.\/images\/' + $scope.artikl.info.picture;
  		    	console.log(txt);
  		    	output.src = txt;
+ 		    	console.log("OUTPUT")
+ 		    	console.log(output);
  		    };
+			*/
 			
 			if ($scope.artikl.info.id == "") {
 				$scope.naslovnaPoruka = "Unos novog artikla";
 				$scope.izmena = false;
 			}
 			else {
+				console.log($scope.artikl);
 				$scope.naslovnaPoruka = "Izmena artikla";
 				$scope.izmena = true;
-				$scope.ucitajSliku();
+				//$scope.ucitajSliku();
 			}
 				
 			console.log("Izmena " + $scope.izmena);

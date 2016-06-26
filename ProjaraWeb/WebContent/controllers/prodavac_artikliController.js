@@ -17,6 +17,7 @@ angular.module('sbzApp')
 				console.log("svi artikli");
 				for (var i = 0; i<value.data.length; i++)
 					$scope.artikli.push(value.data[i]);	
+
 			});	
 			
 			$scope.moguceBrisanje = function(index) {
@@ -30,7 +31,7 @@ angular.module('sbzApp')
 					$scope.noviArtikl = {
 						"info": {
 							    "id" : "",
-							    "picture" : "",
+							    "picture" : "defaultImage.png",
 							    "name" : "",
 							    "cost" : 0,
 							    "inStock" : 0,

@@ -161,12 +161,8 @@ public class ItemRestBean implements ItemRestApi {
 	public ItemJson addNewItem(@MultipartForm CreateItemForm newItem)
 			throws ItemException, ItemCategoryException, BadArgumentsException,
 			UserException {
-
-		System.out.println("STIGAO REQ");
-		if(newItem.getImage() == null)
-			System.out.println("NULL");
 		
-		//authorization.checkRole("V", request.getSession());
+		authorization.checkRole("V", request.getSession());
 
 		return itemManager.formToItem(newItem);
 
