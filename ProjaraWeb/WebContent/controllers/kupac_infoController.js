@@ -73,6 +73,8 @@ angular.module('sbzApp')
 		}).then(function(value) {
 			if(value.statusText == "OK"){
 				$scope.uspesno = "Promene su sačuvane";
+				$cookies.remove("korisnik");
+				$cookies.putObject("korisnik",value.data);
 				$timeout(function() {
 					$scope.uspesno = "";
 				}, 1500);
