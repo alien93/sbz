@@ -43,7 +43,7 @@ angular.module('sbzApp')
 	 */
 	$scope.potvrdaKorpe = function(){
 		var korpa = KorpaService.dobaviKorpu();
-		if(korpa == undefined || korpa.artikli.length == 0){
+		if(korpa.artikli == undefined || korpa.artikli.length == 0){
 			$scope.greska = "Korpa je prazna. Molimo dodajte artikle u korpu preko \"Prodavnica\" stranice.";
 		}
 		else if($scope.bodovi < 0 || $scope.bodovi > $scope.maxBodovi ||$scope.bodovi == undefined ){
