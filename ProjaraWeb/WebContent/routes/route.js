@@ -15,6 +15,10 @@ sbzApp.factory('KorpaService', function(){
 		korpa = novaKorpa;
 	}
 	
+	korpa.dobaviArtikle = function(){
+		return korpa.artikli;
+	}
+	
 	korpa.dobaviKorpu = function(){
 		return korpa;
 	}

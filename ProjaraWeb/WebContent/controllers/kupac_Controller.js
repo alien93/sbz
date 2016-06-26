@@ -33,7 +33,7 @@ angular.module('sbzApp')
 		var korpa = KorpaService.dobaviKorpu();
 		console.log(korpa);
 		//izmeni maksimum (in stock)
-		if(korpa.artikli != undefined){
+		if(KorpaService.dobaviArtikle() != undefined){
 			for(var i=0; i<korpa.artikli.length; i++){
 				if(korpa.artikli[i].oznaka == artikal.oznaka){
 					artikal.maksimum -= korpa.artikli[i].kolicina;
@@ -123,7 +123,7 @@ angular.module('sbzApp')
 		else{
 			//ukoliko korpa ne postoji, kreiraj korpu
 			//if($cookies.get("korpa") == undefined){	
-			if(KorpaService.dobaviKorpu() == undefined){
+			if(KorpaService.dobaviArtikle() == undefined){
 				var korpa = {artikli:[]};
 				artikal.kolicina = kolicinaArtikla;
 				korpa.artikli.push(artikal);

@@ -100,9 +100,11 @@ angular.module('sbzApp')
 
 	//racunaj sumu za artikle
 	var racunajUkupno = (function(){
-		for(var i=0; i<korpa.artikli.length; i++){
-			korpa.artikli[i].ukupno = korpa.artikli[i].cenaSaPopustom * korpa.artikli[i].kolicina;
-			$scope.artikli.push(korpa.artikli[i]);
+		if(korpa.artikli != null){
+			for(var i=0; i<korpa.artikli.length; i++){
+				korpa.artikli[i].ukupno = korpa.artikli[i].cenaSaPopustom * korpa.artikli[i].kolicina;
+				$scope.artikli.push(korpa.artikli[i]);
+			}
 		}
 	})();
 
