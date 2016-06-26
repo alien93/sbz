@@ -1,5 +1,5 @@
 angular.module('sbzApp')
-	.controller('prodavac_artikliController', ['$rootScope', '$scope', '$location', '$http', '$uibModal', '$cookies',
+	.controller('prodavac_artikliController', ['$rootScope', '$scope', '$location', '$http', '$uibModal', '$cookies', 
 		function($rootScope, $scope, $location, $http, $uibModal, $cookies){
 			 
 			if($cookies.get("prodavacID") == undefined){
@@ -50,13 +50,9 @@ angular.module('sbzApp')
 					resolve: {
 						items: function(){
 								return $scope.artikli[index];
-							},
-						index: function(){
-								return index;
 							}
 						}
 		 		});
-		 		// TODO obrisati dodati red
 		 		
 		 	};
 
