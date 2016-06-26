@@ -44,62 +44,92 @@ angular.module('sbzApp')
 			
 			
 			$scope.potvrdi = function(){
-				// TODO : rest poziv za update ili add				
-//				if ($scope.izmena == false) {
-//					$http({
-//						method:"POST",
-//						url:"http://localhost:8080/ProjaraWeb/rest/items/add",
-//						data:$scope.artikl,
-//						headers: {'Content-Type': undefined}
-//					}).then(function(value){
-//						console.log("Uspjesno dodat artikl.");
-//						
-//						//Azuriranje reda u tabeli artikala
-//			 			$http({
-//							method: "GET", 
-//							url : "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikl.info.id,
-//						}).then(function(value) {
-//							$scope.original = value.data;
-//						});	
-//						$uibModalInstance.close();
-//					});
-//				} else {
-//					$http({
-//						method:"POST",
-//						url:"http://localhost:8080/ProjaraWeb/rest/items/update",
-//						data:$scope.artikl,
-//						headers: {'Content-Type': undefined}
-//					}).then(function(value){
-//						console.log("Uspjesno dodat artikl.");
-//						
-//						//Azuriranje reda u tabeli artikala
-//			 			$http({
-//							method: "GET", 
-//							url : "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikl.info.id,
-//						}).then(function(value) {
-//							$scope.original = value.data;
-//						});	
-//						$uibModalInstance.close();
-//					});
-//				}
+				// TODO : rest poziv za update ili add	
+				var fd = new FormData();
+		  		
+		  		fd.append("image", $scope.image);
+		  		fd.append("format", $scope.format);
+		  		fd.append("name",$scope.artikl.info.name);
+		  		fd.append("category",$scope.artikl.category);
+		  		fd.append("cost",$scope.artikl.info.cost);
+		  		fd.append("inStock",$scope.artikl.info.inStock);
+		  		fd.append("minQuantity",$scope.artikl.info.minQuantity);
+		  		
+				if ($scope.izmena == false) {
+					console.log("Dodavanje...");
+					$http.post("http://localhost:8080/ProjaraWeb/rest/items/add", fd, {
+			  			withCredentials: true,
+			  	        headers: {'Content-Type': undefined },
+			  	        transformRequest: angular.identity
+			  		 })
+			  		    .success(function(response, status, headers, config) {
+			  		           console.log(response);
+
+			  		 })
+			  		    .error(function(error, status, headers, config) {
+			  		           console.log(error);
+
+			  		  });
+					
+					$uibModalInstance.close();
+				} else {
+					
+				}
 				
-				console.log("Adresa " + "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikl.info.id);
-				//Azuriranje reda u tabeli artikala
-	 			$http({
-					method: "GET", 
-					url : "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikl.info.id,
-				}).then(function(value) {
-					console.log("dopuna");
-					console.log(value.data);
-					$scope.original = value.data;
-				}, function(reason){
-					console.log(JSON.stringify(reason));
-				});
-				$uibModalInstance.close();
+				
+				
+//				console.log("Adresa " + "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikl.info.id);
+//				//Azuriranje reda u tabeli artikala
+//	 			$http({
+//					method: "GET", 
+//					url : "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikl.info.id,
+//				}).then(function(value) {
+//					console.log("dopuna");
+//					console.log(value.data);
+//					$scope.original = value.data;
+//				}, function(reason){
+//					console.log(JSON.stringify(reason));
+//				});
+//				$uibModalInstance.close();
 				
 			};
+			
 			$scope.zatvori = function(){
 				$uibModalInstance.close();
 			};
+			
+			 //UCITAVANJE SLIKE
+ 		     $scope.openFile = function(event){
+ 		     	console.log(event);
+ 		     	var input = event.target;
+
+ 		     	//ucitava za preview
+ 		     	var dataURLreader = new FileReader();
+ 		     	dataURLreader.onload = function(file){     
+ 		     	  var dataURL = dataURLreader.result;
+
+ 		     	  var output = document.getElementById('output');
+
+ 		     	  $scope.image = dataURL;
+ 		     	  $scope.format = input.files[0].name.split('.')[1];
+
+ 		     	  output.src = dataURL;
+ 		     	  
+ 		     	};
+ 		     	
+ 		     	dataURLreader.readAsDataURL(input.files[0]);
+
+ 		     	//ucitava za slanje
+ 		     	var dataBinReader = new FileReader();
+ 		     	dataBinReader.onload = function(){
+	  		     	
+ 		     		$scope.json.image = input.files[0];
+ 		     		$scope.json.format = input.files[0].name.split('.')[1];
+ 		     		console.log($scope.json);
+ 		     	};
+
+ 		     	dataBinReader.readAsArrayBuffer(input.files[0]); 
+ 		     };
+				
 		}
 	]);
