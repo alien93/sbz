@@ -52,6 +52,9 @@ angular.module('sbzApp')
 							  	  };
 				$scope.user = $rootScope.user;
 				
+				/**
+				 * Logovanje
+				 */
 				$scope.login = function() {
 					
 					var username = $scope.user.username;
@@ -59,12 +62,7 @@ angular.module('sbzApp')
 					var role = $scope.user.role;
 					var roleCopy = role;
 					
-					console.log($scope.roles[0]);
-					console.log($scope.roles[1]);
-					console.log($scope.roles[2]);
-					console.log(role);
-
-					
+					//provera uloge korisnika i dodeljivanje odgovarajuce oznake
 					switch(role){
 					case ($scope.roles[0]): role="C"; break;
 					case ($scope.roles[1]) : role="V"; break;
@@ -77,7 +75,6 @@ angular.module('sbzApp')
 							"password":password,
 							"role": role
 					};
-					console.log(user);
 					$http({
 						method: "POST", 
 						url : "http://localhost:8080/ProjaraWeb/rest/user/login",
@@ -144,6 +141,10 @@ angular.module('sbzApp')
 					}); 
 					
 				};
+				
+				/**
+				 * Redirect na registraciju
+				 */
 				$scope.registrujSe = function(){
 					$location.path('/registracija');
 				}

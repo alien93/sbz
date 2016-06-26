@@ -3,15 +3,20 @@ angular.module('sbzApp')
 	     function($scope, $http, $timeout, $location){
 			$scope.korisnik = {};
 			
-			//provera lozinki
+			/**
+			 * Uklanja gresku ukoloko su lozinke identicne
+			 */
 			$scope.proveraLozinki = function(){
 				if($scope.password === $scope.password2){
 					$scope.greska = "";
 				}
 			}
 			
-			//registracija
+			/**
+			 * Registracija
+			 */
 			$scope.registrujMe = function(){
+				//proveri da li su lozinke identicne
 				if($scope.password !== $scope.password2){
 					$scope.greska = "Lozinke se ne poklapaju."
 				}
