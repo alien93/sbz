@@ -14,7 +14,8 @@ angular.module('sbzApp')
 	//dobavi info o kupcu
 	$scope.kupac = $cookies.getObject("korisnik");
 	var d = new Date($scope.kupac.registeredOn);
-	$scope.registeredOn = d.getDate() + "." + d.getMonth()+1 + "." + d.getFullYear() + ".";
+	var month = parseInt(d.getMonth()) + 1;
+	$scope.registeredOn = d.getDate() + "." + month + "." + d.getFullYear() + ".";
 	
 	$scope.statusRacuna = [];
 	$scope.racuni = [];
@@ -30,12 +31,19 @@ angular.module('sbzApp')
 			//uspesne (S), porucene (O), neuspele (C)
 			$scope.racuni = value.data;
 			for(var i=0; i<$scope.racuni.length; i++){
+				//stanje narudzbine
 				switch($scope.racuni[i].state){
 				case("O"):$scope.statusRacuna[i] = "Poručen"; break;
 				case("S"):$scope.statusRacuna[i] = "Uspešno realizovan"; break;
 				case("C"):$scope.statusRacuna[i] = "Neuspešno realizovan"; break;
 				default: $scope.statusRacuna[i] = "Neuspešno realizovan";
 				}
+				
+				//datum
+				var d = new Date($scope.racuni[i].date);
+				var month = parseInt(d.getMonth()) + 1;
+				$scope.racuni[i].date = d.getDate() + "." + month + "." + d.getFullYear() + ".";
+				
 			}
 		}
 		else{

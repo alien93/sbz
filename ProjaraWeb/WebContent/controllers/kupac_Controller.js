@@ -209,10 +209,19 @@ angular.module('sbzApp')
 .controller('kupac_artikalInfoController', ['$scope', '$uibModalInstance', 'oznakaArtikla', 'artikli',
                                             function($scope, $uibModalInstance, oznakaArtikla, artikli){
 
-	$scope.artikal = artikli[oznakaArtikla];
-	console.log("artikal");
-	console.log($scope.artikal);
-
+	var artikal = artikli[oznakaArtikla];
+	for(var i=0; i<artikal.akcije.length; i++){
+		var d = new Date(artikal.akcije[i].from);
+		var month = parseInt(d.getMonth()) + 1;
+		artikal.akcije[i].from = d.getDate() + "." + month + "." + d.getFullYear() + ".";
+		
+		d = new Date(artikal.akcije[i].until);
+		var month = parseInt(d.getMonth()) + 1;
+		artikal.akcije[i].until = d.getDate() + "." + month + "." + d.getFullYear() + ".";
+	}
+	
+	$scope.artikal = artikal;
+	
 	$scope.zatvori = function(){
 		$uibModalInstance.close();
 	}
