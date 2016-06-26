@@ -1,0 +1,119 @@
+<div modal="showModal" close="zatvori()">
+    <div class="modal-header">        
+        <div class="row">
+			<div class="col-md-1"> &nbsp; </div>
+			<div class="col-md-5">
+				<label> {{naslovnaPoruka}}</label> 
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+    </div>
+    
+    <div class="modal-body">
+        <br/>
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<label> Oznaka artikla: </label></div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<input type="text" class="form-control" ng-model="artikl.info.id">
+    		</div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<label> Naziv artikla: </label></div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<input type="text" class="form-control" ng-model="artikl.info.name">
+    		</div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<label> Slika: </label></div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<input type="file" accept="image/*" ng-model="artikl.info.picture">
+    		</div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<label> Kategorija: </label></div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<input type="text" class="form-control" ng-model="artikl.category.name">
+    		</div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<label> Cena: </label></div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<input type="text" class="form-control" ng-model="artikl.info.cost">
+    		</div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<label> Brojno stanje artikla u prodavnici: </label></div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<input type="number" class="form-control" ng-model="artikl.info.inStock">
+    		</div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<label> Minimalno stanje artikla na lageru: </label></div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	<div class="row">
+    		<div class="col-md-1"> &nbsp; </div>
+    		<div class="col-md-10"> 
+    			<input type="text" class="form-control" ng-model="artikl.info.minQuantity">
+    		</div>
+    		<div class="col-md-1"> &nbsp; </div>
+    	</div>
+    	<br/>
+	</div>
+
+    
+     <div class="modal-footer">
+     	<button class="btn" ng-click="zatvori()">Potvrdi unos</button>
+        <button class="btn" ng-click="zatvori()">Zatvori</button>
+    </div>
+</div>

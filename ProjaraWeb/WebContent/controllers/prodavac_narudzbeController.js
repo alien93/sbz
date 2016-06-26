@@ -26,11 +26,15 @@ angular.module('sbzApp')
 			}).then(function(value) {
 				console.log("narucivanje");
 				for (var i = 0; i < value.data.length; i++) {
-					var narudzba = {
+					console.log(value.data[i].info.needOrdering);
+				//    if (value.data[i].info.needOrdering == true) {
+						var narudzba = {
 							"oznaka": value.data[i].info.id,	
 							"naziv": value.data[i].info.name,
 							"razlog": value.data[i].info.minQuantity
-					};
+						};
+						$scope.narudzbe.push(narudzba);
+				//	}
 				};
 				
 			});	

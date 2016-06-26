@@ -6,7 +6,7 @@
    				&nbsp;
    			</div>
 			<div class="col-md-10"> 
-				<button type="button" class="btn btn-info"> Unos novog artikla </button>
+				<button type="button" class="btn btn-info" ng-click="artiklModal('na'); $event.stopPropagation();"> Unos novog artikla </button>
 			</div>
 			<div class="col-md-1"> 
 				&nbsp;
@@ -21,7 +21,7 @@
    				&nbsp;
    			</div>
    			<div class="col-md-10"> 
-				<table class="table table-bordered table-hover" id="tabelaNamjestaj">
+				<table class="table table-bordered table-hover">
     				<thead>
       					<tr>
       						<th>Oznaka</th>
@@ -29,25 +29,30 @@
         					<th>Naziv</th>
         					<th>Kategorija</th>
        	 					<th>Cena</th>
-        					<th>inStock</th>
+        					<th>Brojno stanje</th>
+        					<th>Minimalna količina na lageru</th>
+        					<th> &nbsp; </th>
         					<th> &nbsp; </th>
       					</tr>
     				</thead> 
     				<tbody>	
     				<tr ng-repeat="artikl in artikli">
-      					<td> {{artikl.id}} </td>
-      					<td> {{artikl.picture}} </td>
-      					<td> {{artikl.name}} </td>
+      					<td> {{artikl.info.id}} </td>
+      					<td> {{artikl.info.picture}} </td>
+      					<td> {{artikl.info.name}} </td>
       					<td> {{artikl.category.name}} </td>
-      					<td> {{artikl.price}} </td>
-      					<td> {{artikl.inStock}} </td>
+      					<td> {{artikl.info.cost}} </td>
+      					<td> {{artikl.info.inStock}} </td>
+      					<td> {{artikl.info.minQuantity}} </td>
       					<td>
-      						<button type="button" class="btn btn-info">Izmena</button> 
-      						<button type="button" class="btn btn-danger">Obriši</button>
+      						<button type="button" class="btn btn-info" ng-click="artiklModal($index); $event.stopPropagation();">Izmena</button> 
+      					</td>
+      					<td>
+      						<button type="button" class="btn btn-danger">Brisanje</button>
       					</td>
       				</tr>
     			</tbody>
-    </table>
+    		</table>
 		
 	</div>
 </div>
