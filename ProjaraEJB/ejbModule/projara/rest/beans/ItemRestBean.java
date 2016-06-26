@@ -179,6 +179,7 @@ public class ItemRestBean implements ItemRestApi {
 
 		authorization.checkRole("V", request.getSession());
 
+		
 		return itemManager.updateItemForm(itemForm);
 	}
 
