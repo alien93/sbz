@@ -45,11 +45,13 @@ angular.module('sbzApp')
 				} 
 			});	
 			
+			$scope.pictureChanged = false;
+			
 			
 			$scope.potvrdi = function(){				
 				var fd = new FormData();
+				
 		  		
-		  		fd.append("image", $scope.imageBin);
 		  		fd.append("format", $scope.format);
 		  		fd.append("name",$scope.artikl.info.name);
 		  		fd.append("category",$scope.artikl.category.info.code);
@@ -58,6 +60,10 @@ angular.module('sbzApp')
 		  		fd.append("minQuantity",$scope.artikl.info.minQuantity);
 		  		
 				if ($scope.izmena == false) {
+					
+					if($scope.pictureChanged)
+						fd.append("image", $scope.imageBin);
+					
 					$http.post("http://localhost:8080/ProjaraWeb/rest/items/add", fd, {
 			  			withCredentials: true,
 			  	        headers: {'Content-Type': undefined },
@@ -74,6 +80,9 @@ angular.module('sbzApp')
 			  		  });
 				} else {
 					fd.append("id", $scope.artikl.info.id);
+					
+					if($scope.pictureChanged)
+						fd.append("image", $scope.imageBin);
 					
 					$http.post("http://localhost:8080/ProjaraWeb/rest/items/update", fd, {
 			  			withCredentials: true,
@@ -115,6 +124,7 @@ angular.module('sbzApp')
 
  		     	  var output = document.getElementById('output');
 
+ 		     	  $scope.pictureChanged = true;
  		     	  $scope.image = dataURL;
  		     	  $scope.format = input.files[0].name.split('.')[1];
 
