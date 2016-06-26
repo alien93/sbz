@@ -98,7 +98,8 @@ angular.module('sbzApp')
 			};
 			
 			$scope.zatvori = function(){
-				parentScope.ukloniRed(index);
+				if ($scope.izmena == false)
+					parentScope.ukloniRed(index);
 				$uibModalInstance.close();
 			};
 			
