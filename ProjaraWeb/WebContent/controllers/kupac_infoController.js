@@ -3,7 +3,9 @@ angular.module('sbzApp')
 .controller('kupac_infoController', ['$scope', '$uibModal', '$location', '$cookies', '$timeout', '$http',
                                      function($scope, $uibModal, $location, $cookies, $timeout, $http){
 
-	//proveri je li je ulogovan
+	/**
+	 * Proveri da li je korisnik ulogovan
+	 */
 	if($cookies.get("korisnikID") == undefined){
 		$location.path('/prijava');
 	}
@@ -11,8 +13,11 @@ angular.module('sbzApp')
 		$scope.korisnikID = $cookies.get("korisnikID");
 	}
 	
-	//dobavi info o kupcu
+	/**
+	 * dobavi info o kupcu
+	 */
 	$scope.kupac = $cookies.getObject("korisnik");
+	//formatiraj datum
 	var d = new Date($scope.kupac.registeredOn);
 	var month = parseInt(d.getMonth()) + 1;
 	$scope.registeredOn = d.getDate() + "." + month + "." + d.getFullYear() + ".";
@@ -20,7 +25,9 @@ angular.module('sbzApp')
 	$scope.statusRacuna = [];
 	$scope.racuni = [];
 	
-	//dobavi istoriju racuna
+	/**
+	 * Dobavi istoriju racuna
+	 */
 	$http({
 		method: "GET", 
 		url : "http://localhost:8080/ProjaraWeb/rest/bills",
@@ -39,7 +46,7 @@ angular.module('sbzApp')
 				default: $scope.statusRacuna[i] = "Neuspešno realizovan";
 				}
 				
-				//datum
+				//formatiraj datum
 				var d = new Date($scope.racuni[i].date);
 				var month = parseInt(d.getMonth()) + 1;
 				$scope.racuni[i].date = d.getDate() + "." + month + "." + d.getFullYear() + ".";
@@ -53,6 +60,9 @@ angular.module('sbzApp')
 		$scope.greska = "Došlo je do greške. Molimo pokušajte ponovo.";
 	});
 	
+	/**
+	 * Detaljnije o racunu - modalni dijalog
+	 */
 	$scope.pogledajRacun = function(oznaka){
 		var modalInstance = $uibModal.open({
 			animation: true,
@@ -72,6 +82,9 @@ angular.module('sbzApp')
 		});
 	}
 
+	/**
+	 * Cuvanje izmenjenih podataka o korisniku
+	 */
 	$scope.cuvajIzmene = function(){
 		$http({
 			method: "POST", 
@@ -99,17 +112,14 @@ angular.module('sbzApp')
 .controller('kupac_racunInfoController', ['$scope', 'oznaka', 'racuni', 'statusRacuna', '$uibModalInstance',
                                           function($scope, oznaka, racuni, statusRacuna, $uibModalInstance){
 
-	console.log("Status racuna");
-	console.log(statusRacuna);
 	$scope.ukupanPopust=[];
 	
-	//racuna ukupan popust
+	/**
+	 * racuna ukupan popust
+	 */
 	var racunajPopust = function(id, popusti){
-		console.log(popusti)
 		for(var i=0; i<popusti.length; i++){
 			var popust = 0;
-			console.log(id);
-			console.log(popusti[i]);
 			for(var j=0; j<popusti[i].itemDiscounts.length; j++){
 				popust += popusti[i].itemDiscounts[j].percentage;
 			}
@@ -117,10 +127,12 @@ angular.module('sbzApp')
 		}
 	};
 	
+	/**
+	 * Dobavi podatke o popustima, statusu racuna, artiklima na popustu
+	 */
 	for(var i=0; i<racuni.length; i++){
 		if(racuni[i].billId == oznaka){
 			$scope.racun=racuni[i];
-			console.log(statusRacuna[i]);
 			$scope.statusRacuna = statusRacuna[i];
 			$scope.artikli = racuni[i].billItems;
 			$scope.popusti = racuni[i].billDiscounts;
@@ -128,9 +140,10 @@ angular.module('sbzApp')
 			break;
 		}
 	}
-	
-	
 
+	/**
+	 * Zatvaranje modalnog dijaloga
+	 */
 	$scope.zatvori = function(){
 		$uibModalInstance.close();
 	}
