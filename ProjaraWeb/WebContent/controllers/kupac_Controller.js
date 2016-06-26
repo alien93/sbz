@@ -25,6 +25,22 @@ angular.module('sbzApp')
 	$scope.artikli = [];
 	$scope.kategorije = [];
 	$scope.kolicinaArtikla = 1;
+	
+	//dobavi podatke iz korpe ukoliko postoje i smanji inStock parametar
+	var proveriMaksimum = function(artikal){
+		//proveri je l' korpa postoji
+		var korpa = $cookies.getObject("korpa");
+		//izmeni maksimum (in stock)
+		if(korpa != undefined){
+			for(var i=0; i<korpa.artikli.length; i++){
+				if(korpa.artikli[i].oznaka == artikal.oznaka){
+					artikal.maksimum -= korpa.artikli[i].kolicina;
+					break;
+				}
+			}
+		}
+		return artikal;
+	}
 
 	var populateHelp = function(value){
 		$scope.artikli = [];
@@ -40,8 +56,10 @@ angular.module('sbzApp')
 						"cena":value.data[i].info.cost,
 						"cenaSaPopustom":value.data[i].costWithDiscount,
 						"akcije":value.data[i].actions,
-						"slika":"images/"+value.data[i].info.picture
+						"slika":"images/"+value.data[i].info.picture,
+						"maksimum":value.data[i].info.inStock
 				}
+				artikal = proveriMaksimum(artikal);
 				$scope.artikli.push(artikal);
 			}
 		}
@@ -86,9 +104,16 @@ angular.module('sbzApp')
 
 	//dodavanje u korpu
 	$scope.dodajUKorpu = function(kolicinaArtikla, artikal){
-		if(kolicinaArtikla == undefined || kolicinaArtikla<1){
+		if(artikal.maksimum == 0){
 			//upozorenje
-			$scope.greska = "Količina artikala nije definisana ili je manja od 1. Artikal nije dodat u korpu.";
+			$scope.greska = "Artikla više nema na stanju.";
+			$timeout(function() {
+				$scope.greska = "";
+			}, 1500);
+		}
+		else if(kolicinaArtikla == undefined || kolicinaArtikla<1 || kolicinaArtikla > artikal.maksimum){
+			//upozorenje
+			$scope.greska = "Količina artikala nije ispravno definisana. Mozete naručiti najmanje 1, a najviše " + artikal.maksimum + " artikala. Artikal nije dodat u korpu.";
 			$timeout(function() {
 				$scope.greska = "";
 			}, 1500);
@@ -108,6 +133,13 @@ angular.module('sbzApp')
 				$cookies.remove("korpa");
 				$cookies.putObject("korpa", korpa);
 			}
+			//promeni stanje artikla
+			for(var i=0; i<$scope.artikli.length; i++){
+				if($scope.artikli[i].oznaka == artikal.oznaka){
+					$scope.artikli[i].maksimum -= kolicinaArtikla;
+				}
+			}
+			
 			//status uspesnosti
 			$scope.izvestajUspesnosti = "Artikal je dodat u korpu.";
 			$timeout(function() {
