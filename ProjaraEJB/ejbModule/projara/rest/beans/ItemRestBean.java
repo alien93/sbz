@@ -162,7 +162,11 @@ public class ItemRestBean implements ItemRestApi {
 			throws ItemException, ItemCategoryException, BadArgumentsException,
 			UserException {
 
-		authorization.checkRole("V", request.getSession());
+		System.out.println("STIGAO REQ");
+		if(newItem.getImage() == null)
+			System.out.println("NULL");
+		
+		//authorization.checkRole("V", request.getSession());
 
 		return itemManager.formToItem(newItem);
 
