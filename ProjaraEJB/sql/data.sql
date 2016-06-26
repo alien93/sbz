@@ -27,7 +27,7 @@ INSERT INTO `webshop_sbz`.`user` (`CAT_ID`, `USR_USERNAME`, `USR_FNAME`, `USR_LN
 INSERT INTO `webshop_sbz`.`user` (`CAT_ID`, `USR_USERNAME`, `USR_FNAME`, `USR_LNAME`, `USR_REGDAT`, `USR_ROLE`, `USR_CUS_POINT`, `USR_CUS_RESERVED`, `USR_PASSWORD`) VALUES ('A', 'imenko', 'Imenko', 'Prezimić', '2016-01-01', 'C', '0', '0', '123456');
 
 /*Item category*/
-INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('A', 'Siroke potrosnje', '20.0');
+INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('A', 'Siroka potrosnja', '20.0');
 INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('AAA', 'A', 'Prehrambeni proizvodi', '10.0');
 INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('AAB', 'A', 'Kozmetika', '15.0');
 INSERT INTO `webshop_sbz`.`item_category` (`ITCAT_CODE`, `ITE_ITCAT_CODE`, `ITCAT_NAME`, `ITCAT_MDISCOUNT`) VALUES ('AAC', 'A', 'Kućna hemija', '50.0');
