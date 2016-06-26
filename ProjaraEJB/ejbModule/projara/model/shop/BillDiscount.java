@@ -156,13 +156,16 @@ public class BillDiscount implements Serializable {
 		setBill(bill);
 	}
 
+	/*
 	@PreRemove
 	public void preRemoveBillDiscount() {
 		if (bill != null)
 			bill.removeBillDiscounts(this);
 
 	}
-
+	
+	*/
+	
 	public String getName() {
 		return name;
 	}

@@ -56,7 +56,7 @@ public class BillItem implements Serializable {
 	 * @pdRoleInfo migr=no name=BillItemDiscount assc=itemHasDiscounts coll=Set
 	 *             impl=HashSet mult=0..*
 	 */
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER,mappedBy="billItem")
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER,mappedBy="billItem", orphanRemoval=true)
 	private Set<BillItemDiscount> discounts = new HashSet<>();
 	/** @pdRoleInfo migr=no name=Item assc=isOnBill mult=1..1 side=A */
 	@ManyToOne
@@ -337,6 +337,7 @@ public class BillItem implements Serializable {
 		return getBill().getCustomer();
 	}
 	
+	/*
 	@PreRemove
 	public void preRemoveBillItem(){
 		if(bill !=null)
@@ -344,7 +345,7 @@ public class BillItem implements Serializable {
 		item.removeItems(this);
 		removeAllDiscounts();
 	}
-	
+	*/
 	
 
 }

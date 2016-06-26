@@ -157,13 +157,15 @@ public class BillItemDiscount implements Serializable {
 		setBillItem(billItem);
 	}
 	
+	/*
 	@PreRemove
 	public void preRemoveBillItemDiscount() {
 		if (billItem != null)
 			billItem.removeDiscounts(this);
 
 	}
-
+	*/
+	
 	public String getName() {
 		return name;
 	}

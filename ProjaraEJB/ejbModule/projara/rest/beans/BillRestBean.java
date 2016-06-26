@@ -20,6 +20,7 @@ import projara.model.dao.interfaces.BillDaoLocal;
 import projara.model.dao.interfaces.BillDiscountDaoLocal;
 import projara.model.dao.interfaces.BillItemDaoLocal;
 import projara.model.dao.interfaces.BillItemDiscountDaoLocal;
+import projara.model.dao.interfaces.UserDaoLocal;
 import projara.model.shop.Bill;
 import projara.model.users.Customer;
 import projara.model.users.User;
@@ -67,6 +68,9 @@ public class BillRestBean implements BillRestApi {
 
 	@EJB
 	private BillDiscountDaoLocal billDiscountDao;
+	
+	@EJB
+	private UserDaoLocal userDao;
 
 	@Override
 	@POST
@@ -111,10 +115,23 @@ public class BillRestBean implements BillRestApi {
 	public Response rejectBill(@PathParam("id") int billId)
 			throws BillException, BadArgumentsException, UserException {
 
-		authorization.checkRole("C", request.getSession());
+		Customer c = (Customer)authorization.checkRole("C", request.getSession());
 
-		billManager.rejectOrder(billId);
-
+		//billManager.rejectOrder(billId);
+		
+		c = (Customer)userDao.merge(c);
+		
+		for(Bill b:c.getBills()){
+			if(b.getId()==billId){
+				c.removeBills(b);
+				billDao.remove(b);
+				billDao.flush();
+				break;
+			}
+		}
+		
+		userDao.persist(c);
+		
 		return Response.ok().build();
 	}
 
