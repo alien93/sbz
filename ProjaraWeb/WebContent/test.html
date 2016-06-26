@@ -1,0 +1,119 @@
+	<html>
+	<head>
+		<title></title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+
+	</head>
+
+
+
+	<body ng-app="app" ng-controller="myController">
+
+	<input type='file' accept='image/*' onchange="angular.element(this).scope().openFile(event)"><br>
+	<img id='output'>
+	<button ng-click="send()">Send</button>
+
+	<br>
+	<!--  OVO NE TREBA -->
+	<!--
+	<form name ="form" method="POST" enctype="multipart/form-data" action="http://localhost:8080/ProjaraWeb/rest/items/add">
+			<input ng-model="json.name" type="text" name="name" placeholder="name">
+			<input ng-model="json.format" type="text" name="format" placeholder="format">
+			<input ng-model="json.image" type="file" name="image">
+			<input ng-model="json.cost" type="text" name="cost" placeholder="cost">
+			<input ng-model="json.category" type="text" name="category" placeholder="category">
+			<input ng-model="json.minQuantity" type="text" name="minQuantity" placeholder="min q">
+			<input ng-model="json.inStock" type="text" name="inStock" placeholder="in stock">
+			<input type="submit" value="ADD">
+	</form>
+	-->
+	<script>
+	  
+	  var app = angular.module("app",[]);
+	  app.controller("myController",function($scope,$http){
+
+		  //NEKI DUMMY ITEM
+	  	$scope.json = {
+	    	"image":"",
+	    	"format":"",
+	    	"name":"Neki Naziv",
+	    	"category":"A",
+	    	"cost":500.00,
+	    	"inStock":40,
+	    	"minQuantity":20
+	   }
+
+	  	$scope.send = function(){
+	  		//alert("KLIK");
+
+	  		var fd = new FormData();
+	  		
+	  		fd.append("image",$scope.json.image);
+	  		fd.append("format",$scope.json.format);
+	  		fd.append("name",$scope.json.name);
+	  		fd.append("category",$scope.json.category);
+	  		fd.append("cost",$scope.json.cost);
+	  		fd.append("inStock",$scope.json.inStock);
+	  		fd.append("minQuantity",$scope.json.minQuantity);
+
+
+	  		$http.post("http://localhost:8080/ProjaraWeb/rest/items/add", fd, {
+	  			withCredentials: true,
+	  	        headers: {'Content-Type': undefined },
+	  	        transformRequest: angular.identity
+	  		         })
+	  		         .success(function(response, status, headers, config) {
+	  		           console.log(response);
+
+	  		         })
+	  		         .error(function(error, status, headers, config) {
+	  		           console.log(error);
+
+	  		         });
+	  		     }
+
+	  		     //UCITAVANJE SLIKE
+	  		     $scope.openFile = function(event){
+	  		     	console.log(event);
+	  		     	var input = event.target;
+
+
+
+	  		     	//ucitava za preview
+	  		     	var dataURLreader = new FileReader();
+	  		     	dataURLreader.onload = function(file){     
+	  		     	  var dataURL = dataURLreader.result;
+
+	  		     	  var output = document.getElementById('output');
+
+	  		     	  $scope.json.image = dataURL;
+	  		     	  $scope.json.format = input.files[0].name.split('.')[1];
+
+	  		     	  output.src = dataURL;
+	  		     	  
+	  		     	};
+	  		     	
+	  		     	dataURLreader.readAsDataURL(input.files[0]);
+
+	  		     	//ucitava za slanje
+	  		     	var dataBinReader = new FileReader();
+	  		     	dataBinReader.onload = function(){
+		  		     	
+	  		     		$scope.json.image = input.files[0];
+	  		     		$scope.json.format = input.files[0].name.split('.')[1];
+	  		     		console.log($scope.json);
+	  		     	}
+
+	  		     	dataBinReader.readAsArrayBuffer(input.files[0]);
+	  		     	
+
+	  		     }
+
+	  		     
+
+	  		 });
+	
+	</script>
+
+	</body>
+	</html>
