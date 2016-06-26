@@ -39,6 +39,16 @@
     (printout t "Privilegovani kupac" crlf)
     )
 
+(defrule vrednost_preko_50000
+    "k pravilo"
+    (declare (salience 7)(no-loop TRUE))
+   	?bill <- (Bill (originalTotal ?origTotal &:(> ?origTotal 50000))(OBJECT ?objectBill &:(eq TRUE (call ?objectBill itemsPercentageTest))))
+    =>
+    (printout t "prosao: " ?bill.originalTotal crlf)
+    (definstance BillDiscount (new BillDiscount 3.0 "A" ?bill.OBJECT "K pravilo"))
+    (modify ?bill(discountPercentage (+ ?bill.discountPercentage 3.0)))
+)
+
 (defrule konacna_cena_racuna
     "Umanjuje popust na racun"
     (declare (salience 5)(no-loop TRUE))
