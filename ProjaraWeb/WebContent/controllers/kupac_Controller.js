@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-.controller('kupac_Controller', ['$scope', '$uibModal', '$http', '$timeout', '$cookies', '$location',
-                                 function($scope, $uibModal, $http, $timeout, $cookies, $location){
+.controller('kupac_Controller', ['$scope', '$uibModal', '$http', '$timeout', '$cookies', '$location', 'KorpaService',
+                                 function($scope, $uibModal, $http, $timeout, $cookies, $location, KorpaService){
 
 	if($cookies.get("korisnikID") == undefined){
 		$location.path('/prijava');
@@ -29,9 +29,11 @@ angular.module('sbzApp')
 	//dobavi podatke iz korpe ukoliko postoje i smanji inStock parametar
 	var proveriMaksimum = function(artikal){
 		//proveri je l' korpa postoji
-		var korpa = $cookies.getObject("korpa");
+		//var korpa = $cookies.getObject("korpa");
+		var korpa = KorpaService.dobaviKorpu();
+		console.log(korpa);
 		//izmeni maksimum (in stock)
-		if(korpa != undefined){
+		if(korpa.artikli != undefined){
 			for(var i=0; i<korpa.artikli.length; i++){
 				if(korpa.artikli[i].oznaka == artikal.oznaka){
 					artikal.maksimum -= korpa.artikli[i].kolicina;
@@ -120,18 +122,23 @@ angular.module('sbzApp')
 		}
 		else{
 			//ukoliko korpa ne postoji, kreiraj korpu
-			if($cookies.get("korpa") == undefined){	
+			//if($cookies.get("korpa") == undefined){	
+			if(KorpaService.dobaviKorpu() == undefined){
 				var korpa = {artikli:[]};
 				artikal.kolicina = kolicinaArtikla;
 				korpa.artikli.push(artikal);
-				$cookies.putObject("korpa", korpa);
+				//$cookies.putObject("korpa", korpa);
+				KorpaService.postaviKorpu(korpa);
 			}
 			else{
-				var korpa = $cookies.getObject("korpa");
+				//var korpa = $cookies.getObject("korpa");
+				var korpa = KorpaService.dobaviKorpu();
 				artikal.kolicina = kolicinaArtikla;
 				dodajArtikal(korpa, artikal);
-				$cookies.remove("korpa");
-				$cookies.putObject("korpa", korpa);
+				//$cookies.remove("korpa");
+				KorpaService.obrisiKorpu();
+				//$cookies.putObject("korpa", korpa);
+				KorpaService.postaviKorpu(korpa);
 			}
 			//promeni stanje artikla
 			for(var i=0; i<$scope.artikli.length; i++){

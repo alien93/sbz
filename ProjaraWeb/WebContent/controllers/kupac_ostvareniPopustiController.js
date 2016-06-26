@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies', '$http', '$timeout',
-                                                 function($scope, $location, $cookies, $http, $timeout){
+.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies', '$http', '$timeout', 'KorpaService',
+                                                 function($scope, $location, $cookies, $http, $timeout, KorpaService){
 
 	//proveri da li je korisnik vec prijavljen
 	if($cookies.get("korisnikID") == undefined){
@@ -58,7 +58,8 @@ angular.module('sbzApp')
 				headers: {'Content-Type': 'application/json'}
 			}).then(function(value) {
 				if(value.statusText == "OK"){
-					$cookies.remove("korpa");
+					//$cookies.remove("korpa");
+					KorpaService.obrisiKorpu();
 					$cookies.remove("izvestajRacuna");
 					$timeout(function() {
 						$scope.uspesno = "Uspešno ste naručili artikle. Stanje Vašeg računa možete pratiti u istoriji kupovina.";
@@ -79,7 +80,8 @@ angular.module('sbzApp')
 				headers: {'Content-Type': 'application/json'}
 			}).then(function(value) {
 				if(value.statusText == "OK"){
-					$cookies.remove("korpa");
+					//$cookies.remove("korpa");
+					KorpaService.obrisiKorpu();
 					$cookies.remove("izvestajRacuna");
 					$scope.uspesno = "Uspešno ste naručili artikle. Stanje Vašeg računa možete pratiti u istoriji kupovina.";
 					$timeout(function() {
@@ -104,7 +106,8 @@ angular.module('sbzApp')
 	}
 	
 	$scope.otkaziKupovinu = function(){
-		$cookies.remove("korpa");
+		//$cookies.remove("korpa");
+		KorpaService.obrisiKorpu();
 		$cookies.remove("izvestajRacuna");
 		
 		//ukloni podatke o zapocetom racunu

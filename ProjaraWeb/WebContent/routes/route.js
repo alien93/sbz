@@ -6,6 +6,25 @@ sbzApp.filter('iif', function () {
 	   };
 	});
 
+sbzApp.factory('KorpaService', function(){
+	var korpa = {};
+	
+	korpa.artikli = [];
+	
+	korpa.postaviKorpu = function(novaKorpa){
+		korpa = novaKorpa;
+	}
+	
+	korpa.dobaviKorpu = function(){
+		return korpa;
+	}
+	
+	korpa.obrisiKorpu = function(){
+		korpa = {};
+	}
+	
+	return korpa;
+});
 
 sbzApp.config(function($routeProvider){
 				

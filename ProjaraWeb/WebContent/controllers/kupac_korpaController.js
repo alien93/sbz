@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$http', '$cookies', '$timeout',
-                                      function($scope, $location, $cookies, $http, $cookies, $timeout){
+.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$http', '$cookies', '$timeout', 'KorpaService',
+                                      function($scope, $location, $cookies, $http, $cookies, $timeout, KorpaService){
 
 	if($cookies.get("korisnikID") == undefined){
 		$location.path('/prijava');
@@ -15,7 +15,8 @@ angular.module('sbzApp')
 	$scope.zaUplatu = 0;
 	$scope.maxBodovi = user.points;
 	
-	var korpa = $cookies.getObject("korpa");
+	//var korpa = $cookies.getObject("korpa");
+	var korpa = KorpaService.dobaviKorpu();
 
 	var dobaviArtikle = function(){
 		var retVal = [];
@@ -31,7 +32,8 @@ angular.module('sbzApp')
 
 	//potvrda sadrzaja korpe
 	$scope.potvrdaKorpe = function(){
-		var korpa = $cookies.getObject("korpa");
+		//var korpa = $cookies.getObject("korpa");
+		var korpa = KorpaService.dobaviKorpu();
 		if(korpa == undefined || korpa.artikli.length == 0){
 			$scope.greska = "Korpa je prazna. Molimo dodajte artikle u korpu preko \"Prodavnica\" stranice.";
 		}
@@ -57,7 +59,11 @@ angular.module('sbzApp')
 					headers: {'Content-Type': 'application/json'}
 				}).then(function(value) {
 					if(value.statusText == "OK"){
+						console.log("izvestaj racuna");
+						console.log(value);
+						
 						$cookies.putObject("izvestajRacuna", value);
+						console.log($cookies.getObject("izvestajRacuna"));
 						//pokupi zeljeni broj bodova
 						$cookies.put("bodovi", $scope.bodovi);
 						$location.path("/kupac/korpa/popusti");
@@ -111,15 +117,18 @@ angular.module('sbzApp')
 	izracunajZaUplatu();
 
 	var brisiIzKorpeCookie = function(oznakaArtikla){
-		var korpa = $cookies.getObject("korpa");
+		//var korpa = $cookies.getObject("korpa");
+		var korpa = KorpaService.dobaviKorpu();
 		var novaKorpa = {artikli:[]};
 		for(var i=0; i<korpa.artikli.length; i++){
 			if(korpa.artikli[i].oznaka !== oznakaArtikla){
 				novaKorpa.artikli.push(korpa.artikli[i]);
 			}
 		}
-		$cookies.remove("korpa");
-		$cookies.putObject("korpa", novaKorpa);
+		//$cookies.remove("korpa");
+		KorpaService.obrisiKorpu();
+		//$cookies.putObject("korpa", novaKorpa);
+		KorpaService.postaviKorpu(novaKorpa);
 	}
 
 	//brisanje artikla iz korpe
@@ -131,7 +140,8 @@ angular.module('sbzApp')
 
 	//brisanje sadrzaja korpe
 	$scope.isprazniKorpu = function(){
-		$cookies.remove("korpa");
+		//$cookies.remove("korpa");
+		KorpaService.obrisiKorpu();
 		$location.path("/kupac");
 	}
 
