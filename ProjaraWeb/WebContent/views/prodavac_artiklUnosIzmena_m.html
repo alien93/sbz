@@ -63,7 +63,7 @@
     		<div class="col-md-1"> &nbsp; </div>
     		<div class="col-md-10"> 
     			<select class="form-control" ng-model="artikl.category" 
-					ng-options="kat.name for kat in sveKategorije">
+					ng-options="kat.info.name for kat in sveKategorije">
 				</select>
     			<!--  TextBox za prikaz/unos kategorije, zamijenjen selectom koji ce to prikazati
     				<input type="text" class="form-control" ng-model="artikl.category.name">

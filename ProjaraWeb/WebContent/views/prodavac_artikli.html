@@ -39,18 +39,21 @@
     				<tbody>	
     				<tr ng-repeat="artikl in artikli">
       					<td> {{artikl.info.id}} </td>
-      					<td> {{artikl.info.picture}} </td>
+      					<td> <img src='./images/{{artikl.info.picture}}' height='60px' width='80px' alt='Bez slike'> </td>
       					<td> {{artikl.info.name}} </td>
       					<td> {{artikl.category.name}} </td>
       					<td> {{artikl.info.cost}} </td>
       					<td> {{artikl.info.inStock}} </td>
       					<td> {{artikl.info.minQuantity}} </td>
-      					<td> {{artikl.info.active}} </td>
+      					<td> <md-checkbox ng-checked ="artikl.info.active" ng-readonly="true" aria-readonly="true"> 
+      						</md-checkbox>
+      					</td>
       					<td>
       						<button type="button" class="btn btn-info" ng-click="artiklModal($index); $event.stopPropagation();">Izmena</button> 
       					</td>
       					<td>
-      						<button type="button" class="btn btn-danger">Brisanje</button>
+      						<button type="button" class="btn btn-danger" ng-click="obrisiArtikl($index)"
+      							ng-disabled="moguceBrisanje($index)">Brisanje</button>
       					</td>
       				</tr>
     			</tbody>

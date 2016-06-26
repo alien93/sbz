@@ -17,9 +17,11 @@ angular.module('sbzApp')
 				console.log("svi artikli");
 				for (var i = 0; i<value.data.length; i++)
 					$scope.artikli.push(value.data[i]);	
-				console.log("Artikl " + $scope.artikli[0].category.name);
 			});	
 			
+			$scope.moguceBrisanje = function(index) {
+				return !$scope.artikli[index].info.active;
+			};			
 			
 			$scope.artiklModal = function(index) {
 				console.log('Novi unos/izmjena');
@@ -54,7 +56,28 @@ angular.module('sbzApp')
 							}
 						}
 		 		});
+		 		// TODO obrisati dodati red
 		 		
+		 	};
+
+		 	$scope.obrisiArtikl = function(index) {
+		 		$http({  
+	                method: "DELETE", 
+	                url: 'http://localhost:8080/ProjaraWeb/rest/items/' + $scope.artikli[index].info.id
+		 		}).then(function(res) {
+		 			console.log(res.data);
+		 			
+		 			//Azuriranje reda u tabeli artikala
+		 			$http({
+						method: "GET", 
+						url : "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikli[index].info.id,
+					}).then(function(value) {
+						$scope.artikli[index] = value.data;
+					});	
+		 			
+		 		}, function(error) {
+		 			console.log(error);
+		 		});
 		 	};
 
 

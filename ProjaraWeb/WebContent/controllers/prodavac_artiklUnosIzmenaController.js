@@ -30,8 +30,8 @@ angular.module('sbzApp')
 			}).then(function(value) {
 				console.log("sve kategorije");
 				for (var i = 0; i < value.data.length; i++) {
-					$scope.sveKategorije.push(value.data[i].info);	
-					if ($scope.artikl.category.name == $scope.sveKategorije[i].name) {
+					$scope.sveKategorije.push(value.data[i]);	
+					if ($scope.artikl.category.name == $scope.sveKategorije[i].info.name) {
 						$scope.artikl.category = $scope.sveKategorije[i];
 					} 
 				}
@@ -44,13 +44,21 @@ angular.module('sbzApp')
 			
 			
 			$scope.potvrdi = function(){
-				// TODO : rest poziv za update ili add
-				if ($scope.izmena == true) {
-					
+				// TODO : rest poziv za update ili add				
+				if ($scope.izmena == false) {
+					$http({
+						method:"POST",
+						url:"http://localhost:8080/ProjaraWeb/rest/items/add",
+						data:$scope.artikl,
+						headers: {'Content-Type': 'application/json'}
+					}).then(function(value){
+						console.log("Uspjesno dodat artikl.");
+						$uibModalInstance.close();
+					})
 				} else {
 					
 				}
-				$uibModalInstance.close();
+				
 			};
 			$scope.zatvori = function(){
 				$uibModalInstance.close();
