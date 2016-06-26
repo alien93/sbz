@@ -20,7 +20,7 @@
     	<div class="row">
     		<div class="col-md-1"> &nbsp; </div>
     		<div class="col-md-10"> 
-    			<input type="text" class="form-control" ng-model="artikl.info.id">
+    			<input type="text" class="form-control" ng-model="artikl.info.id" ng-disabled="izmena" required>
     		</div>
     		<div class="col-md-1"> &nbsp; </div>
     	</div>
@@ -34,7 +34,7 @@
     	<div class="row">
     		<div class="col-md-1"> &nbsp; </div>
     		<div class="col-md-10"> 
-    			<input type="text" class="form-control" ng-model="artikl.info.name">
+    			<input type="text" class="form-control" ng-model="artikl.info.name" required>
     		</div>
     		<div class="col-md-1"> &nbsp; </div>
     	</div>
@@ -62,10 +62,12 @@
     	<div class="row">
     		<div class="col-md-1"> &nbsp; </div>
     		<div class="col-md-10"> 
-    			<select class="form-control" ng-model="artikl.category.name"
+    			<select class="form-control" ng-model="artikl.category" 
 					ng-options="kat.info.name for kat in sveKategorije">
 				</select>
-    			<input type="text" class="form-control" ng-model="artikl.category.name">
+    			<!--  TextBox za prikaz/unos kategorije, zamijenjen selectom koji ce to prikazati
+    				<input type="text" class="form-control" ng-model="artikl.category.name">
+    			 -->
     		</div>
     		<div class="col-md-1"> &nbsp; </div>
     	</div>
@@ -79,7 +81,7 @@
     	<div class="row">
     		<div class="col-md-1"> &nbsp; </div>
     		<div class="col-md-10"> 
-    			<input type="text" class="form-control" ng-model="artikl.info.cost">
+    			<input type="text" class="form-control" ng-model="artikl.info.cost" required>
     		</div>
     		<div class="col-md-1"> &nbsp; </div>
     	</div>
@@ -93,7 +95,7 @@
     	<div class="row">
     		<div class="col-md-1"> &nbsp; </div>
     		<div class="col-md-10"> 
-    			<input type="number" class="form-control" ng-model="artikl.info.inStock">
+    			<input type="number" class="form-control" ng-model="artikl.info.inStock" required>
     		</div>
     		<div class="col-md-1"> &nbsp; </div>
     	</div>

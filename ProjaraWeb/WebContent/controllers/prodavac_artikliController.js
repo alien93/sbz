@@ -15,37 +15,34 @@ angular.module('sbzApp')
 				url : "http://localhost:8080/ProjaraWeb/rest/items/",
 			}).then(function(value) {
 				console.log("svi artikli");
-				$scope.artikli = value.data;				
+				for (var i = 0; i<value.data.length; i++)
+					$scope.artikli.push(value.data[i]);	
 			});	
 			
+			$scope.moguceBrisanje = function(index) {
+				return !$scope.artikli[index].info.active;
+			};			
 			
 			$scope.artiklModal = function(index) {
 				console.log('Novi unos/izmjena');
 				$scope.noviArtikl = {};
 				if (index == 'na') {
 					$scope.noviArtikl = {
-						"info.id" : "",
-						"info.picture" : "",
-						"info.name" : "",
-						"category.name" : "",
-						"info.cost" : 0,
-						"info.inStock" : 0,
-						"info.minQuantity" : 0
+						"info": {
+							    "id" : "",
+							    "picture" : "",
+							    "name" : "",
+							    "cost" : 0,
+							    "inStock" : 0,
+							    "minQuantity" : 0,
+							    "active" : false
+						},
+						"category" : {"code":"", "name":"", "maxDiscount":""},
 					};
 					$scope.artikli.push($scope.noviArtikl);
 					index = $scope.artikli.length - 1;
-				} else {
-					$scope.noviArtikl = {
-							"info.id" :  $scope.artikli[index].info.id,
-							"info.picture" : $scope.artikli[index].info.picture,
-							"info.name" : $scope.artikli[index].info.name,
-							"category.name" : $scope.artikli[index].category.name,
-							"info.cost" : $scope.artikli[index].info.cost,
-							"info.inStock" : $scope.artikli[index].info.inStock,
-							"info.minQuantity" : $scope.artikli[index].info.minQuantity	
-					};
-				}
-					
+				} 
+				
 		 		var modalInstance = $uibModal.open({
 					animation: false,
 					templateUrl: 'views/prodavac_artiklUnosIzmena_m.html',
@@ -59,7 +56,28 @@ angular.module('sbzApp')
 							}
 						}
 		 		});
+		 		// TODO obrisati dodati red
 		 		
+		 	};
+
+		 	$scope.obrisiArtikl = function(index) {
+		 		$http({  
+	                method: "DELETE", 
+	                url: 'http://localhost:8080/ProjaraWeb/rest/items/' + $scope.artikli[index].info.id
+		 		}).then(function(res) {
+		 			console.log(res.data);
+		 			
+		 			//Azuriranje reda u tabeli artikala
+		 			$http({
+						method: "GET", 
+						url : "http://localhost:8080/ProjaraWeb/rest/items/" + $scope.artikli[index].info.id,
+					}).then(function(value) {
+						$scope.artikli[index] = value.data;
+					});	
+		 			
+		 		}, function(error) {
+		 			console.log(error);
+		 		});
 		 	};
 
 
