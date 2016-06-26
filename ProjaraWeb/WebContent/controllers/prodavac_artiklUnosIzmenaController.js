@@ -9,26 +9,47 @@ angular.module('sbzApp')
 				$scope.user.username = $cookies.get("prodavacID");
 			};	
 		
-			$scope.artikl = items;
-			if ($scope.artikl.id == "")
-				$scope.naslovnaPoruka = "Unos novog artikla";
-			else
-				$scope.naslovnaPoruka = "Izmena artikla";
-				
+			$scope.original = items;
+			$scope.artikl = angular.copy(items);
+			$scope.izmena = false; //potrebno zbog disable-ovanja id polja, a i za razlikovanje add od update
 			
+			if ($scope.artikl.info.id == "") {
+				$scope.naslovnaPoruka = "Unos novog artikla";
+				$scope.izmena = false;
+			}
+			else {
+				$scope.naslovnaPoruka = "Izmena artikla";
+				$scope.izmena = true;
+			}
+				
+			console.log("Izmena " + $scope.izmena);
 			$scope.sveKategorije = [];
 			$http({
 				method: "GET", 
-				url : "http://localhost:8080/ProjaraWeb/rest/itemCategories/",
+				url : "http://localhost:8080/ProjaraWeb/rest/itemCategory/allCat",
 			}).then(function(value) {
 				console.log("sve kategorije");
-				$scope.sveKategorije = value.data;				
+				for (var i = 0; i < value.data.length; i++) {
+					$scope.sveKategorije.push(value.data[i].info);	
+					if ($scope.artikl.category.name == $scope.sveKategorije[i].name) {
+						$scope.artikl.category = $scope.sveKategorije[i];
+					} 
+				}
+				
+				if ($scope.artikl.category.name == "") {
+					$scope.artikl.category = $scope.sveKategorije[0];
+				} 
 			});	
 			
-//			if ($scope.artikl.category.name == "")
-//				$scope.artikl.category.name = $scope.sveKategorije[0].info.name;
+			
 			
 			$scope.potvrdi = function(){
+				// TODO : rest poziv za update ili add
+				if ($scope.izmena == true) {
+					
+				} else {
+					
+				}
 				$uibModalInstance.close();
 			};
 			$scope.zatvori = function(){

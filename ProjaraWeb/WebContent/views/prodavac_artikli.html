@@ -31,6 +31,7 @@
        	 					<th>Cena</th>
         					<th>Brojno stanje</th>
         					<th>Minimalna količina na lageru</th>
+        					<th>Artikl aktivan</th>
         					<th> &nbsp; </th>
         					<th> &nbsp; </th>
       					</tr>
@@ -44,6 +45,7 @@
       					<td> {{artikl.info.cost}} </td>
       					<td> {{artikl.info.inStock}} </td>
       					<td> {{artikl.info.minQuantity}} </td>
+      					<td> {{artikl.info.active}} </td>
       					<td>
       						<button type="button" class="btn btn-info" ng-click="artiklModal($index); $event.stopPropagation();">Izmena</button> 
       					</td>
