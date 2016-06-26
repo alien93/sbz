@@ -27,14 +27,14 @@ angular.module('sbzApp')
 				console.log("narucivanje");
 				for (var i = 0; i < value.data.length; i++) {
 					console.log(value.data[i].info.needOrdering);
-				//    if (value.data[i].info.needOrdering == true) {
+				    if (value.data[i].info.needOrdering == true) {
 						var narudzba = {
 							"oznaka": value.data[i].info.id,	
 							"naziv": value.data[i].info.name,
 							"razlog": value.data[i].info.minQuantity
 						};
 						$scope.narudzbe.push(narudzba);
-				//	}
+					}
 				};
 				
 			});	
@@ -64,15 +64,16 @@ angular.module('sbzApp')
 		 		for (var i = 0; i < $scope.narudzbe.length; i++) {
 //		 			$scope.ispis += $scope.zaPoruciti[i];
 //		 			$scope.ispis += ' ';
-//		 			if ($scope.zaPoruciti[i] == true) {
-//		 				$http({
-//		 					method: "POST", 
-//							url : "http://localhost:8080/ProjaraWeb/rest/items/orderItems",
-//		 				}).then(function(value) {
-//							console.log("Narucivanje artikla " + $scope.narudzbe[i].oznaka + " uspjesno.");
-//										
-//						});
-//		 			};
+		 			
+		 			if ($scope.zaPoruciti[i] == true) {
+		 				$http({
+		 					method: "POST", 
+							url : "http://localhost:8080/ProjaraWeb/rest/items/orderItems",
+		 				}).then(function(value) {
+							console.log("Narucivanje artikla " + $scope.narudzbe[i].oznaka + " uspjesno.");
+										
+						});
+		 			};
 		 			// TODO : Obrisati iz liste ove narucene
 		 			
 		 		};
