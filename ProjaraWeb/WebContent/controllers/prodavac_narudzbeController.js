@@ -20,28 +20,34 @@ angular.module('sbzApp')
 			$scope.narudzbe = [];
 		 	$scope.zaPoruciti = [];
 		 	
-		 	$http({
-				method: "GET", 
-				url : "http://localhost:8080/ProjaraWeb/rest/items/",
-			}).then(function(value) {
-				console.log("narucivanje");
-				for (var i = 0; i < value.data.length; i++) {
-					console.log(value.data[i].info.needOrdering);
-				    if (value.data[i].info.needOrdering == true) {
-						var narudzba = {
-							"oznaka": value.data[i].info.id,	
-							"naziv": value.data[i].info.name,
-							"razlog": "Bla bla",
-							"kolicinaZaNaruciti" : 10
-						};
-						$scope.narudzbe.push(narudzba);
-					}
-				};
+		 	$scope.ucitajPodatke = function() {
+		 		$scope.narudzbe = [];
+		 		$http({
+		 			method: "GET", 
+		 			url : "http://localhost:8080/ProjaraWeb/rest/items/",
+		 		}).then(function(value) {
+		 			console.log("narucivanje");
+		 			for (var i = 0; i < value.data.length; i++) {
+		 				// console.log(value.data[i].info.needOrdering);
+		 				if (value.data[i].info.needOrdering == true) {
+		 					var narudzba = {
+		 							"oznaka": value.data[i].info.id,	
+		 							"naziv": value.data[i].info.name,
+		 							"razlog": "Bla bla",
+		 							"kolicinaZaNaruciti" : 10
+		 					};
+		 					$scope.narudzbe.push(narudzba);
+		 				}
+		 			};
 				
-			});	
+		 		});	
+		 	};
+		 	
+		 	$scope.ucitajPodatke();
 		 	
 		 	//Inicijalizacija stanja, svi su na inicijalno oznaceni sa true
 		 	$scope.azurirajCheckbox = function() {
+		 		$scope.zaPoruciti = [];
 		 		for (var i = 0; i < $scope.narudzbe.length; i++) {
 		 			$scope.zaPoruciti.push(true);
 		 		};		 		
@@ -71,7 +77,7 @@ angular.module('sbzApp')
 	 					
 		 				$http({
 		 					method: "POST", 
-							url : "http://localhost:8080/ProjaraWeb/rest/items/orderItems",
+							url : "http://localhost:8080/ProjaraWeb/rest/items/order",
 							data : $.param({
 						        'id' : $scope.narudzbe[i].oznaka,
 						        'quantity' : $scope.narudzbe[i].kolicinaZaNaruciti,
@@ -80,13 +86,12 @@ angular.module('sbzApp')
 						        'Content-Type' : 'application/x-www-form-urlencoded'
 							}
 		 				}).then(function(value) {
-							console.log("Narucivanje artikla " + $scope.narudzbe[i].oznaka + " uspjesno.");
-							$scope.uspesno =  "Naručivanje uspešno.";
+		 						$scope.uspesno =  "Naručivanje uspešno.";
+		 						
 		 				}, function(err){
 								$scope.greska =  "Naručivanje neuspešno.";
 						});
 		 			};
-		 			// TODO : Obrisati iz liste ove narucene
 		 			
 		 		};
 		 	};
