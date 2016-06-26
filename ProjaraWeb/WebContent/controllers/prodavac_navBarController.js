@@ -19,6 +19,10 @@ angular.module('sbzApp')
 			$scope.narudzbe = function(){
 				$location.path('/prodavac/narudzbe');
 			};	
+			
+			$scope.artikli = function(){
+				$location.path('/prodavac/artikli');
+			};
 		
 			$scope.odjava = function(){
 				$cookies.remove("prodavacID");

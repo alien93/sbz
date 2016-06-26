@@ -1,0 +1,53 @@
+<div ng-controller="prodavac_artikliController">
+	<div class="container">
+	 	<!-- Unos novog artikla -->
+   		<div class="row"> 
+   			<div class="col-md-1"> 
+   				&nbsp;
+   			</div>
+			<div class="col-md-10"> 
+				<button type="button" class="btn btn-info"> Unos novog artikla </button>
+			</div>
+			<div class="col-md-1"> 
+				&nbsp;
+			</div>
+		</div>
+		
+		
+		<!-- Tabelarni prikaz artikala -->
+		<hr class="hr-divider"> 
+		<div class="row"> 
+   			<div class="col-md-1"> 
+   				&nbsp;
+   			</div>
+   			<div class="col-md-10"> 
+				<table class="table table-bordered table-hover" id="tabelaNamjestaj">
+    				<thead>
+      					<tr>
+      						<th>Oznaka</th>
+      						<th> Slika </th>
+        					<th>Naziv</th>
+        					<th>Kategorija</th>
+       	 					<th>Cena</th>
+        					<th>inStock</th>
+        					<th> &nbsp; </th>
+      					</tr>
+    				</thead> 
+    				<tbody>	
+    				<tr ng-repeat="artikl in artikli">
+      					<td> {{artikl.id}} </td>
+      					<td> {{artikl.picture}} </td>
+      					<td> {{artikl.name}} </td>
+      					<td> {{artikl.category.name}} </td>
+      					<td> {{artikl.price}} </td>
+      					<td> {{artikl.inStock}} </td>
+      					<td>
+      						<button type="button" class="btn btn-info">Izmena</button> 
+      						<button type="button" class="btn btn-danger">Obriši</button>
+      					</td>
+      				</tr>
+    			</tbody>
+    </table>
+		
+	</div>
+</div>

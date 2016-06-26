@@ -49,9 +49,7 @@ angular.module('sbzApp')
 					headers: {'Content-Type': 'application/json'}
 				}).then(function(value) {
 					if(value.statusText == "OK"){
-						console.log("setujem izvestaj racuna...");
 						$cookies.putObject("izvestajRacuna", value);
-						console.log($cookies.getObject("izvestajRacuna"));
 						//pokupi zeljeni broj bodova
 						$cookies.put("bodovi", $scope.bodovi);
 						$location.path("/kupac/korpa/popusti");

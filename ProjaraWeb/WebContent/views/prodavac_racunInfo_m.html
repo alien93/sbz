@@ -16,7 +16,7 @@
 		<div class="row">
 			<div class="col-md-1"> &nbsp; </div>
 			<div class="col-md-5">
-				<label> Datum: </label> {{ racun.datum }}
+				<label> Datum: </label> {{racun.datum | date:'dd/MM/yyyy'}}
 			</div>
 			<div class="col-md-5">
 				<label> Stanje računa: </label> {{ racun.stanje }}
@@ -38,9 +38,9 @@
     				<thead>
     					<th>Oznaka artikla</th>
     					<th>Naziv artikla</th>
-    					<th>Cena</th>
-    					<th>Količina</th>
     					<th>Originalna cena</th>
+    					<th>Količina</th>
+    					<th>Cena</th>
     					<th>Popust</th>
     					<th>Ukupno</th>
     				</thead>
@@ -48,9 +48,9 @@
     					<tr ng-repeat="artikal in racun.artikli">
 	    					<td>{{artikal.oznaka}}</td>
 	    					<td>{{artikal.naziv}}</td>
-	    					<td>{{artikal.cena}}</td>
-	    					<td>{{artikal.kolicina}}</td>
 	    					<td>{{artikal.originalnaCena}}</td>
+	    					<td>{{artikal.kolicina}}</td>
+	    					<td>{{artikal.cena}}</td>
 	    					<td>{{artikal.popust}}%</td>
 	    					<td>{{artikal.ukupno}}</td>
 	    				</tr>
@@ -63,7 +63,7 @@
     	  
     	  <div class="row">
     		<div class="col-md-1"> &nbsp; </div>
-    		<div class="col-md-10"> <label> Popusti: </label></div>
+    		<div class="col-md-10"> <label> Popusti na celokupan račun: </label></div>
     		<div class="col-md-1"> &nbsp; </div>
     	 </div> 
     	  <div class="row">
@@ -72,33 +72,16 @@
     			<table class="table table-striped table-bordered">
     				<thead>
     					<th>Oznaka</th>
-    					<th>Popust</th>
-    					<th>Opis</th>
-    					<th>Artikal</th>
-    					<th> &nbsp; </th>
-    					<th> &nbsp; </th>
-    					<th> &nbsp; </th>
+    					<th>Naziv popusta</th>
+    					<th>Procenat</th>
+    					<th>Tip</th>
     				</thead>
     				<tbody>
     					<tr ng-repeat="popust in racun.popusti">
 	    					<td>{{popust.oznaka}}</td>
 	    					<td>{{popust.naziv}}</td>
-	    					<td>{{popust.opis}}</td>
-	    					<td>
-	    						<table class="table table-striped">
-	    							<tr>
-	    								<th>Oznaka</th>
-	    								<th>Naziv</th>
-	    							</tr>
-	    							<tr ng-repeat="artikal in popust.artikli">
-	    								<td>{{artikal.oznaka}}</td>
-	    								<td>{{artikal.naziv}}</td>
-	    							</tr>
-	    						</table>
-	    					</td>
-	    					<td>{{artikal.originalnaCena}}</td>
-	    					<td>{{artikal.popust}}%</td>
-	    					<td>{{artikal.ukupno}}</td>
+	    					<td>{{popust.procenat}}</td>
+	    					<td>{{popust.tip}}</td>
 	    				</tr>
     				</tbody>
     			</table>
@@ -111,7 +94,7 @@
     	    	<div class="col-md-1"> &nbsp; </div>
     			<div class="col-md-5">
     				<label>Suma: {{racun.suma}}</label><br>
-    				<label>Popust: {{racun.popust}}%</label>
+    				<label>Popust na račun: {{racun.popust}}%</label><br>
     				<label>Ukupno: {{racun.ukupnaSuma}}</label>
     			</div>
     			<div class="col-md-5">

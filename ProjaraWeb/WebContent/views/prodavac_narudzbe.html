@@ -27,7 +27,8 @@
 							<td>{{nn.oznaka}}</td>
 							<td>{{nn.naziv}}</td>
 							<td>{{nn.razlog}}</td>
-							<td>{{nn.kolicina}}</td> 
+							<td>
+								 <input type="number" min="1" value="20"></input>
 							<td>
 								<input type="checkbox" ng-checked="checkBoxArtikl($index)" 
 									   ng-click="stateChanged($index)"></input>
@@ -41,6 +42,21 @@
 		</div>
 		
 	    <br/>
+	    
+	    <div class="row">
+		<div class="col-md-offset-1 col-md-10">
+			<div class="alert alert-danger" role="alert" ng-show="greska">
+            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            	{{greska}}
+        	</div>
+        	
+        	<div class="alert alert-success" role="alert" ng-show="uspjesno">
+            	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            	{{greska}}
+        	</div>
+		</div>
+		<div class="col-md-1"> &nbsp; </div>
+	</div>
 	    
 		<div class="row">
 			<div class="col-md-7"> &nbsp; </div>
