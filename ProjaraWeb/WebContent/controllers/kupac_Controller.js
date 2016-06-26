@@ -154,6 +154,7 @@ angular.module('sbzApp')
 			animation: true,
 			templateUrl: 'views/kupac_artikalInfo_m.html',
 			controller: 'kupac_artikalInfoController',
+			windowClass: 'my-dialog',
 			resolve:{
 				oznakaArtikla : function(){
 					return oznakaArtikla;
@@ -209,6 +210,8 @@ angular.module('sbzApp')
                                             function($scope, $uibModalInstance, oznakaArtikla, artikli){
 
 	$scope.artikal = artikli[oznakaArtikla];
+	console.log("artikal");
+	console.log($scope.artikal);
 
 	$scope.zatvori = function(){
 		$uibModalInstance.close();
