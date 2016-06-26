@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies', '$http', '$timeout', 'KorpaService',
-                                                 function($scope, $location, $cookies, $http, $timeout, KorpaService){
+.controller('kupac_ostvareniPopustiController', ['$scope', '$location', '$cookies', '$http', '$timeout', 'KorpaService', 'IzvestajRacunaService',
+                                                 function($scope, $location, $cookies, $http, $timeout, KorpaService, IzvestajRacunaService){
 
 	//proveri da li je korisnik vec prijavljen
 	if($cookies.get("korisnikID") == undefined){
@@ -13,8 +13,9 @@ angular.module('sbzApp')
 	$scope.uspesno = "";
 
 	//dobavi izvestaj racuna
-	if($cookies.getObject("izvestajRacuna") != undefined)
-		var izvestaj = $cookies.getObject("izvestajRacuna");
+	if(IzvestajRacunaService.dobaviIzvestaj() != undefined)
+		//var izvestaj = $cookies.getObject("izvestajRacuna");
+		var izvestaj = IzvestajRacunaService.dobaviIzvestaj();
 	else
 		$location.path("/kupac/korpa");
 	console.log("izvestaj");
@@ -60,7 +61,8 @@ angular.module('sbzApp')
 				if(value.statusText == "OK"){
 					//$cookies.remove("korpa");
 					KorpaService.obrisiKorpu();
-					$cookies.remove("izvestajRacuna");
+					//$cookies.remove("izvestajRacuna");
+					IzvestajRacunaService.obrisiIzvestaj();
 					$timeout(function() {
 						$scope.uspesno = "Uspešno ste naručili artikle. Stanje Vašeg računa možete pratiti u istoriji kupovina.";
 					}, 1500);
@@ -82,7 +84,8 @@ angular.module('sbzApp')
 				if(value.statusText == "OK"){
 					//$cookies.remove("korpa");
 					KorpaService.obrisiKorpu();
-					$cookies.remove("izvestajRacuna");
+					//$cookies.remove("izvestajRacuna");
+					IzvestajRacunaService.obrisiIzvestaj();
 					$scope.uspesno = "Uspešno ste naručili artikle. Stanje Vašeg računa možete pratiti u istoriji kupovina.";
 					$timeout(function() {
 						$scope.uspesno = "";
@@ -108,7 +111,8 @@ angular.module('sbzApp')
 	$scope.otkaziKupovinu = function(){
 		//$cookies.remove("korpa");
 		KorpaService.obrisiKorpu();
-		$cookies.remove("izvestajRacuna");
+		//$cookies.remove("izvestajRacuna");
+		IzvestajRacunaService.obrisiIzvestaj();
 		
 		//ukloni podatke o zapocetom racunu
 		$http({

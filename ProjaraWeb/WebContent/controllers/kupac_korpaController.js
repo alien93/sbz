@@ -1,6 +1,6 @@
 angular.module('sbzApp')
-.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$http', '$cookies', '$timeout', 'KorpaService',
-                                      function($scope, $location, $cookies, $http, $cookies, $timeout, KorpaService){
+.controller('kupac_korpaController', ['$scope', '$location', '$cookies', '$http', '$cookies', '$timeout', 'KorpaService', 'IzvestajRacunaService',
+                                      function($scope, $location, $cookies, $http, $cookies, $timeout, KorpaService, IzvestajRacunaService){
 
 	if($cookies.get("korisnikID") == undefined){
 		$location.path('/prijava');
@@ -62,8 +62,8 @@ angular.module('sbzApp')
 						console.log("izvestaj racuna");
 						console.log(value);
 						
-						$cookies.putObject("izvestajRacuna", value);
-						console.log($cookies.getObject("izvestajRacuna"));
+						//$cookies.putObject("izvestajRacuna", value);
+						IzvestajRacunaService.postaviIzvestaj(value);
 						//pokupi zeljeni broj bodova
 						$cookies.put("bodovi", $scope.bodovi);
 						$location.path("/kupac/korpa/popusti");

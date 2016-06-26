@@ -26,6 +26,25 @@ sbzApp.factory('KorpaService', function(){
 	return korpa;
 });
 
+sbzApp.factory('IzvestajRacunaService', function(){
+	var izvestajRacuna = {};
+	
+	
+	izvestajRacuna.postaviIzvestaj = function(novaKorpa){
+		izvestajRacuna = novaKorpa;
+	}
+	
+	izvestajRacuna.dobaviIzvestaj = function(){
+		return izvestajRacuna;
+	}
+	
+	izvestajRacuna.obrisiIzvestaj = function(){
+		izvestajRacuna = {};
+	}
+	
+	return izvestajRacuna;
+});
+
 sbzApp.config(function($routeProvider){
 				
 				$routeProvider	
