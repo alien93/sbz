@@ -33,7 +33,7 @@ angular.module('sbzApp')
 		 					var narudzba = {
 		 							"oznaka": value.data[i].info.id,	
 		 							"naziv": value.data[i].info.name,
-		 							"razlog": "Bla bla",
+		 							"razlog": "Zalihe artikla pri kraju",
 		 							"kolicinaZaNaruciti" : 10
 		 					};
 		 					$scope.narudzbe.push(narudzba);
