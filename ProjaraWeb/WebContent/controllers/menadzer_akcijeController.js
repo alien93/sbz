@@ -126,6 +126,7 @@ angular.module('sbzApp')
 		}
 		
 		$scope.addCat = function(){
+			if(!$scope.selectedCategory) return;
 			$http({
 				url : "http://localhost:8080/ProjaraWeb/rest/actionEvent/getSubCat/" + $scope.selectedCategory,
 				method : "get"
