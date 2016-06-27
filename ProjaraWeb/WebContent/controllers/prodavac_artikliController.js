@@ -17,7 +17,9 @@ angular.module('sbzApp')
 				}).then(function(value) {
 					for (var i = 0; i<value.data.length; i++)
 						$scope.artikli.push(value.data[i]);	
-				});	
+				}, function(error) {
+		 			console.log(error);
+		 		});
 			};
 			
 			$scope.ucitajSveArtikle();

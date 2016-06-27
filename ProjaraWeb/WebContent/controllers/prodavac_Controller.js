@@ -183,7 +183,11 @@ angular.module('sbzApp')
 				}).then(function(value) {
 					console.log("potvrda racuna");
 					$scope.racuni[ind].stanje = "USPEŠNO REALIZOVANO";
-				});	 
+				}, function(error) {
+		 			console.log(error);
+		 			console.log("Racun nije moguce uspjesno realizovati.");
+		 			$scope.racuni[ind].stanje = "OTKAZANO";
+		 		});
 		 	};
 		 	
 		 	$scope.otkaziRacun = function(ind) {
@@ -194,7 +198,9 @@ angular.module('sbzApp')
 				}).then(function(value) {
 					console.log("otkazivanje racuna");
 					$scope.racuni[ind].stanje = "OTKAZANO";
-				});			 		
+				}, function(error) {
+		 			console.log(error);
+		 		});			 		
 		 	};
 		 	
 		 	$scope.showDetails = function(index) {
