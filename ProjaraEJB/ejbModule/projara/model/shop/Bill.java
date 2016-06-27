@@ -449,7 +449,7 @@ public class Bill implements Serializable {
 		else{
 			//sortiraj iteme po ceni
 			ArrayList<Double> itemsByPrice = sortItemsByPrice(items);
-			//nadji sumu prvih 10
+			//nadji sumu prvih 10 (poslednjih 10)
 			double sum = 0;
 			for(int i=itemsByPrice.size()-1; i>=0; i--){
 				sum+= itemsByPrice.get(i);
@@ -580,5 +580,5 @@ public class Bill implements Serializable {
 		getCustomer().removeBills(this);
 	}
 	*/
-
+	
 }
