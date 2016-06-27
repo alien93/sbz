@@ -156,13 +156,16 @@ public class BillManagerBean implements BillManagerLocal {
 		Customer c = (Customer) userDao.merge(bill.getCustomer());
 		engine.definstance(c.getClass().getSimpleName(), c, false);
 		// //Customer category/////
-		CustomerCategory cc = customerCategoryDao.merge(c.getCategory());
-		engine.definstance(cc.getClass().getSimpleName(), cc, false);
-		// THRESHOLDS/////
-		for (Threshold t : cc.getThresholds()) {
-			//t = thresholdDao.merge(t);
-			engine.definstance(t.getClass().getSimpleName(), t, false);
+		if (c.getCategory() != null) {
+			CustomerCategory cc = customerCategoryDao.merge(c.getCategory());
+			engine.definstance(cc.getClass().getSimpleName(), cc, false);
+			// THRESHOLDS/////
+			for (Threshold t : cc.getThresholds()) {
+				// t = thresholdDao.merge(t);
+				engine.definstance(t.getClass().getSimpleName(), t, false);
+			}
 		}
+
 		// ///ITEMS///////////
 		List<Item> items = itemDao.findAll();
 		for (Item i : items) {
@@ -226,9 +229,9 @@ public class BillManagerBean implements BillManagerLocal {
 
 		System.out.println("Before award: " + percentBeforeAward0 + " "
 				+ costBeforeAward0);
-		
+
 		List<BillCostInfo> listBillCostInfo = new ArrayList<>();
-		
+
 		if (bill.getSpentPoints() > 0) {
 			engine.updateObject(bill);
 			engine.batch("projara/resources/jess/award_points.clp");
@@ -247,7 +250,7 @@ public class BillManagerBean implements BillManagerLocal {
 			System.out.println("After award+spent_points " + awardAfterP + " "
 					+ spentAfterP + " " + percentageAfterP + " "
 					+ finalCostAfterP);
-			
+
 			listBillCostInfo.add(withSpent);
 		}
 
@@ -272,8 +275,6 @@ public class BillManagerBean implements BillManagerLocal {
 				+ " " + bill.getSpentPoints() + " "
 				+ bill.getDiscountPercentage() + " " + bill.getTotal());
 
-		
-		
 		listBillCostInfo.add(withoutSpentPoints);
 
 		BillInfo billInfo = makeBillInfo(bill, listBillCostInfo);
@@ -307,8 +308,13 @@ public class BillManagerBean implements BillManagerLocal {
 		cbi.setLastName(c.getLastName());
 		cbi.setUsername(c.getUsername());
 
-		ccbi.setCode(c.getCategory().getCategoryCode());
-		ccbi.setName(c.getCategory().getName());
+		if (c.getCategory() != null) {
+			ccbi.setCode(c.getCategory().getCategoryCode());
+			ccbi.setName(c.getCategory().getName());
+		}else{
+			ccbi.setCode(null);
+			ccbi.setName(null);
+		}
 
 		cbi.setCustomerCategory(ccbi);
 
@@ -643,11 +649,13 @@ public class BillManagerBean implements BillManagerLocal {
 
 		Customer customer = bill.getCustomer();
 		customer.removeBills(bill);
-		
+
 		bill.removeAllBillDiscounts();
-		try{
+		try {
 			bill = billDao.persist(bill);
-		}catch(Exception e){e.printStackTrace();}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
