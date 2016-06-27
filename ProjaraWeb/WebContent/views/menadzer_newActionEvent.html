@@ -10,7 +10,7 @@
 			 <input type='text' class='form-control' data-ng-model='newAction.info.name'  placeholder='Naziv' required/>
 			 <br/>
 			 <b> Traje od: </b> <br/> 
-			 <input type='date' min="{{parentScope.filterDate(minDate)}}" class='form-control' data-ng-model='newAction.info.from' required/>
+			 <input max='{{parentScope.filterDate(maxDate)}}' type='date' min="{{parentScope.filterDate(minDate)}}" class='form-control' data-ng-model='newAction.info.from' required/>
 			 <br/>
 			 <b> Traje do: </b> <br/> 
 			 <input type='date' min="{{parentScope.filterDate(minDate)}}" class='form-control' data-ng-model='newAction.info.until' required/>

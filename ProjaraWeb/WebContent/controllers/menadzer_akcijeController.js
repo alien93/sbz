@@ -10,6 +10,8 @@ angular.module('sbzApp')
 			$scope.menadzerID = $cookies.get("menadzerID");
 		}
 		
+		$scope.minDate = new Date();
+		
 		$scope.akcije = [];/*{id:1, name:"Novogodisnja akcija", from:new Date(), until:new Date(), discount:20, 
 						categories: [{code:"code1", name:"name1", maxDiscount:20, parentCategory:null},
 									 {code:"code2", name:"name2", maxDiscount:30, parentCategory:"code1"}]},
@@ -107,13 +109,20 @@ angular.module('sbzApp')
 		$scope.selectedCategory = {};
 		$scope.categories = categories;
 		
+		$scope.modify = modify;
+		
 		$scope.minDate = new Date();
 		$scope.parentScope = parentScope;
 		$scope.selectedCategory = null;
 		
+		$scope.maxDate = new Date('2100-01-01');
+		
 		$scope.newAction = {"info":{}};
 		if(modify){
 			$scope.newAction = action;
+			console.log("***********" + $scope.newAction.info.from + "************");
+			$scope.maxDate = action.info.from;
+			$scope.minDate = action.info.from;
 			$scope.newAction.info.from = new Date(action.info.from);
 			$scope.newAction.info.until = new Date(action.info.until);
 		}else{

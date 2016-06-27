@@ -33,7 +33,12 @@
 							</span>
 						</td>
 						<!--  <td> <button class='btn btn-primary' data-ng-click="deleteAction(a.code)">Delete</button> </td>-->
-						<td style='text-align: center;'> <button class='btn btn-primary' data-ng-click="modifyAction(a)"> Izmena </button></td>
+						<td style='text-align: center;'>
+							 <button data-ng-show="{{a.info.until >= minDate.getTime()}}" class='btn btn-primary' data-ng-click="modifyAction(a)">
+							 	 Izmena 
+							 </button>
+							 <b data-ng-show="{{a.info.until < minDate.getTime()}}"> Akcija je istekla </b>
+						 </td>
 					</tr>
 				</tbody>
 			</table>
